@@ -1,0 +1,14 @@
+<div class="flex flex-col gap-6 mt-5">
+    <aside class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between px-6 py-4 border-b border-brand-gold-soft bg-brand-black rounded-xl">
+        <h1 class="text-lg font-semibold text-brand-gold  text-center md:text-start"> <i class="pi" [class]="icono"></i> Servicios </h1>
+        <app-search-bar placeholder="Buscar servicio" (search)="buscarServicios($event)" />
+        <button pButton label="Crear Servicio" icon="pi pi-plus" class="p-button-sm boton-primary" (click)="abrirCrear()"></button>
+    </aside>
+    <app-servicio-table [servicios]="servicios" [cargado]="cargado" [totalRecords]="totalRecords" [rows]="rows" (lazyLoad)="onLazyLoad($event)" (editar)="abrirEditar($event)" (eliminar)="eliminarServicio($event)" />
+</div>
+<p-dialog [(visible)]="mostrarFormulario" [modal]="true" [dismissableMask]="true" [closable]="true" [style]="{ width: '90vw', maxWidth: '80rem' }" (onHide)="onDialogHide()">
+    <ng-template pTemplate="header">
+        <app-dialog-header [icono]="icono" [title]="servicioSeleccionado ? 'Editar Servicio' : 'Crear Servicio'" [mode]="servicioSeleccionado ? 'editar' : 'crear'" />
+    </ng-template>
+    <app-servicio-form [servicio]="servicioSeleccionado" [categorias]="categorias" [resetTrigger]="resetFormTrigger" (guardar)="guardarServicio($event)" (cancelarEvento)="cerrarFormulario()" />
+</p-dialog>

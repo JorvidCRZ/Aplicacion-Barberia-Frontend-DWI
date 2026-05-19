@@ -1,0 +1,79 @@
+<header
+  class="fixed left-0 top-0 z-50 w-full border-b border-[#1c1c1c] bg-[#0c0c0c]/95 px-2 backdrop-blur-xl sm:px-4 lg:px-6 xl:px-8">
+  <div class="flex w-full flex-wrap items-center justify-between gap-4 py-4 sm:h-[88px] sm:flex-nowrap sm:py-0">
+
+    <!-- Logo -->
+    <a routerLink="/inicio" class="flex items-center gap-3">
+      <img src="/assets/Logo_FadeX.webp" alt="Fadex Barber" class="w-11 h-11 object-contain" />
+      <span class="text-xl font-bold leading-none tracking-tight text-white sm:text-2xl lg:text-[32px]">Fadex</span>
+    </a>
+
+    <!-- Nav desktop -->
+    <nav class="hidden items-center gap-6 lg:flex xl:gap-11">
+      <a routerLink="" routerLinkActive="!text-white"
+        class="group relative pb-1 text-sm font-medium text-white transition-colors hover:text-yellow-500 sm:text-base">
+        Inicio
+        <span
+          class="absolute bottom-0 left-1/2 h-0.5 w-0 rounded bg-yellow-500 transition-all duration-300 group-hover:left-0 group-hover:w-full"></span>
+      </a>
+      <a routerLink="/servicios" routerLinkActive="!text-white"
+        class="group relative pb-1 text-sm font-medium text-white transition-colors hover:text-yellow-500 sm:text-base">
+        Servicios
+        <span
+          class="absolute bottom-0 left-1/2 h-0.5 w-0 rounded bg-yellow-500 transition-all duration-300 group-hover:left-0 group-hover:w-full"></span>
+      </a>
+      <a routerLink="/productos" routerLinkActive="!text-white"
+        class="group relative pb-1 text-sm font-medium text-white transition-colors hover:text-yellow-500 sm:text-base">
+        Productos
+        <span
+          class="absolute bottom-0 left-1/2 h-0.5 w-0 rounded bg-yellow-500 transition-all duration-300 group-hover:left-0 group-hover:w-full"></span>
+      </a>
+      <a routerLink="/nosotros" routerLinkActive="!text-white"
+        class="group relative pb-1 text-sm font-medium text-white transition-colors hover:text-yellow-500 sm:text-base">
+        Nosotros
+        <span
+          class="absolute bottom-0 left-1/2 h-0.5 w-0 rounded bg-yellow-500 transition-all duration-300 group-hover:left-0 group-hover:w-full"></span>
+      </a>
+      <a routerLink="/reclamos" routerLinkActive="!text-white"
+        class="group relative pb-1 text-sm font-medium text-white transition-colors hover:text-yellow-500 sm:text-base">
+        Reclamos
+        <span
+          class="absolute bottom-0 left-1/2 h-0.5 w-0 rounded bg-yellow-500 transition-all duration-300 group-hover:left-0 group-hover:w-full"></span>
+      </a>
+    </nav>
+
+    <!-- Derecha desktop -->
+    <div class="hidden items-center gap-5 lg:flex">
+      <a routerLink="/login"
+        class="rounded-full bg-yellow-500 px-7 py-3 text-sm font-bold uppercase tracking-wide text-black transition-colors hover:bg-yellow-400 xl:px-9 xl:py-3.5">
+        Login
+      </a>
+    </div>
+
+    <!-- Nav mobile -->
+    <details class="group relative w-full lg:hidden">
+      <summary
+        class="flex list-none items-center justify-between rounded-md border border-[#1c1c1c] bg-[#111] px-4 py-3 text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:text-yellow-500">
+        Menú
+        <span class="transition group-open:rotate-180">⌄</span>
+      </summary>
+
+      <nav class="mt-3 grid gap-2 rounded-2xl border border-[#1c1c1c] bg-[#111] p-3">
+        <a routerLink="/inicio"
+          class="rounded-xl px-3 py-2 text-sm font-medium text-white transition hover:bg-yellow-500/10 hover:text-yellow-500">Inicio</a>
+        <a routerLink="/servicios"
+          class="rounded-xl px-3 py-2 text-sm font-medium text-white transition hover:bg-yellow-500/10 hover:text-yellow-500">Servicios</a>
+        <a routerLink="/productos"
+          class="rounded-xl px-3 py-2 text-sm font-medium text-white transition hover:bg-yellow-500/10 hover:text-yellow-500">Productos</a>
+        <a routerLink="/nosotros"
+          class="rounded-xl px-3 py-2 text-sm font-medium text-white transition hover:bg-yellow-500/10 hover:text-yellow-500">Nosotros</a>
+        <a routerLink="/reclamos"
+          class="rounded-xl px-3 py-2 text-sm font-medium text-white transition hover:bg-yellow-500/10 hover:text-yellow-500">Reclamos</a>
+        <a routerLink="/login"
+          class="mt-1 rounded-xl bg-yellow-500 px-3 py-2 text-center text-sm font-bold uppercase tracking-wide text-black transition hover:bg-yellow-400">
+          Login
+        </a>
+      </nav>
+    </details>
+  </div>
+</header>

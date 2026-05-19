@@ -1,0 +1,183 @@
+<form
+    [formGroup]="ventaForm"
+    class="flex flex-col gap-6 mt-4">
+
+    <!-- CLIENTE -->
+    <div class="part-form">
+
+        <label class="label-form">
+            Cliente
+        </label>
+
+        <p-select
+            formControlName="clienteId"
+            [options]="clientes"
+            optionLabel="persona.nombre"
+            optionValue="clienteId"
+            placeholder="Seleccionar cliente"
+            class="w-full">
+
+            <ng-template let-cliente pTemplate="item">
+
+                {{ cliente.persona.nombre }}
+                {{ cliente.persona.apellido }}
+
+            </ng-template>
+
+        </p-select>
+
+    </div>
+
+    <!-- BARBERO -->
+    <div class="part-form">
+
+        <label class="label-form">
+            ID Barbero
+        </label>
+
+        <input
+            type="number"
+            formControlName="barberoId"
+            placeholder="Temporal hasta implementar módulo barberos">
+
+    </div>
+
+    <!-- DETALLES -->
+    <div formArrayName="detalles">
+
+        <div class="flex justify-between items-center mb-4">
+
+            <h2 class="text-lg font-bold">
+                Productos
+            </h2>
+
+            <button
+                pButton
+                type="button"
+                icon="pi pi-plus"
+                label="Agregar"
+                class="boton-primary"
+                (click)="agregarDetalleVacio()">
+            </button>
+
+        </div>
+
+        @for (detalle of detalles.controls; track $index) {
+
+        <div
+            [formGroupName]="$index"
+            class="grid grid-cols-4 gap-4 mb-4 p-4 rounded-2xl border border-ui-border bg-ui-card">
+
+            <!-- PRODUCTO -->
+            <div>
+
+                <label class="label-form">
+                    Producto
+                </label>
+
+                <p-select
+                    formControlName="productoId"
+                    [options]="productos"
+                    optionLabel="nombre"
+                    optionValue="id"
+                    placeholder="Seleccionar producto"
+                    (onChange)="actualizarPrecio($index)"
+                    class="w-full">
+                </p-select>
+
+            </div>
+
+            <!-- CANTIDAD -->
+            <div>
+
+                <label class="label-form">
+                    Cantidad
+                </label>
+
+                <p-inputNumber
+                    formControlName="cantidad"
+                    [min]="1"
+                    class="w-full">
+                </p-inputNumber>
+
+            </div>
+
+            <!-- PRECIO -->
+            <div>
+
+                <label class="label-form">
+                    Precio
+                </label>
+
+                <p-inputNumber
+                    formControlName="precioUnitario"
+                    mode="currency"
+                    currency="PEN"
+                    locale="es-PE"
+                    class="w-full">
+                </p-inputNumber>
+
+            </div>
+
+            <!-- ELIMINAR -->
+            <div class="flex items-end">
+
+                <button
+                    pButton
+                    type="button"
+                    icon="pi pi-trash"
+                    class="boton-eliminar-tabla"
+                    (click)="eliminarDetalle($index)">
+                </button>
+
+            </div>
+
+        </div>
+
+        }
+
+    </div>
+
+    <!-- TOTAL -->
+    <div class="flex justify-end">
+
+        <div class="px-6 py-4 rounded-2xl bg-ui-card border border-ui-border">
+
+            <span class="text-lg font-semibold">
+                Total:
+            </span>
+
+            <span class="text-2xl font-bold text-emerald-400 ml-3">
+
+                S/ {{ total }}
+
+            </span>
+
+        </div>
+
+    </div>
+
+    <!-- BOTONES -->
+    <div class="flex justify-end gap-3">
+
+        <button
+            pButton
+            type="button"
+            label="Cancelar"
+            icon="pi pi-times"
+            class="boton-secondary"
+            (click)="cancelarEvento.emit()">
+        </button>
+
+        <button
+            pButton
+            type="button"
+            label="Guardar Venta"
+            icon="pi pi-check"
+            class="boton-primary"
+            (click)="guardarVenta()">
+        </button>
+
+    </div>
+
+</form>

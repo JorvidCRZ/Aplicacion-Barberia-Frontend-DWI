@@ -1,0 +1,146 @@
+<div class="p-4 md:p-6 lg:p-8 bg-neutral-primary-lighter rounded-base shadow-sm">
+
+    <div class="relative w-full overflow-x-auto">
+
+        <p-table [value]="servicios" [lazy]="true" (onLazyLoad)="lazyLoad.emit($event)" [paginator]="true" [rows]="rows"
+            [totalRecords]="totalRecords" [loading]="!cargado" dataKey="servicioId" [showCurrentPageReport]="true"
+            currentPageReportTemplate="Viendo {first} a {last} de {totalRecords}"
+            [tableStyle]="{ 'min-width': '900px' }">
+
+            <!-- HEADER -->
+            <ng-template pTemplate="header">
+                <tr>
+                    <th class="text-center">Imagen</th>
+                    <th class="text-center">Nombre</th>
+                    <th class="text-center">Categoría</th>
+                    <th class="text-center">Precio</th>
+                    <th class="text-center">Duración</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </ng-template>
+
+            <!-- BODY -->
+            <ng-template #body let-servicio let-expanded="expanded" pTemplate="body">
+                <tr>
+
+                    <!-- EXPAND + IMAGEN -->
+                    <td class="px-4 py-2 whitespace-nowrap">
+                        <div class="inline-flex items-center gap-2">
+
+                            <p-button type="button" [pRowToggler]="servicio"
+                                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+                                class="boton-expandir-tabla"></p-button>
+
+                            @if(servicio.urlsMultimedia?.length > 0){
+                            <span class="relative inline-block">
+                                <p-image [src]="servicio.urlsMultimedia[0] | safeImageUrl" width="40" height="40"
+                                    [preview]="false" class="rounded-lg object-cover cursor-pointer"></p-image>
+
+                                <span class="absolute -top-1 -right-1 bg-black text-white text-xs px-1 rounded">
+                                    {{ servicio.urlsMultimedia.length }}
+                                </span>
+                            </span>
+                            }
+                            @else {
+                            <div class="w-10 h-10 rounded-lg bg-gray-200 inline-flex items-center justify-center">
+                                <i class="pi pi-image text-gray-500"></i>
+                            </div>
+                            }
+
+                        </div>
+                    </td>
+
+                    <!-- NOMBRE -->
+                    <td class="text-center">{{ servicio.nombre }}</td>
+
+                    <!-- CATEGORÍA -->
+                    <td class="text-center">
+                        <app-status-badge type="text" [value]="servicio.categoriaNombre" />
+                    </td>
+
+                    <!-- PRECIO -->
+                    <td class="text-center">
+                        S/ {{ servicio.precio }}
+                    </td>
+
+                    <!-- DURACIÓN -->
+                    <td class="text-center">
+                        {{ servicio.duracion }} min
+                    </td>
+
+                    <!-- ACCIONES -->
+                    <td class="text-center">
+                        <div class="flex justify-center gap-2">
+                            <p-button icon="pi pi-pencil" class="boton-editar-tabla" (click)="editarServicio(servicio)">
+                            </p-button>
+
+                            <p-button icon="pi pi-trash" class="boton-eliminar-tabla"
+                                (click)="pedirConfirmacion(servicio, $event)">
+                            </p-button>
+
+                        </div>
+                    </td>
+
+                </tr>
+            </ng-template>
+            <ng-template #expandedrow let-servicio pTemplate="rowExpansion">
+                <tr>
+                    <td colspan="6">
+                        <div class="p-4 bg-neutral-primary-lighter rounded-base shadow-sm">
+
+                            <div class="space-y-3">
+
+                                <div>
+                                    <h3 class="font-semibold text-md">
+                                        Descripción
+                                    </h3>
+                                    <p class="text-gray-600">
+                                        {{ servicio.descripcion || 'Sin descripción' }}
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <h3 class="font-semibold text-md">
+                                        Detalles
+                                    </h3>
+
+                                    <ul class="ml-4 list-disc text-gray-600">
+                                        <li><b>Duración:</b> {{ servicio.duracion }} minutos</li>
+                                        <li><b>Categoría:</b> {{ servicio.categoriaNombre }}</li>
+                                        <li><b>Precio:</b> S/ {{ servicio.precio }}</li>
+                                    </ul>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+
+<!-- CONFIRM -->
+<app-confirm-popover [visible]="mostrarConfirmacion" [mensaje]="mensajeConfirmacion" [titulo]="'Eliminar Servicio'"
+    [icono]="icono" (confirm)="confirmarEliminar()" (cancel)="cancelarEliminar()">
+</app-confirm-popover>
+
+<!-- GALERIA -->
+<p-dialog header="Imágenes del servicio" [(visible)]="mostrarGaleria" [modal]="true" [style]="{ width: '700px' }"
+    [dismissableMask]="true">
+
+    <p-galleria [value]="imagenesGaleria" [activeIndex]="activeIndex" [circular]="true" [showItemNavigators]="true"
+        [showThumbnails]="true" [numVisible]="numVisible" [responsiveOptions]="responsiveOptions">
+
+        <ng-template pTemplate="item" let-item>
+            <img [src]="item.itemImageSrc" style="width:100%; max-height:400px; object-fit:contain" />
+        </ng-template>
+
+        <ng-template pTemplate="thumbnail" let-item>
+            <img [src]="item.thumbnailImageSrc" style="width:70px; height:50px; object-fit:cover" />
+        </ng-template>
+
+    </p-galleria>
+</p-dialog>

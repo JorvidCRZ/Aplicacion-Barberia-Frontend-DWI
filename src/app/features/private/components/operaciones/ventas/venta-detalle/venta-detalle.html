@@ -1,0 +1,30 @@
+<div class="flex flex-col gap-3 mt-4">
+
+    @for (detalle of detalles; track $index) {
+
+    <div class="detalle-item">
+
+        <span>
+            {{ detalle.productoNombre }}
+        </span>
+
+        <input
+            type="number"
+            min="1"
+            [(ngModel)]="detalle.cantidad">
+
+        <span>
+            ${{ detalle.precioUnitario * detalle.cantidad }}
+        </span>
+
+        <button
+            pButton
+            icon="pi pi-trash"
+            severity="danger">
+        </button>
+
+    </div>
+
+    }
+
+</div>

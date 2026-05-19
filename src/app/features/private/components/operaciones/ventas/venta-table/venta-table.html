@@ -1,0 +1,126 @@
+<div class="rounded-2xl overflow-hidden border border-gray-800 bg-[#050505]">
+
+    <div class="overflow-x-auto">
+
+        <table class="w-full table-fixed text-sm">
+
+            <thead class="bg-[#121212] text-gray-300">
+
+                <tr>
+
+                    <th class="py-4 px-3 text-center">ID</th>
+                    <th class="py-4 px-3 text-center">Cliente</th>
+                    <th class="py-4 px-3 text-center">Barbero</th>
+                    <th class="py-4 px-3 text-center">Productos</th>
+                    <th class="py-4 px-3 text-center">Fecha</th>
+                    <th class="py-4 px-3 text-center">Total</th>
+                    <th class="py-4 px-3 text-center">Acciones</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @for (venta of ventas; track venta.ventaId) {
+
+                <tr class="border-b border-gray-800 hover:bg-[#1f1f1f] transition-all">
+
+                    <!-- ID -->
+                    <td class="py-4 px-3 font-semibold text-brand-gold">
+                        #{{ venta.ventaId }}
+                    </td>
+
+                    <!-- CLIENTE -->
+                    <td class="py-4 px-3 text-center align-middle">
+                        <div class="flex flex-col">
+                            <span class="font-semibold">
+                                {{ venta.clienteNombre }}
+                            </span>
+                        </div>
+                    </td>
+
+                    <!-- BARBERO -->
+                    <td class="py-4 px-3 text-center align-middle">
+                        {{ venta.barberoNombre }}
+                    </td>
+
+                    <!-- PRODUCTOS -->
+                    <td class="py-4 px-3 text-center align-middle">
+
+                        <div class="flex flex-wrap justify-center gap-2">
+
+                            @for (detalle of venta.detalles; track detalle.detalleVentaId) {
+
+                            <div
+                                class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#111827] border border-[#1f2937]">
+
+                                <span class="text-sm font-medium text-gray-200">
+
+                                    {{
+                                    detalle.productoNombre
+                                    || ('Producto #' + detalle.productoId)
+                                    }}
+
+                                </span>
+
+                                <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-brand-gold text-black">
+
+                                    x{{ detalle.cantidad }}
+
+                                </span>
+
+                            </div>
+
+                            }
+
+                        </div>
+
+                    </td>
+
+                    <!-- FECHA -->
+                    <td class="py-4 px-3 text-center align-middle">
+
+                        {{ venta.fecha | date:'short' }}
+
+                    </td>
+
+                    <!-- TOTAL -->
+                    <td class="py-4 px-3 text-center align-middle">
+
+                        <span class="font-bold text-emerald-400 text-base">
+
+                            S/ {{ calcularTotal(venta) }}
+
+                        </span>
+
+                    </td>
+
+                    <!-- ACCIONES -->
+                    <td class="py-4 px-3 text-center align-middle">
+
+                        <div class="flex justify-center items-center gap-2">
+
+                            <button pButton icon="pi pi-pencil" class="p-button-sm p-button-warning"
+                                (click)="editar.emit(venta)">
+                            </button>
+
+                            <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger"
+                                (click)="eliminar.emit(venta)">
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

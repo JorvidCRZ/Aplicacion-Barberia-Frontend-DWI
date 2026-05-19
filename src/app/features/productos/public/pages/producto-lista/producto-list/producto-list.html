@@ -1,0 +1,35 @@
+<section class="relative h-64 sm:h-80 w-full flex items-center justify-center text-white overflow-hidden">
+
+    <div class="absolute inset-0">
+        <img src="/assets/cortebarba.jpg" alt="Productos Barbería"
+            class="w-full h-full object-cover object-[center_60%]" />
+        <div class="absolute inset-0 bg-black/70"></div>
+    </div>
+
+    <div class="relative z-10 text-center px-6 max-w-3xl">
+        <p class="text-yellow-500 text-sm font-semibold tracking-widest uppercase mb-3">
+            Tienda
+        </p>
+        <h1 class="text-4xl md:text-5xl font-bold tracking-wide uppercase">
+            Nuestros Productos
+        </h1>
+        <p class="mt-4 text-gray-300 text-lg">
+            Todo lo que necesitas para mantener tu estilo en casa.
+        </p>
+    </div>
+
+</section>
+
+<section class="bg-black py-10 px-2">
+    <div class="text-center mb-10">
+        <h2 class="text-white text-3xl font-bold uppercase tracking-wide">
+            Lo que tenemos para ti
+        </h2>
+        <div class="mt-3 w-16 h-1 bg-yellow-500 mx-auto rounded-full"></div>
+    </div>
+
+    
+    <div class="container mx-auto px-4 max-w-350">
+        <app-producto-lista [productos]="productos()"></app-producto-lista>
+    </div>
+</section>

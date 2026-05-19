@@ -1,0 +1,13 @@
+<div class="container grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
+    @if (productos.length === 0) {
+        <div class="col-span-full text-center text-gray-400 py-10">
+            No hay productos disponibles
+        </div>
+    } @else {
+        @for (producto of productos; track producto.id) {
+            <div>
+                <app-producto-card [producto]="producto"></app-producto-card>
+            </div>
+        }
+    }
+</div>

@@ -1,0 +1,12 @@
+.carta{
+    background-color: #1A1A1A;
+}
+
+.boton{
+    background-color: #FBBF24;
+    color: white;
+}
+.contenedor{
+    display: flex;
+    justify-content: space-between;
+}

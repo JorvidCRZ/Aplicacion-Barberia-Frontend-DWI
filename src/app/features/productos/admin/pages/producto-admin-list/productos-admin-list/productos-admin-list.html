@@ -1,0 +1,52 @@
+
+
+<p-table #dt1
+  [value]="productos()"
+  [paginator]="true"
+  [rows]="10"
+  [loading]="loading"
+  [globalFilterFields]="['nombre','nombreCategoria','precio']"
+>
+<ng-template #caption>
+                    <div class="flex">
+                        <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
+                        <p-iconfield iconPosition="left" class="ml-auto">
+                            <p-inputicon>
+                                <i class="pi pi-search"></i>
+                            </p-inputicon>
+                            <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Search keyword" />
+                        </p-iconfield>
+                    </div>
+                </ng-template>
+  <ng-template #header>
+    <tr>
+      <th>Nombre</th>
+      <th>Imagen</th>
+      <th>Categoria</th>
+      <th>Precio</th>
+      <th>Stock</th>
+      <th>Estado</th>
+    </tr>
+  </ng-template>
+
+  <ng-template #body let-producto>
+    <tr>
+      <td>{{ producto.nombre }}</td>
+      <td>
+        <img [src]="producto.imagenes[0]" [alt]="producto.nombre" width="80" height="80" />
+      </td>
+      <td>{{ producto.nombreCategoria }}</td>
+
+      <td>{{ producto.precio | currency:'USD' }}</td>
+
+      <td>{{ producto.stock }}</td>
+
+      <td>
+        <p-tag
+          [value]="producto.publicado ? 'Disponible' : 'No disponible'"
+          [severity]="producto.publicado ? 'success' : 'danger'"
+        />
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

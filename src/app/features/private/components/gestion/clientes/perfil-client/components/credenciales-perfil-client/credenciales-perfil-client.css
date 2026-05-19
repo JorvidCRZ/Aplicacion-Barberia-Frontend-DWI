@@ -1,0 +1,11 @@
+/* cliente-info.component.css */
+
+/* scrollbar elegante opcional */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ca8a04;
+  border-radius: 999px;
+}

@@ -1,0 +1,116 @@
+<div class="table-base p-4 md:p-6 lg:p-8">
+
+	<div
+		class="relative w-full overflow-x-auto rounded-xl border border-ui-border bg-brand-black shadow-lg shadow-black/20">
+
+		<table class="w-full min-w-240 table-fixed border-collapse">
+
+			<thead>
+				<tr class="table-header border-b border-gray-800 text-xs uppercase tracking-[0.2em] text-brand-gold/80">
+
+					<th class="py-3 px-3 text-center w-[8%]">
+						ID
+					</th>
+
+					<th class="py-3 px-3 text-left w-[16%]">
+						Nombre
+					</th>
+
+					<th class="py-3 px-3 text-left w-[16%]">
+						Apellido
+					</th>
+
+					<th class="py-3 px-3 text-left w-[18%]">
+						Número
+					</th>
+
+					<th class="py-3 px-3 text-left w-[22%]">
+						Correo
+					</th>
+
+					<th class="py-3 px-3 text-right whitespace-nowrap w-[12%]">
+						Fecha
+					</th>
+
+					<th class="py-3 px-3 text-right w-[8%]">
+						Acción
+					</th>
+
+				</tr>
+			</thead>
+
+			<tbody class="divide-y divide-gray-800">
+
+				<tr *ngFor="let c of clients"
+					class="table-row align-middle transition-colors duration-200 hover:bg-white/5">
+
+					<td class="py-4 px-3 text-center w-[8%]">
+
+						<div class="cliente-avatar mx-auto">
+							{{ c.clienteId }}
+						</div>
+
+					</td>
+
+					<td class="py-4 px-3 font-semibold text-gray-100 leading-tight">
+						{{ c.persona.nombre }}
+					</td>
+
+					<td class="py-4 px-3 font-semibold text-gray-100 leading-tight">
+						{{ c.persona.apellido }}
+					</td>
+
+					<td class="py-4 px-3 text-gray-400 whitespace-nowrap">
+
+						{{ c.persona.telefono }}
+					</td>
+
+					<td class="py-4 px-3 text-gray-400 whitespace-nowrap">
+						{{ c.persona.email }}
+					</td>
+
+					<td class="py-4 px-3 text-right whitespace-nowrap text-gray-400">
+						{{ c.fechaRegistro }}
+					</td>
+
+					<td class="py-4 px-3 text-right w-[8%]">
+
+						<button pButton type="button" class="boton-ver-cliente" label="ver"
+							[routerLink]="['/dashboard/gestion/clientes', c.clienteId]">
+						</button>
+
+					</td>
+
+				</tr>
+
+			</tbody>
+
+		</table>
+
+		<div class="flex items-center justify-between gap-3 px-4 py-3 text-sm text-gray-400 border-t border-gray-800">
+
+			<div>
+				Mostrando {{ clients.length }} de {{ totalElements }}
+			</div>
+
+			<div class="flex items-center gap-2">
+
+				<button pButton type="button" class="boton-paginacion-cliente" label="|Ant"
+					(click)="onPrev()" [disabled]="!canGoPrev">
+				</button>
+
+				<button pButton type="button" class="boton-paginacion-cliente activo"
+					[label]="(currentPage + 1).toString()">
+				</button>
+
+				<button pButton type="button" class="boton-paginacion-cliente" label="Sig"
+					(click)="onNext()" [disabled]="!canGoNext">
+				</button>
+
+			</div>
+
+		</div>
+
+	</div>
+
+</div>

@@ -1,0 +1,25 @@
+<div class="flex items-center justify-between gap-4 rounded-xl border border-brand-gold/20 bg-[#0c0c0a] px-4 py-4 shadow-[0_8px_24px_rgba(0,0,0,0.18)] shadow-black/20 md:px-5">
+	<div class="flex items-center gap-4 min-w-0">
+		<div class="flex h-13 w-13 items-center justify-center rounded-full border border-brand-gold/25 bg-brand-gold/15 font-extrabold tracking-wider text-brand-gold">
+			{{ clienteIniciales }}
+		</div>
+
+		<div class="min-w-0">
+			<p class="mb-1 text-[0.78rem] uppercase tracking-[0.18em] text-brand-gold">
+				{{ clienteDescripcion }}
+			</p>
+
+			<h1 class="m-0 truncate text-[1.55rem] font-bold leading-tight text-gray-100">
+				{{ clienteNombre }}
+			</h1>
+		</div>
+	</div>
+
+	<button
+		type="button"
+		class="rounded-lg border border-brand-gold/30 bg-brand-gold/10 px-4 py-2 text-sm font-semibold text-brand-gold transition hover:bg-brand-gold hover:text-black"
+		(click)="volver()"
+	>
+		Volver
+	</button>
+</div>

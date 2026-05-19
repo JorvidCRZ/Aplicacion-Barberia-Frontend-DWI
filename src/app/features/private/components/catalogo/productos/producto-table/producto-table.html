@@ -1,0 +1,100 @@
+    <div class="p-4 md:p-6 lg:p-8 bg-neutral-primary-lighter rounded-base shadow-sm">
+        <div class="relative w-full overflow-x-auto">
+            <p-table [value]="productos" [lazy]="true" (onLazyLoad)="lazyLoad.emit($event)" [paginator]="true"
+                [rows]="rows" [totalRecords]="totalRecords" [loading]="!cargado" dataKey="id" expandableRows [showCurrentPageReport]="true"
+                currentPageReportTemplate="Viendo {first} a {last} de {totalRecords} entradas"
+                [tableStyle]="{ 'min-width': '1000px' }" class="rounded-xl">
+                <ng-template #header>
+                    <tr>
+                        <th class="whitespace-nowrap text-center">Imagenes</th>
+                        <th class="whitespace-nowrap text-center">Nombre</th>
+                        <th class="whitespace-nowrap text-center">Categoría</th>
+                        <th class="whitespace-nowrap text-center">Precio</th>
+                        <th class="whitespace-nowrap text-center">Stock</th>
+                        <th class="whitespace-nowrap text-center">Publicado</th>
+                        <th class="whitespace-nowrap text-center">Activo</th>
+                        <th class="whitespace-nowrap text-center">Acciones</th>
+                    </tr>
+                </ng-template>
+                <ng-template #body let-producto let-expanded="expanded" pTemplate="body">
+                    <tr>
+                        <td class="px-4 py-2 whitespace-nowrap">
+                            <div class="inline-flex items-center gap-2">
+                                <p-button type="button" [pRowToggler]="producto" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" class="boton-expandir-tabla"></p-button>
+                                @if(producto.urlsMultimedia && producto.urlsMultimedia.length > 0){
+                                    <span class="relative inline-block">
+                                        <p-image [src]="producto.urlsMultimedia[0] | safeImageUrl" alt="Imagen de {{ producto.nombre }}" width="40" height="40" [preview]="false" class="rounded-lg object-cover cursor-pointer" imageClass="rounded-lg" (click)="abrirGaleria(producto,0)"></p-image>
+                                        @if(producto.urlsMultimedia.length > 0){
+                                            <span class="absolute -top-1 -right-1 bg-black text-white text-xs px-1 rounded">{{producto.urlsMultimedia.length}}</span>
+                                        }
+                                    </span>
+                                }
+                                @else{
+                                    <div class="w-10 h-10 rounded-lg bg-gray-200 inline-flex items-center justify-center"><i class="pi pi-image text-gray-500"></i></div>
+                                }
+                            </div>
+                        </td>
+                        <td class="whitespace-nowrap text-center">{{producto.nombre}}</td>
+                        <td class="whitespace-nowrap text-center"> <app-status-badge type="text" [value]="producto.nombreCategoria" /></td>
+                        <td class="whitespace-nowrap text-center">{{producto.precio ? (producto.precio | currency:moneda:'symbol':'1.2-2':'es-PE') : 'No asignado'}}</td>
+                        <td class="whitespace-nowrap text-center"><app-status-badge type="range" [value]="producto.stock" [warningLimit]="stockMinimo" /></td>
+                        <td class="whitespace-nowrap text-center">
+                            <div class="flex items-center justify-center gap-2">
+                                <app-status-badge type="boolean" [value]="producto.publicado" trueLabel="Si" falseLabel="No" />
+                                <p-toggleSwitch [ngModel]="producto.publicado" (onChange)="cambiarPublicadoProducto(producto, $event)" class="scale-90" />
+                            </div>
+                        </td>
+                        <td class="whitespace-nowrap text-center">
+                            <div class="flex items-center justify-center gap-2">
+                                <app-status-badge type="boolean" [value]="producto.estado" trueLabel="Activo" falseLabel="Inactivo" />
+                                <p-toggleSwitch [ngModel]="producto.estado" (onChange)="cambiarEstadoProducto(producto, $event)" class="scale-90" />
+                            </div>
+                        </td>
+                        <td class="whitespace-nowrap text-center">
+                            <div class="flex flex-row justify-center">
+                                <p-button icon="pi pi-pencil" class="boton-editar-tabla" (click)="actualizarProducto(producto)"></p-button>
+                                <p-button icon="pi pi-trash" class="boton-eliminar-tabla" (click)="pedirConfirmacion(producto, $event)"></p-button>
+                                <p-button icon="pi pi-eye" class="boton-ver-tabla" (click)="verProducto(producto)"></p-button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template #expandedrow pTemplate="rowExpansion" let-producto>
+                    @if((producto.id ?? 0) > 0){
+                        <tr>
+                            <td colspan="10">
+                                <div class="p-4 bg-neutral-primary-lighter rounded-base shadow-sm">
+                                    <section>
+                                        <h3 class="text-md font-semibold mb-4">Descripcion de {{ producto.nombre }}</h3>
+                                        <div class="ml-4 md:ml-6 mt-1 pl-4 border-l border-gray-500 space-y-1">
+                                            @if(!producto.descripcion){
+                                                <p class="text-gray-500 italic">No hay descripción para este producto.</p>
+                                            }
+                                            <app-status-badge type="text" [value]="producto.descripcion" />
+                                        </div>
+                                    </section>
+                                    <br>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+    <app-confirm-popover [visible]="mostrarConfirmacion" [mensaje]="mensajeConfirmacion" [icono]="icono" [titulo]="'Eliminar Producto'" (confirm)="confirmarEliminar()" (cancel)="cancelarEliminar()"/>
+
+    <p-dialog header="Imágenes del producto" [(visible)]="mostrarGaleria" [modal]="true" [style]="{ width: '700px' }" [dismissableMask]="true">
+        <p-galleria [value]="imagenesGaleria" [activeIndex]="activeIndex" [circular]="true" [showItemNavigators]="true" [showThumbnails]="true" [numVisible]="numVisible" [responsiveOptions]="responsiveOptions">
+            <ng-template #item let-item>
+                <img [src]="item?.itemImageSrc" style="width:100%; max-height:400px; object-fit:contain" />
+            </ng-template>
+            <ng-template #thumbnail let-item>
+                @if(item) {
+                    <img [src]="item?.thumbnailImageSrc" style="width:70px; height:50px; object-fit:cover" />
+                }
+            </ng-template>
+        </p-galleria>
+    </p-dialog>

@@ -1,0 +1,21 @@
+<div class="flex min-h-screen bg-white overflow-x-auto overflow-y-auto">
+    @if(sidebarVisible){
+        <div class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden" (click)="toggleSidebar()"></div>
+    }
+    <app-sidebar [collapsed]="sidebarCollapsed" [ngClass]="{'fixed left-0 top-0 z-50 h-full transform transition-all duration-300 md:relative md:translate-x-0': true,'-translate-x-full': !sidebarVisible}" [class.w-64]="!sidebarCollapsed" [class.w-20]="sidebarCollapsed" class="bg-white border-r"/>
+    <div class="flex-1 flex flex-col overflow-x-auto overflow-y-auto">
+        <header class="w-full bg-white-100 sticky top-0 flex items-center justify-between p-4 border-b z-10 rounded">
+            <button (click)="toggleSidebar()" class="p-2 rounded hover:bg-gray-200">
+                <i class="pi pi-bars text-xl"></i>
+            </button>
+            <h1 class="text-lg font-semibold">Dashboard Administrativo</h1>
+            <div class="flex items-center gap-4">
+                <p-avatar icon="pi pi-user" class="mr-2" size="large" />
+                <span class="hidden md:inline-block text-sm font-medium text-gray-700">{{ userFullName }}</span>
+            </div>
+        </header>
+        <main class="flex-1 p-0 lg:p-6">
+            <router-outlet></router-outlet>
+        </main>
+    </div>
+</div>

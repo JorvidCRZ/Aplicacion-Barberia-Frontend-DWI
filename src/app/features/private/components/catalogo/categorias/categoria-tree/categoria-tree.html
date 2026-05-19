@@ -1,0 +1,32 @@
+<ul class="space-y-4 md:space-y-6 table-base">
+    @for (categoria of categorias; track categoria.id) {
+    <li class="relative mb-2 md:mb-4 ml-2 md:ml-16">
+        <div
+            class="flex items-center justify-start p-3 md:p-4 rounded-md transition w-full min-h-[56px] md:min-h-[64px]">
+            <div class="flex items-center gap-4 md:gap-6 w-full">
+                @if ((categoria.subcategorias?.length ?? 0) > 0) {
+                <p-button (click)="toggleExpand(categoria)" class="boton-expandir-tabla">
+                    <i class="pi" [ngClass]="isExpanded(categoria) ? 'pi-chevron-down' : 'pi-chevron-right'"></i>
+                </p-button>
+                }
+                <span class="font-semibol">{{ categoria.nombre }}</span>
+                <span class="texto text-sm ml-2 md:ml-6">{{ categoria.descripcion }}</span>
+                <app-status-badge type="text" [value]="categoria.tipo" class="ml-4 md:ml-6" />
+                <div class="flex items-center justify-center gap-2 md:gap-4 ml-auto md:ml-8">
+                    <app-status-badge type="boolean" [value]="categoria.estado" trueLabel="Activo" falseLabel="Inactivo" />
+                    <p-toggleSwitch [ngModel]="categoria.estado" (onChange)="cambiarEstado(categoria, $event)" class="scale-90" />
+                </div>
+                <div class="flex items-center gap-2 ml-4 md:ml-6">
+                    <p-button icon="pi pi-pencil" class="boton-editar-tabla" (click)="actualizarCategoria(categoria)"></p-button>
+                    <p-button icon="pi pi-trash" class="boton-eliminar-tabla" (click)="eliminarCategoria(categoria)"></p-button>
+                </div>
+            </div>
+        </div>
+        @if ((categoria.subcategorias?.length ?? 0) > 0 && isExpanded(categoria)) {
+        <div class="ml-6 md:ml-10 mt-2 md:mt-3 border-l border-gray-500 pl-3 md:pl-6">
+            <app-categoria-tree [categorias]="categoria.subcategorias ?? []" (editar)="actualizarCategoria($event)" (eliminar)="eliminarCategoria($event)" (estado)="estado.emit($event)" />
+        </div>
+        }
+    </li>
+    }
+</ul>

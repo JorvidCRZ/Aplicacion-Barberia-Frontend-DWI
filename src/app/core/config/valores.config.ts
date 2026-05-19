@@ -1,0 +1,4 @@
+export const INVENTARIO_CONFIG = {
+  STOCK_MINIMO_GLOBAL: 5,
+  MONEDA: 'PEN',
+};

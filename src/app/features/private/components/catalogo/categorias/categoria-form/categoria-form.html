@@ -1,0 +1,60 @@
+<form [formGroup]="categoriaForm" class="form-base">
+    <div class="part-form">
+        <label for="nombre">Nombre *</label>
+        <input pInputText id="nombre" formControlName="nombre" class="inputs-text" />
+        @if (campoInvalido('nombre')) {
+        <p-message severity="error" variant="simple" size="small">Ingrese un nombre válido (3-50 caracteres)</p-message>
+        }
+    </div>
+
+    <div class="part-form">
+        <label for="descripcion">Descripción</label>
+        <textarea pTextarea class="textarea-base" [autoResize]="true" formControlName="descripcion" id="descripcion" fluid></textarea>
+    </div>
+
+    <div class="part-form">
+        <span class="label-form">Categoría Padre</span>
+        <p-select [options]="categoriasPadresFormateadas" optionLabel="nombre" optionValue="id"
+            placeholder="Sin padre" formControlName="padreId" [showClear]="true" [filter]="true"
+            filterBy="nombre"></p-select>
+    </div>
+    @if (rutaPadreSeleccionado.length > 0) {
+    <div class="mt-2 rounded-lg border border-brand-gold p-3">
+        <p class="text-xs font-semibold text-text-primary mb-2">Ubicación de la nueva categoría</p>
+        <div class="flex flex-col gap-1 font-mono text-xs">
+            @for (item of rutaPadreSeleccionado; track item.id; let i = $index) {
+            <div class="flex items-center gap-2 text-brand-secundary">
+                <span class="text-brand-gold" [style.marginLeft.px]="i * 16">
+                    └──
+                </span>
+                <span>{{ item.nombre }}</span>
+            </div>
+            }
+            <div class="flex items-center gap-2 text-blue-600 font-semibold">
+                <span class="text-brand-gold" [style.marginLeft.px]="rutaPadreSeleccionado.length * 16">
+                    └──
+                </span>
+                <span>Nueva categoría</span>
+            </div>
+        </div>
+    </div>
+    }
+
+    <div class="part-form">
+        <span for="tipo" class="label-form">Tipo *</span>
+        <p-select inputId="tipo" formControlName="tipo" [options]="tiposCategoria" optionLabel="label"optionValue="value" placeholder="Seleccione un tipo"></p-select>
+        @if (campoInvalido('tipo')) {<p-message severity="error" variant="simple" size="small">Seleccione un tipo</p-message>
+        }
+    </div>
+
+    <div class="flex flex-col sm:flex-row justify-around gap-6 ">
+        <div class="part-form items-center">
+            <span for="estado" class="label-form">Estado</span>
+            <p-checkbox binary="true" formControlName="estado" inputId="estado"></p-checkbox>
+        </div>
+    </div>
+    <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
+        <button pButton label="Guardar" class="w-full sm:w-auto boton-submit" type="button" (click)="onGuardar()"></button>
+        <button pButton label="Cancelar" class="w-full sm:w-auto boton-cancel" type="button" (click)="onCancelar()"></button>
+    </div>
+</form>

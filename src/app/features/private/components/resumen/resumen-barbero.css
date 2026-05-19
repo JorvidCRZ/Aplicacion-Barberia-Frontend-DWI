@@ -1,0 +1,9 @@
+/* Minimal styles for barbero resumen (uses existing utilities) */
+
+.title-form { margin-bottom: 0.5rem; }
+
+.form-base { padding: 1rem; }
+
+@media (min-width: 1024px) {
+  .container-main { padding-top: 8px; }
+}

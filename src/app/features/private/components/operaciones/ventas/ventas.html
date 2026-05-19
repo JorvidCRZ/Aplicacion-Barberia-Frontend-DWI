@@ -1,0 +1,76 @@
+<div class="flex flex-col gap-6 mt-5">
+
+    <aside
+        class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between px-6 py-4 border-b border-brand-gold-soft bg-brand-black rounded-xl">
+
+        <div>
+            <h1 class="text-lg font-semibold text-brand-gold">
+                <i class="pi pi-shopping-cart"></i>
+                Gestión de Ventas
+            </h1>
+
+            <p class="text-sm text-gray-400">
+                Registro de ventas de productos y servicios
+            </p>
+        </div>
+
+        <app-search-bar
+            placeholder="Buscar venta por cliente..."
+            (search)="buscarVentas($event)">
+        </app-search-bar>
+
+        <button
+            pButton
+            label="Crear Venta"
+            icon="pi pi-plus"
+            class="p-button-sm boton-primary"
+            (click)="abrirCrearVenta()">
+        </button>
+
+    </aside>
+
+    <!-- RESUMEN -->
+    <app-venta-resumen
+        [totalVentas]="totalVentas"
+        [ingresos]="ingresos"
+        [promedio]="promedio">
+    </app-venta-resumen>
+
+    <!-- TABLA -->
+   <app-venta-table
+    [ventas]="ventas"
+    [cargado]="cargado"
+    [totalRecords]="totalRecords"
+    [rows]="rows"
+    (lazyLoad)="onLazyLoad($event)"
+    (editar)="editarVenta($event)"
+    (eliminar)="eliminarVenta($event)">
+</app-venta-table>
+
+</div>
+
+<!-- MODAL -->
+<p-dialog
+    [(visible)]="mostrarFormulario"
+    [modal]="true"
+    [dismissableMask]="true"
+    [closable]="true"
+    [style]="{ width: '95vw', maxWidth: '70rem' }">
+
+    <ng-template pTemplate="header">
+
+        <app-dialog-header
+            icono="pi pi-shopping-cart"
+            [title]="ventaSeleccionada ? 'Editar Venta' : 'Crear Venta'"
+            [mode]="ventaSeleccionada ? 'editar' : 'crear'">
+        </app-dialog-header>
+
+    </ng-template>
+
+    <app-venta-form
+    [venta]="ventaSeleccionada"
+    (guardar)="guardarVenta($event)"
+    (cancelarEvento)="cerrarFormulario()">
+</app-venta-form>
+
+</p-dialog>

@@ -1,0 +1,121 @@
+/* PANEL */
+:host ::ng-deep .custom-panelmenu .p-panelmenu-panel {
+  margin-bottom: .8rem;
+  background: var(--color-ui-black);
+  border: none;
+}
+
+/* PADRES E HIJOS */
+
+:host ::ng-deep .custom-panelmenu .p-panelmenu-item-content {
+  padding: inherit !important;
+  margin: .5rem 0 !important;
+  place-content: center;
+
+  .p-panelmenu-item-icon {
+    margin-right: .5rem;
+  }
+
+}
+
+:host ::ng-deep .custom-panelmenu .p-panelmenu-item-link {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+:host ::ng-deep .custom-panelmenu .p-panelmenu-item-content,
+:host ::ng-deep .custom-panelmenu .p-panelmenu-header-link,
+:host ::ng-deep .custom-panelmenu .p-menuitem-link {
+  width: 100%;
+  display: flex;
+  min-height: 3.2rem;
+  padding: .95rem 1rem;
+  border-radius: 1rem;
+  align-items: center;
+  gap: .85rem;
+  color: var(--color-brand-gold) !important;
+  background: var(--color-ui-black) !important;
+  border: 1px solid var(--color-brand-gold-soft) !important;
+  font-size: .95rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all .2s ease;
+
+  svg {
+    margin-right: .5rem;
+  }
+}
+
+:host ::ng-deep .custom-panelmenu .p-panelmenu-header-icon,
+:host ::ng-deep .custom-panelmenu .p-panelmenu-item-icon,
+:host ::ng-deep .custom-panelmenu .p-panelmenu-submenu-icon,
+:host ::ng-deep .custom-panelmenu .p-icon {
+  color: inherit !important;
+  font-size: .95rem;
+}
+
+:host ::ng-deep .custom-panelmenu .p-panelmenu-item,
+:host ::ng-deep .custom-panelmenu .p-panelmenu-submenu {
+  width: 100%;
+}
+
+:host ::ng-deep .custom-panelmenu .p-panelmenu-header-link:hover,
+:host ::ng-deep .custom-panelmenu .p-panelmenu-item-content:hover {
+  background: var(--color-brand-gold-soft) !important;
+  border-color: var(--color-brand-gold) !important;
+  color: var(--color-brand-gold) !important;
+  transform: translateX(2px);
+}
+
+:host ::ng-deep .custom-panelmenu .p-menuitem-link-active,
+:host ::ng-deep .custom-panelmenu .p-menuitem-link.router-link-active,
+:host ::ng-deep .custom-panelmenu .p-menuitem-active>.p-panelmenu-header>.p-panelmenu-header-content {
+  background: var(--color-brand-gold-soft);
+  border-color: var(--color-brand-gold);
+}
+
+:host ::ng-deep .custom-panelmenu .p-panelmenu-header-content,
+:host ::ng-deep .custom-panelmenu .p-menuitem-content {
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: all .2s ease;
+}
+
+:host ::ng-deep .custom-panelmenu .p-panelmenu-header-icon,
+:host ::ng-deep .custom-panelmenu .p-panelmenu-item-icon,
+:host ::ng-deep .custom-panelmenu .p-panelmenu-submenu-icon,
+:host ::ng-deep .custom-panelmenu .p-icon {
+  color: var(--color-brand-gold);
+  font-size: .95rem;
+}
+
+:host ::ng-deep .custom-panelmenu .p-menuitem-text,
+:host ::ng-deep .custom-panelmenu .p-panelmenu-header-label,
+:host ::ng-deep .custom-panelmenu .p-menuitem-label {
+  font-size: .94rem;
+  font-weight: 500;
+}
+
+:host ::ng-deep .custom-panelmenu .p-panelmenu-panel,
+:host ::ng-deep .custom-panelmenu :ng-star-inserted {
+  background: var(--color-brand-gold);
+  border: none;
+  padding: .45rem 0 .15rem;
+}
+
+:host ::ng-deep .custom-panelmenu .p-panelmenu-expanded {
+  animation: fadeInMenu .2s ease;
+}
+
+@keyframes fadeInMenu {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

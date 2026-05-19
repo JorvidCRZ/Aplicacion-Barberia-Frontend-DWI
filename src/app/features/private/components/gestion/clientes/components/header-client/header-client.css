@@ -1,0 +1,10 @@
+
+.pi {
+	font-size: 1.05rem;
+}
+
+.bg-brand-black { background-color: #0b0b0b; }
+.text-brand-gold { color: #d4af37; }
+.border-brand-gold-soft { border-color: rgba(212,175,55,0.08); }
+
+.boton-primary { background: linear-gradient(90deg,#d4af37,#f0c36a); color:#000; }

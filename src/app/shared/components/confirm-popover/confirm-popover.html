@@ -1,0 +1,28 @@
+@if(visible){
+<div class="fixed inset-0 bg-black/60 backdrop-blur-[2px] z-[90]" (click)="onCancel()"></div>
+<div class="fixed z-[100] bg-ui-card border border-brand-gold-hover rounded-2xl shadow-2xl p-5 flex flex-col gap-4 inset-x-4 top-1/2 -translate-y-1/2 max-w-sm mx-auto">
+    <div class="flex justify-between w-full px-2 p-0">
+        <app-dialog-header [icono]="obtenerIcono()" [title]="obtenerTitulo()" [mode]="mode" />
+        <button type="button" class="btn btn-outline-secondary p-0" (click)="onCancel()">
+            @if (mode == 'eliminar') {
+            <span
+                class="p-button-icon pi pi-times text-xl p-2 xs:px-6  rounded-lg transition-all duration-300 transform hover:scale-105 cursor-pointer text-red-500 border border-red-500/30 bg-red-500/10 hover:bg-red-500 hover:text-white hover:border-red-500/30"></span>
+            }
+            @if (mode == 'anular') {
+            <span
+                class="p-button-icon pi pi-time text-xl p-2 xs:px-6  rounded-lg transition-all duration-300 transform hover:scale-105 cursor-pointer text-amber-500 border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500 hover:text-white hover:border-amber-500/30"></span>
+            }
+        </button>
+    </div>
+    <span class="text-sm text-text-secondary text-center mb-4 w-full flex justify-center">{{mensaje}}</span>
+    <div class="flex sm:justify-around sm:flex-row flex-col gap-2 w-full ">
+        @if (mode =='eliminar') {
+        <p-button type="button" class="boton-delete px-3 py-1 text-xs transition-all" (click)="onConfirm()" icon="pi pi-trash" [label]="confirmText"></p-button>
+        }
+        @if (mode =='anular') {
+        <button pButton type="button" class="boton-anular px-3 py-1 text-xs transition-all" (click)="onConfirm()" icon="pi pi-ban" [label]="confirmText"></button>
+        }
+        <button pButton type="button" class="boton-cancel px-3 py-1 text-xs transition-all" (click)="onCancel()" icon="pi pi-times" [label]="cancelText"></button>
+    </div>
+</div>
+}

@@ -1,0 +1,38 @@
+<div class="table-base p-4 md:p-6 lg:p-8">
+
+	<div class="summary-grid">
+
+		<div class="summary-card" *ngFor="let item of resumen">
+
+			<div class="summary-top">
+
+				<i class="pi" [ngClass]="item.icono">
+				</i>
+
+				<span class="summary-value">
+					{{ item.valor }}
+				</span>
+
+			</div>
+
+			<div class="summary-title">
+				{{ item.titulo }}
+			</div>
+
+			<div class="summary-delta" [class.negative]="!item.positivo">
+
+				<span class="summary-delta-icon">
+					{{ item.positivo ? '↗' : '↘' }}
+				</span>
+
+				<span>
+					{{ item.delta }}
+				</span>
+
+			</div>
+
+		</div>
+
+	</div>
+
+</div>

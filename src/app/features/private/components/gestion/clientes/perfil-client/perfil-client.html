@@ -1,0 +1,38 @@
+<div class="perfil-client">
+	@if (cargando) {
+	<div class="rounded-2xl border border-amber-500/15 bg-[#0c0c0a] px-4 py-6 text-sm text-gray-400">
+		Cargando cliente...
+	</div>
+	}
+
+	@if (errorCarga) {
+	<div class="rounded-2xl border border-red-500/20 bg-[#1a0f0f] px-4 py-6 text-sm text-red-300">
+		{{ errorCarga }}
+	</div>
+	}
+
+	@if (!cargando && !errorCarga) {
+	<ng-container *ngComponentOutlet="headerComponent; inputs: headerInputs"></ng-container>
+
+	<div class="mt-6 md:mt-8">
+		<app-resumen-perfil-client [clienteId]="resumenInputs.clienteId" [clienteNombre]="resumenInputs.clienteNombre">
+		</app-resumen-perfil-client>
+	</div>
+
+	<div class="mt-6 md:mt-8">
+		<app-informacion-basica [personaId]="cliente?.persona?.personaId ?? 0" [nombre]="nombre" [apellido]="apellido"
+			[telefono]="telefono" [email]="email" [registro]="registro"
+			(actualizado)="cargarCliente(cliente?.clienteId ?? 0)">
+		</app-informacion-basica>
+	</div>
+
+
+	<div class="mt-6 md:mt-8">
+		<app-credenciales-perfil-client [usuario]="usuario" [contrasena]="contrasena" [idUsuario]="idUsuario" (passwordReset)="onPasswordReset()" (usernameUpdate)="onUsernameUpdate()"></app-credenciales-perfil-client>
+	</div>
+
+	<div class="mt-6 md:mt-8">
+		<app-actividad-client></app-actividad-client>
+	</div>
+	}
+</div>

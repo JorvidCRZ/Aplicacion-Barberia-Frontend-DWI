@@ -1,0 +1,144 @@
+<section class="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(245,200,76,0.16),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.06),transparent_30%),linear-gradient(180deg,#0b0b0b_0%,#070707_100%)] p-4 sm:p-6 lg:p-8">
+	<div class="mx-auto grid max-w-7xl gap-6">
+		<header class="rounded-3xl border border-amber-400/15 bg-[#0b0b0bcc] p-6 shadow-[0_30px_70px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:p-8">
+			<div class="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+				<div class="max-w-3xl space-y-3">
+					<span class="inline-flex w-fit rounded-full bg-amber-400/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.22em] text-amber-300">
+						Gestión de clientes
+					</span>
+					<h1 class="text-3xl font-black tracking-tight text-white sm:text-4xl lg:text-5xl">
+						Registrar cliente
+					</h1>
+					<p class="max-w-2xl text-sm leading-7 text-white/65 sm:text-base">
+						Completa los datos principales para crear un nuevo cliente desde el panel administrativo.
+					</p>
+				</div>
+
+				<div class="flex flex-col items-start gap-3 lg:items-end">
+					<a routerLink="/dashboard/gestion/clientes" class="inline-flex items-center gap-2 rounded-full border border-amber-300/20 bg-black/30 px-4 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:border-amber-300/50 hover:bg-black/50">
+						<span aria-hidden="true">←</span>
+						Volver
+					</a>
+					<div class="inline-flex items-center gap-2 rounded-full bg-amber-400/10 px-4 py-2 text-sm font-semibold text-amber-300">
+						<span class="h-2 w-2 rounded-full bg-amber-300 shadow-[0_0_0_4px_rgba(245,200,76,0.12)]"></span>
+						Nuevo registro
+					</div>
+				</div>
+			</div>
+		</header>
+
+		<div class="grid gap-6 lg:grid-cols-[300px_minmax(0,1fr)]">
+			<aside class="h-fit rounded-3xl border border-white/8 bg-[#0a0a0ae6] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.28)]">
+				<h2 class="mb-4 text-lg font-bold text-white">Antes de guardar</h2>
+				<ul class="grid gap-3 text-sm leading-6 text-white/68">
+					<li>Verifica nombre, correo y teléfono.</li>
+					<li>Asigna una contraseña temporal si corresponde.</li>
+					<li>Confirma que el cliente no exista ya en la base.</li>
+				</ul>
+			</aside>
+
+			<form [formGroup]="form" (ngSubmit)="submit()" class="grid gap-6 rounded-3xl border border-white/8 bg-[#0a0a0ae6] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.28)] sm:p-8">
+				<div class="space-y-4 border-b border-white/6 pb-6">
+					<div>
+						<h3 class="text-lg font-bold text-white">PERSONA</h3>
+						<p class="mt-1 text-sm text-white/60">Datos personales del cliente.</p>
+					</div>
+
+					<div class="grid gap-4 md:grid-cols-2">
+						<label class="grid gap-2">
+							<span class="text-sm font-semibold text-white/90">Nombre</span>
+							<input formControlName="nombre" type="text" placeholder="Juan" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none transition placeholder:text-white/30 focus:border-amber-300/70 focus:ring-4 focus:ring-amber-300/10" />
+							<div *ngIf="f['nombre'].touched && f['nombre'].invalid" class="mt-1 text-sm text-red-400">El nombre es requerido.</div>
+						</label>
+
+						<label class="grid gap-2">
+							<span class="text-sm font-semibold text-white/90">Apellido</span>
+							<input formControlName="apellido" type="text" placeholder="Pérez" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none transition placeholder:text-white/30 focus:border-amber-300/70 focus:ring-4 focus:ring-amber-300/10" />
+							<div *ngIf="f['apellido'].touched && f['apellido'].invalid" class="mt-1 text-sm text-red-400">El apellido es requerido.</div>
+						</label>
+
+						<label class="grid gap-2">
+							<span class="text-sm font-semibold text-white/90">Teléfono</span>
+							<input formControlName="telefono" type="tel" placeholder="+51 999 888 777" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none transition placeholder:text-white/30 focus:border-amber-300/70 focus:ring-4 focus:ring-amber-300/10" />
+							<div *ngIf="f['telefono'].touched && f['telefono'].invalid" class="mt-1 text-sm text-red-400">El teléfono es requerido.</div>
+						</label>
+
+						<label class="grid gap-2">
+							<span class="text-sm font-semibold text-white/90">Email</span>
+							<input formControlName="email" type="email" placeholder="cliente@@mail.com" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none transition placeholder:text-white/30 focus:border-amber-300/70 focus:ring-4 focus:ring-amber-300/10" />
+							<div *ngIf="f['email'].touched && f['email'].errors" class="mt-1 text-sm text-red-400">
+								<div *ngIf="f['email'].errors['required']">El email es requerido.</div>
+								<div *ngIf="f['email'].errors['email']">Formato de email inválido.</div>
+							</div>
+						</label>
+					</div>
+				</div>
+
+				<div class="space-y-4 border-b border-white/6 pb-6">
+					<div>
+						<h3 class="text-lg font-bold text-white">USUARIO</h3>
+						<p class="mt-1 text-sm text-white/60">Acceso del cliente al sistema.</p>
+					</div>
+
+					<div class="grid gap-4 md:grid-cols-2">
+						<label class="grid gap-2 md:col-span-2">
+							<span class="text-sm font-semibold text-white/90">Usuario</span>
+							<input formControlName="usuario" type="text" placeholder="usuario.cliente" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none transition placeholder:text-white/30 focus:border-amber-300/70 focus:ring-4 focus:ring-amber-300/10" />
+							<div *ngIf="f['usuario'].touched && f['usuario'].invalid" class="mt-1 text-sm text-red-400">El usuario es requerido.</div>
+						</label>
+
+						<label class="grid gap-2">
+							<span class="text-sm font-semibold text-white/90">Password</span>
+							<div class="relative">
+								<input formControlName="password" [type]="showPassword ? 'text' : 'password'" placeholder="Mínimo 8 caracteres" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 pr-12 text-white outline-none transition placeholder:text-white/30 focus:border-amber-300/70 focus:ring-4 focus:ring-amber-300/10" />
+								<button type="button" (click)="togglePassword()" [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'" class="absolute right-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-amber-200 hover:bg-white/10 transition">
+									<i [ngClass]="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+								</button>
+							</div>
+							<div *ngIf="f['password'].touched && f['password'].errors" class="mt-1 text-sm text-red-400">
+								<div *ngIf="f['password'].errors['required']">La contraseña es requerida.</div>
+								<div *ngIf="f['password'].errors['minlength']">La contraseña debe tener al menos 8 caracteres.</div>
+							</div>
+						</label>
+
+						<label class="grid gap-2">
+							<span class="text-sm font-semibold text-white/90">Confirmar password</span>
+							<div class="relative">
+								<input formControlName="passwordConfirm" [type]="showPasswordConfirm ? 'text' : 'password'" placeholder="Repite la contraseña" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 pr-12 text-white outline-none transition placeholder:text-white/30 focus:border-amber-300/70 focus:ring-4 focus:ring-amber-300/10" />
+								<button type="button" (click)="togglePasswordConfirm()" [attr.aria-label]="showPasswordConfirm ? 'Ocultar contraseña' : 'Mostrar contraseña'" class="absolute right-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-amber-200 hover:bg-white/10 transition">
+									<i [ngClass]="showPasswordConfirm ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+								</button>
+							</div>
+							<div *ngIf="f['passwordConfirm'].touched && f['passwordConfirm'].errors" class="mt-1 text-sm text-red-400">
+								<div *ngIf="f['passwordConfirm'].errors['required']">La confirmación es requerida.</div>
+								<div *ngIf="f['passwordConfirm'].errors['mismatch']">Las contraseñas no coinciden.</div>
+							</div>
+						</label>
+					</div>
+				</div>
+
+				<div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+					<button type="button" (click)="openConfirm()" [disabled]="isSubmitting" class="inline-flex items-center justify-center rounded-full bg-linear-to-br from-amber-300 to-amber-500 px-6 py-3 text-sm font-black text-black transition hover:-translate-y-0.5 hover:brightness-105 disabled:opacity-50">
+						Guardar cliente
+					</button>
+				</div>
+
+				<!-- Confirm Modal -->
+				<div *ngIf="showConfirm" class="fixed inset-0 z-50 flex items-center justify-center">
+					<div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+					<div class="relative w-full max-w-md rounded-xl border border-white/8 bg-[#0b0b0b] p-6 shadow-lg">
+						<h3 class="text-lg font-bold text-white">¿Estás seguro?</h3>
+						<p class="mt-2 text-sm text-white/70">¿Deseas guardar este cliente en el sistema?</p>
+						<div class="mt-6 flex justify-end gap-3">
+							<button type="button" (click)="closeConfirm()" class="rounded-full px-4 py-2 text-sm font-semibold bg-transparent border border-white/10 text-white hover:bg-white/5">Cancelar</button>
+							<button type="button" (click)="submitConfirmed()" [disabled]="isSubmitting" class="rounded-full px-4 py-2 text-sm font-black text-black bg-amber-300 hover:brightness-105 disabled:opacity-50">
+								<span *ngIf="!isSubmitting">Sí, guardar</span>
+								<span *ngIf="isSubmitting">Guardando...</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</section>

@@ -1,0 +1,14 @@
+<div class="flex flex-col gap-6 mt-5">
+    <aside class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between px-6 py-4 border-b border-brand-gold-soft bg-brand-black rounded-xl">
+        <h1 class="text-lg font-semibold text-brand-gold  text-center md:text-start"> <i class="pi" [class]="icono"></i> Categorías </h1>
+        <app-search-bar placeholder="Buscar categoría" (search)="buscarCategorias($event)" />
+        <button pButton label="Crear Categoría" icon="pi pi-plus" class="p-button-sm boton-primary" (click)="abrirCrear()"></button>
+    </aside>
+    <app-categoria-table [categorias]="categorias" [cargado]="cargado" [totalRecords]="totalRecords" [rows]="rows" (lazyLoad)="onLazyLoad($event)" [icono]="icono" (editar)="abrirEditar($event)" (estado)="onCambiarEstado($event)" (eliminar)="eliminarCategoria($event)" />
+</div>
+<p-dialog [(visible)]="mostrarFormulario" [modal]="true" [dismissableMask]="true" [closable]="true" [style]="{ width: '90vw', maxWidth: '32rem' }" (onHide)="mostrarFormulario = false">
+    <ng-template pTemplate="header">
+        <app-dialog-header [icono]="icono" [title]="categoriaSeleccionada ? 'Editar Categoría' : 'Crear Categoría'" [mode]="categoriaSeleccionada ? 'editar' : 'crear'" />
+    </ng-template>
+    <app-categoria-form [categoria]="categoriaSeleccionada" [categoriasPadres]="categorias" (guardar)="guardarCategoria($event)" (cancelarEvento)="cerrarFormulario()" />
+</p-dialog>

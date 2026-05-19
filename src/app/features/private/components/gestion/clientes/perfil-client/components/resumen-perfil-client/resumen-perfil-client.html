@@ -1,0 +1,72 @@
+<div class="overflow-hidden rounded-2xl border border-brand-gold/15 bg-[#0c0c0a] shadow-[0_10px_30px_rgba(0,0,0,0.2)]">
+
+	<div class="flex items-center justify-between px-4 py-4 md:px-5">
+
+		<div class="flex items-baseline gap-2">
+			<p class="m-0 text-sm font-semibold text-brand-gold">
+				Resumen
+			</p>
+
+			<span class="text-xs text-gray-500">
+				{{ clienteNombre }}
+			</span>
+		</div>
+
+		<div class="text-xs text-gray-500">
+			Última visita
+		</div>
+
+	</div>
+
+
+	<div class="grid grid-cols-1 border-t border-white/5 md:grid-cols-3">
+
+		@for (metrica of metricas; track metrica.etiqueta) {
+
+			<div class="border-b border-white/5 px-4 py-5 md:border-b-0 md:border-r md:border-white/5 md:px-5">
+
+				<div class="text-2xl font-semibold text-brand-gold">
+					{{ metrica.valor }}
+				</div>
+
+				<div class="mt-1 text-sm text-gray-500">
+					{{ metrica.etiqueta }}
+				</div>
+
+			</div>
+
+		}
+
+	</div>
+
+
+	<div class="grid grid-cols-1 border-t border-white/5 md:grid-cols-[1fr_auto]">
+
+		<div class="px-4 py-4 md:px-5">
+
+			<div class="text-lg font-semibold text-brand-gold">
+				{{ totalGastado }}
+			</div>
+
+			<div class="text-sm text-gray-500">
+				Total gastado
+			</div>
+
+		</div>
+
+
+		<div class="px-4 py-4 text-right md:px-5 md:text-right">
+
+			<div class="text-xs text-gray-500">
+				Última visita
+			</div>
+
+			<div class="text-sm font-semibold text-brand-gold">
+				{{ ultimaVisita }}
+			</div>
+
+		</div>
+
+	</div>
+
+</div>

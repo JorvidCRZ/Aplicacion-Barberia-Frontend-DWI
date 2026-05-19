@@ -1,0 +1,62 @@
+<div class="table-base p-4 md:p-6 lg:p-8">
+    <div class="relative w-full overflow-x-auto">
+        <p-table [value]="categorias" [lazy]="true" (onLazyLoad)="lazyLoad.emit($event)" [paginator]="true"
+            [rows]="rows" [totalRecords]="totalRecords" [loading]="!cargado" dataKey="id" expandableRows [showCurrentPageReport]="true"
+            currentPageReportTemplate="Viendo {first} a {last} de {totalRecords} entradas"
+            [tableStyle]="{ 'min-width': '1000px' }" class="rounded-xl">
+            <ng-template #header>
+                <tr class="table-header">
+                    <th class="text-center">Nombre</th>
+                    <th class="text-center">Descripción</th>
+                    <th class="text-center">Tipo</th>
+                    <th class="text-center">Estado</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </ng-template>
+            <ng-template #body let-categoria let-expanded="expanded" pTemplate="body">
+                <tr class="table-row">
+                    <td class="px-4 py-2 whitespace-nowrap">
+                        <div class="inline-flex items-center gap-2">
+                            @if((categoria.subcategorias ?? []).length > 0){
+                            <ng-container>
+                                <p-button type="button" [pRowToggler]="categoria" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" class="boton-expandir-tabla"></p-button>
+                            </ng-container>
+                            }
+                        </div>
+                        <span class="font-medium transition-colors duration-200">{{ categoria.nombre}}</span>
+                    </td>
+                    <td class="texto whitespace-nowrap text-center">{{ categoria.descripcion }}</td>
+                    <td class="whitespace-nowrap text-center"><app-status-badge type="text" [value]="categoria.tipo" /></td>
+                    <td class="whitespace-nowrap text-center">
+                        <div class="flex items-center justify-center gap-2">
+                            <app-status-badge type="boolean" [value]="categoria.estado" trueLabel="Activo" falseLabel="Inactivo" />
+                            <p-toggleSwitch [ngModel]="categoria.estado" (onChange)="cambiarEstado(categoria, $event)" class="scale-90" />
+                        </div>
+                    </td>
+                    <td class="whitespace-nowrap text-center">
+                        <div class="table-actions">
+                            <p-button icon="pi pi-pencil" class="boton-editar-tabla" (click)="actualizarCategoria(categoria)"></p-button>
+                            <p-button icon="pi pi-trash" class="boton-eliminar-tabla" (click)="pedirConfirmacion(categoria, $event)"></p-button>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template #expandedrow pTemplate="rowExpansion" let-categoria>
+                @if((categoria.subcategorias ?? []).length > 0){
+                    <tr>
+                        <td colspan="5" class="p-0">
+                            <div class="p-4 bg-neutral-primary-lighter rounded-base shadow-sm">
+                                <h3 class="text-md font-semibold mb-4">Subcategorías de {{ categoria.nombre }}</h3>
+                                <div class="ml-4 md:ml-6 mt-1 pl-4 border-l border-gray-500 space-y-1">
+                                    <app-categoria-tree [categorias]="categoria.subcategorias ?? []" (editar)="actualizarCategoria($event)" (eliminar)="eliminarDesdeTree($event)" (estado)="handleTreeEstado($event)" />
+                                </div> 
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+
+<app-confirm-popover [visible]="mostrarConfirmacion" [mensaje]="mensajeConfirmacion" [icono]="icono" [titulo]="'Eliminar Categoria'" (confirm)="confirmarEliminar()" (cancel)="cancelarEliminar()" />

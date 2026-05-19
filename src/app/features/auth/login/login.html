@@ -1,0 +1,95 @@
+<section class="min-h-screen bg-black relative overflow-hidden flex items-center justify-center px-4 py-10">
+  <div class="absolute top-10 left-10 opacity-5">
+    <i class="pi pi-sliders-h text-[16rem] text-brand-gold rotate-90"></i>
+  </div>
+
+  <div class="absolute bottom-10 right-10 opacity-5">
+    <i class="pi pi-sliders-h text-[16rem] text-brand-gold"></i>
+  </div>
+
+  <div class="relative z-10 w-full max-w-5xl rounded-2xl overflow-hidden border border-brand-gold/30 bg-[#0b0b0b] shadow-[0_0_30px_rgba(212,175,55,0.08)] grid grid-cols-1 lg:grid-cols-2">
+    <div class="bg-[#151515] p-8 lg:p-12 flex flex-col justify-center">
+      <div class="flex flex-col items-center text-center mb-8">
+        <app-logo></app-logo>
+        <p class="text-text-muted text-sm mt-2">Sistema de Gestión de Barbería</p>
+      </div>
+
+      <form [formGroup]="formularioLogin" (ngSubmit)="login()" class="flex flex-col gap-5">
+        <div class="part-form">
+          <label for="username">Usuario</label>
+            <input pInputText formControlName="username" placeholder="Ingrese su usuario" class="input-auth" />
+            @if(campoInvalido('username')){
+              <p-message severity="error" variant="simple" size="small">El usuario es obligatorio</p-message>
+            }
+        </div>
+
+        <div class="part-form">
+          <label for="password">Contraseña</label>
+          <p-password inputId="password" formControlName="password" [toggleMask]="true" [feedback]="false" autocomplete="new-password" placeholder="••••••••" />
+          @if(campoInvalido('password')){
+            <p-message severity="error" variant="simple" size="small">La contraseña es obligatoria</p-message>
+          }
+        </div>
+
+        <div class="flex items-center gap-2">
+          <p-checkbox formControlName="remember" binary="true"></p-checkbox>
+          <span class="text-text-secondary text-sm">Recordarme</span>                  
+        </div>
+        <button pButton type="submit" label="Iniciar Sesión" [loading]="loading" class="boton-primary w-full"></button>
+        <span class="text-text-muted text-sm mt-4 text-center">¿Olvidaste tu contraseña? <a href="#" class="text-brand-gold hover:underline">Recuperar</a></span>
+        <span class="text-text-muted text-sm mt-2 text-center">¿No tienes cuenta? <a href="/register" class="text-brand-gold hover:underline">Regístrate</a></span>
+      </form>        
+      
+      <!-- DEMO -->
+      <div class="mt-8 pt-6 border-t border-white/10 text-sm">
+        <p class="text-center text-text-muted mb-4">
+          Credenciales de prueba:
+        </p>
+        <div class="space-y-2 text-text-secondary">
+          <div class="flex justify-between">
+            <span>Admin:</span>
+            <span class="text-brand-gold">admin / admin123</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Cliente:</span>
+            <span class="text-brand-gold">cliente / cliente123</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Barbero:</span>
+            <span class="text-brand-gold">barbero / barbero123</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="hidden lg:flex flex-col items-center justify-center bg-black p-10 border-l border-brand-gold/20">
+      <div class="mb-4">
+        <i class="pi pi-mobile text-brand-gold text-4xl"></i>
+      </div>
+      <h2 class="text-3xl font-bold text-white mb-2">Acceso Rápido</h2>
+      <p class="text-text-muted text-sm text-center mb-8">Escanea el código QR con tu dispositivo móvil</p>
+      <div class="bg-white rounded-2xl p-5 border-4 border-brand-gold shadow-[0_0_20px_rgba(212,175,55,0.3)]">
+        <!-- qr fake de simularion -->
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https://fadex.com" alt="QR"
+          class="w-[220px] h-[220px]" />
+      </div>
+
+      <div class="mt-8 text-center">
+        <p class="text-brand-gold font-semibold mb-2">● Login con QR</p>
+        <p class="text-text-muted text-sm">Accede instantáneamente sin contraseña desde tu teléfono</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 mt-8 w-full max-w-sm">
+        <div class="bg-[#151515] border border-brand-gold/20 rounded-xl p-4">
+          <p class="text-brand-gold text-sm font-semibold">✓ Seguro</p>
+          <p class="text-text-muted text-xs mt-1">Encriptación 256-bit</p>
+        </div>
+        <div class="bg-[#151515] border border-brand-gold/20 rounded-xl p-4">
+          <p class="text-brand-gold text-sm font-semibold">⚡ Rápido</p>
+          <p class="text-text-muted text-xs mt-1">Acceso en 2 segundos</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

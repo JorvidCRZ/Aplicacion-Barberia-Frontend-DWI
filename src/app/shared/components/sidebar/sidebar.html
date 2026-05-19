@@ -1,0 +1,36 @@
+@let items = menu$ | async;
+
+<aside class="w-full h-full min-h-screen p-4 flex flex-col transition-all duration-300 items-stretch text-brand-gold">
+    <header class="sidebar-brand px-6 py-6 border-b border-ui-border">
+        <div class="flex items-center gap-4">
+            <div>
+                <div class="brand-mark">
+                <i class="pi pi-crown"></i>
+            </div>
+            @if (!collapsed) {
+                <h1 class="text-[1.7rem] leading-none font-semibold tracking-[0.18em]">FadeX</h1>
+                <p class="mt-1 text-[0.72rem] uppercase tracking-[0.25em] text-text-muted">Sistema de Gestión 
+                    <br>
+                    de Barbería</p>
+            }
+            </div>
+        </div>
+    </header>
+
+    <div class="flex-1 overflow-y-auto p-4">
+        @if (items) {
+        <p-panelMenu [model]="items" class="custom-panelmenu w-full"></p-panelMenu>
+        }
+    </div>
+
+    <div class="sidebar-footer border-t border-ui-border p-4">
+        <button type="button"
+            class=" boton-logout"
+            (click)="logout()">
+            <span class="flex items-center gap-3">
+                <i class="pi pi-sign-out text-brand-red"></i>
+                <span>Cerrar sesión</span>
+            </span>
+        </button>
+    </div> 
+</aside>

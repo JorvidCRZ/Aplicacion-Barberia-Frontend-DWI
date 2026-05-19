@@ -1,0 +1,198 @@
+<!-- Hero Banner -->
+<section class="relative h-64 sm:h-80 w-full flex items-center justify-center text-white overflow-hidden">
+
+  <div class="absolute inset-0">
+    <img src="/assets/cortebarba.jpg" alt="Reservar cita"
+      class="w-full h-full object-cover object-[center_60%]" />
+    <div class="absolute inset-0 bg-black/70"></div>
+  </div>
+
+  <div class="relative z-10 text-center px-6 max-w-3xl">
+    <p class="text-yellow-500 text-sm font-semibold tracking-widest uppercase mb-3">
+      Agenda tu turno
+    </p>
+    <h1 class="text-4xl md:text-5xl font-bold tracking-wide uppercase">
+      Reservar Cita
+    </h1>
+    <p class="mt-4 text-gray-300 text-lg">
+      Elige tu servicio, barbero y horario. Nosotros hacemos el resto.
+    </p>
+  </div>
+
+</section>
+
+<!-- Formulario -->
+<section class="bg-black py-12 px-4">
+  <div class="max-w-2xl mx-auto">
+
+    <div class="text-center mb-10">
+      <h2 class="text-white text-2xl font-bold uppercase tracking-wide">
+        Completa tu reserva
+      </h2>
+      <div class="mt-3 w-16 h-1 bg-yellow-500 mx-auto rounded-full"></div>
+    </div>
+
+    <div class="bg-[#0c0c0c] border border-white/10 rounded-2xl p-6 sm:p-8 flex flex-col gap-6">
+
+      <!-- Nombre -->
+      <div class="flex flex-col gap-2">
+        <label class="text-white text-sm font-semibold">Nombre completo</label>
+        <input
+          type="text"
+          placeholder="Ej: Juan Pérez"
+          class="bg-black border border-white/10 focus:border-yellow-500 text-white placeholder-gray-600 rounded-xl px-4 py-3 text-sm outline-none transition-all duration-200"
+        />
+      </div>
+
+      <!-- Teléfono -->
+      <div class="flex flex-col gap-2">
+        <label class="text-white text-sm font-semibold">Número de teléfono</label>
+        <input
+          type="tel"
+          placeholder="Ej: +51 999 888 777"
+          class="bg-black border border-white/10 focus:border-yellow-500 text-white placeholder-gray-600 rounded-xl px-4 py-3 text-sm outline-none transition-all duration-200"
+        />
+      </div>
+
+      <!-- Servicio -->
+      <div class="flex flex-col gap-2">
+        <label class="text-white text-sm font-semibold">Servicio</label>
+        <select class="bg-black border border-white/10 focus:border-yellow-500 text-white rounded-xl px-4 py-3 text-sm outline-none transition-all duration-200 appearance-none">
+          <option value="" disabled selected class="text-gray-600">Selecciona un servicio</option>
+          <option value="corte-clasico">Corte Clásico — S/ 25</option>
+          <option value="corte-barba">Corte + Barba — S/ 45</option>
+          <option value="arreglo-barba">Arreglo de Barba — S/ 20</option>
+          <option value="afeitado">Afeitado Clásico — S/ 30</option>
+          <option value="degradado">Degradado / Fade — S/ 35</option>
+          <option value="tratamiento">Tratamiento Capilar — S/ 40</option>
+          <option value="corte-ninos">Corte Niños — S/ 18</option>
+          <option value="lineas">Diseño de Líneas — S/ 15</option>
+          <option value="cejas">Perfilado de Cejas — S/ 10</option>
+          <option value="masaje">Masaje Capilar — S/ 15</option>
+        </select>
+      </div>
+
+      <!-- Barbero -->
+      <div class="flex flex-col gap-2">
+        <label class="text-white text-sm font-semibold">Barbero</label>
+        <div class="grid grid-cols-3 gap-2">
+
+          <label class="cursor-pointer">
+            <input type="radio" name="barbero" value="cualquiera" class="hidden peer" checked />
+            <div class="peer-checked:border-yellow-500 peer-checked:text-yellow-500 border border-white/10 rounded-xl p-3 text-center transition-all duration-200 hover:border-yellow-500/50">
+              <div class="w-10 h-10 bg-white/5 rounded-full mx-auto mb-2 flex items-center justify-center">
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+              </div>
+              <span class="text-xs font-semibold text-gray-300">Cualquiera</span>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="barbero" value="carlos" class="hidden peer" />
+            <div class="peer-checked:border-yellow-500 peer-checked:text-yellow-500 border border-white/10 rounded-xl p-3 text-center transition-all duration-200 hover:border-yellow-500/50">
+              <div class="w-10 h-10 bg-white/5 rounded-full mx-auto mb-2 flex items-center justify-center">
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+              </div>
+              <span class="text-xs font-semibold text-gray-300">Carlos</span>
+            </div>
+          </label>
+
+          <label class="cursor-pointer">
+            <input type="radio" name="barbero" value="miguel" class="hidden peer" />
+            <div class="peer-checked:border-yellow-500 peer-checked:text-yellow-500 border border-white/10 rounded-xl p-3 text-center transition-all duration-200 hover:border-yellow-500/50">
+              <div class="w-10 h-10 bg-white/5 rounded-full mx-auto mb-2 flex items-center justify-center">
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+              </div>
+              <span class="text-xs font-semibold text-gray-300">Miguel</span>
+            </div>
+          </label>
+
+        </div>
+      </div>
+
+      <!-- Fecha y Hora -->
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-2">
+          <label class="text-white text-sm font-semibold">Fecha</label>
+          <input
+            type="date"
+            class="bg-black border border-white/10 focus:border-yellow-500 text-white rounded-xl px-4 py-3 text-sm outline-none transition-all duration-200 [color-scheme:dark]"
+          />
+        </div>
+        <div class="flex flex-col gap-2">
+          <label class="text-white text-sm font-semibold">Hora</label>
+          <select class="bg-black border border-white/10 focus:border-yellow-500 text-white rounded-xl px-4 py-3 text-sm outline-none transition-all duration-200">
+            <option value="" disabled selected>Selecciona</option>
+            <option>10:00 am</option>
+            <option>10:30 am</option>
+            <option>11:00 am</option>
+            <option>11:30 am</option>
+            <option>12:00 pm</option>
+            <option>12:30 pm</option>
+            <option>01:00 pm</option>
+            <option>01:30 pm</option>
+            <option>03:00 pm</option>
+            <option>03:30 pm</option>
+            <option>04:00 pm</option>
+            <option>04:30 pm</option>
+            <option>05:00 pm</option>
+            <option>05:30 pm</option>
+            <option>06:00 pm</option>
+            <option>06:30 pm</option>
+            <option>07:00 pm</option>
+            <option>07:30 pm</option>
+            <option>08:00 pm</option>
+            <option>08:30 pm</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Nota adicional -->
+      <div class="flex flex-col gap-2">
+        <label class="text-white text-sm font-semibold">Nota adicional <span class="text-gray-500 font-normal">(opcional)</span></label>
+        <textarea
+          rows="3"
+          placeholder="Ej: Quiero un fade bajo con línea al costado..."
+          class="bg-black border border-white/10 focus:border-yellow-500 text-white placeholder-gray-600 rounded-xl px-4 py-3 text-sm outline-none transition-all duration-200 resize-none"
+        ></textarea>
+      </div>
+
+      <!-- Resumen -->
+      <div class="bg-white/5 border border-white/10 rounded-xl px-4 py-4 flex flex-col gap-2">
+        <p class="text-white text-sm font-semibold mb-1">Resumen de tu cita</p>
+        <div class="flex justify-between text-xs text-gray-400">
+          <span>Servicio</span>
+          <span class="text-white">—</span>
+        </div>
+        <div class="flex justify-between text-xs text-gray-400">
+          <span>Barbero</span>
+          <span class="text-white">Cualquiera</span>
+        </div>
+        <div class="flex justify-between text-xs text-gray-400">
+          <span>Fecha y hora</span>
+          <span class="text-white">—</span>
+        </div>
+        <div class="flex justify-between text-xs text-gray-400 pt-2 border-t border-white/10">
+          <span class="font-semibold text-white">Total estimado</span>
+          <span class="text-yellow-500 font-bold">—</span>
+        </div>
+      </div>
+
+      <!-- Botón -->
+      <button class="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3.5 rounded-full transition-all duration-300 hover:scale-[1.02] text-sm tracking-wide uppercase">
+        Confirmar Reserva
+      </button>
+
+      <p class="text-gray-600 text-xs text-center">
+        Te contactaremos por WhatsApp para confirmar tu cita.
+      </p>
+
+    </div>
+  </div>
+</section>
