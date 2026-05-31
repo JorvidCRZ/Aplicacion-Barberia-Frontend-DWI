@@ -1,10 +1,11 @@
 import { SearchBarComponent } from '@/app/shared/components/search-bar/search-bar.component';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-header-barbero',
-  imports: [SearchBarComponent, ButtonModule],
+  imports: [SearchBarComponent, ButtonModule, RouterLink],
   templateUrl: './header-barbero.html',
   styleUrl: './header-barbero.css',
 })

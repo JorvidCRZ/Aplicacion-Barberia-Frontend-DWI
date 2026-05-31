@@ -1,0 +1,183 @@
+<div class="overflow-hidden rounded-2xl border border-brand-gold/15 bg-[#0c0c0a] shadow-[0_10px_30px_rgba(0,0,0,0.2)]">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between border-b border-brand-gold/10 px-4 py-4 md:px-5">
+    <div>
+      <p class="mb-1 text-[0.78rem] uppercase tracking-[0.18em] text-brand-gold">Perfil de usuario</p>
+      <h2 class="m-0 text-lg font-semibold text-gray-100">Roles y permisos</h2>
+    </div>
+  </div>
+
+  <div class="space-y-6 px-4 py-5 md:px-5">
+
+    <!-- Sección Roles -->
+    <div>
+      <p class="mb-3 text-[0.7rem] uppercase tracking-[0.15em] text-brand-gold/60">Roles asignados</p>
+      <div class="flex flex-wrap gap-2">
+
+        @for (rol of rolesAsignados; track rol.idRol) {
+          <div class="flex items-center gap-2 rounded-xl border border-brand-gold/25 bg-brand-gold/8 px-3 py-1.5">
+            <i class="pi pi-shield text-brand-gold" style="font-size: 13px;"></i>
+            <span class="text-sm font-medium text-brand-gold">{{ rol.nombre }}</span>
+            <button
+              type="button"
+              (click)="quitarRol(rol.idRol)"
+              class="ml-1 text-brand-gold/40 transition-colors hover:text-red-400"
+              aria-label="Quitar rol">
+              <i class="pi pi-times" style="font-size: 11px;"></i>
+            </button>
+          </div>
+        }
+
+        <button
+          type="button"
+          (click)="abrirModalRol()"
+          class="flex items-center gap-2 rounded-xl border border-dashed border-brand-gold/25 bg-transparent px-3 py-1.5 text-sm text-brand-gold/50 transition-all hover:border-brand-gold/50 hover:text-brand-gold">
+          <i class="pi pi-plus" style="font-size: 12px;"></i>
+          Añadir rol
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="border-t border-brand-gold/10"></div>
+
+    <!-- Sección Permisos -->
+    <div>
+      <div class="mb-3 flex items-center gap-3">
+        <p class="text-[0.7rem] uppercase tracking-[0.15em] text-brand-gold/60">Permisos activos</p>
+        <span class="rounded-md bg-brand-gold/10 px-2 py-0.5 text-[11px] text-brand-gold/60 border border-brand-gold/15">
+          {{ totalPermisos }} permisos
+        </span>
+      </div>
+
+      <!-- Sin permisos -->
+      @if (permisosActivos.length === 0 && !cargando) {
+        <div class="flex flex-col items-center gap-2 py-8 text-center">
+          <i class="pi pi-lock-open text-white/20" style="font-size: 22px;"></i>
+          <p class="text-sm text-white/25">Sin permisos asignados</p>
+        </div>
+      }
+
+      <!-- Cargando -->
+      @if (cargando) {
+        <div class="flex flex-col items-center gap-2 py-8 text-center">
+          <i class="pi pi-spin pi-spinner text-brand-gold/40" style="font-size: 22px;"></i>
+          <p class="text-sm text-white/25">Cargando permisos...</p>
+        </div>
+      }
+
+      <!-- Lista permisos -->
+      @if (permisosActivos.length > 0) {
+        <div class="space-y-2">
+          @for (item of permisosActivos; track item.permiso.idPermiso) {
+            <div class="flex items-center justify-between rounded-xl border border-white/5 bg-white/[0.02] px-4 py-3 transition-colors hover:bg-brand-gold/[0.04]">
+              <div>
+                <p class="text-sm font-medium text-gray-200">{{ item.permiso.nombre }}</p>
+                <p class="mt-0.5 text-xs text-white/35">{{ item.permiso.descripcion }}</p>
+              </div>
+              <span class="shrink-0 rounded-md border border-brand-gold/20 bg-brand-gold/10 px-2 py-1 text-[11px] text-brand-gold/70">
+                vía {{ item.roles.join(', ') }}
+              </span>
+            </div>
+          }
+        </div>
+
+        <!-- ✅ Paginación — aquí dentro de la sección permisos, FUERA del modal -->
+        @if (totalPaginasPermisos > 1) {
+          <div class="mt-4 flex items-center justify-between border-t border-brand-gold/10 pt-4">
+            <span class="text-xs text-white/30">
+              {{ totalPermisos }} permisos en total
+            </span>
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                (click)="cambiarPaginaPermisos(paginaPermisos - 1)"
+                [disabled]="paginaPermisos === 0"
+                class="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-white/50 transition hover:border-brand-gold/30 hover:text-brand-gold disabled:cursor-not-allowed disabled:opacity-30">
+                <i class="pi pi-chevron-left"></i>
+              </button>
+              <span class="text-xs text-white/40">
+                {{ paginaPermisos + 1 }} / {{ totalPaginasPermisos }}
+              </span>
+              <button
+                type="button"
+                (click)="cambiarPaginaPermisos(paginaPermisos + 1)"
+                [disabled]="paginaPermisos >= totalPaginasPermisos - 1"
+                class="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-white/50 transition hover:border-brand-gold/30 hover:text-brand-gold disabled:cursor-not-allowed disabled:opacity-30">
+                <i class="pi pi-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        }
+      }
+
+    </div>
+  </div>
+
+  <!-- ✅ Modal — solo contiene la lista de roles disponibles -->
+  @if (showModalAgregarRol) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center px-4">
+      <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" (click)="showModalAgregarRol = false"></div>
+
+      <div class="relative z-10 w-full max-w-md overflow-hidden rounded-3xl border border-brand-gold/15 bg-[#0d0d0b] shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
+
+        <!-- Header modal -->
+        <div class="border-b border-brand-gold/10 px-5 py-4">
+          <p class="text-[0.78rem] uppercase tracking-[0.18em] text-brand-gold">Gestión de roles</p>
+          <h3 class="mt-1 text-xl font-semibold text-gray-100">Añadir rol al usuario</h3>
+          <p class="mt-1 text-sm text-gray-400">Selecciona uno o más roles para asignar.</p>
+        </div>
+
+        <!-- Lista de roles disponibles -->
+        <div class="space-y-2 px-5 py-5">
+          @for (rol of rolesDisponibles; track rol.idRol) {
+            <div
+              (click)="toggleRol(rol.idRol)"
+              class="flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 transition-all duration-200"
+              [class]="rolesSeleccionados.has(rol.idRol)
+                ? 'border-brand-gold/50 bg-brand-gold/10'
+                : 'border-white/6 bg-white/[0.02] hover:border-brand-gold/30 hover:bg-brand-gold/5'">
+
+              <div
+                class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-all"
+                [class]="rolesSeleccionados.has(rol.idRol)
+                  ? 'border-brand-gold bg-brand-gold text-[#0c0c0a]'
+                  : 'border-brand-gold/30 bg-transparent'">
+                @if (rolesSeleccionados.has(rol.idRol)) {
+                  <i class="pi pi-check" style="font-size: 10px;"></i>
+                }
+              </div>
+
+              <span class="text-sm font-medium text-gray-200">{{ rol.nombre }}</span>
+            </div>
+          }
+
+          @if (rolesDisponibles.length === 0) {
+            <p class="py-4 text-center text-sm text-white/30">El usuario ya tiene todos los roles disponibles.</p>
+          }
+        </div>
+
+        <!-- Footer modal -->
+        <div class="flex items-center justify-end gap-3 border-t border-brand-gold/10 px-5 py-4">
+          <button
+            type="button"
+            (click)="showModalAgregarRol = false"
+            class="rounded-xl border border-white/10 bg-transparent px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/5">
+            Cancelar
+          </button>
+          <button
+            type="button"
+            (click)="confirmarAgregarRoles()"
+            [disabled]="rolesSeleccionados.size === 0"
+            class="rounded-xl border border-brand-gold/40 bg-brand-gold/10 px-4 py-2 text-sm font-semibold text-brand-gold transition hover:-translate-y-0.5 hover:border-brand-gold/60 hover:bg-brand-gold/20 disabled:cursor-not-allowed disabled:opacity-40">
+            Confirmar
+          </button>
+        </div>
+
+      </div>
+    </div>
+  }
+
+</div>

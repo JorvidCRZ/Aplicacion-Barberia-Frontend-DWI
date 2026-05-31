@@ -43,7 +43,8 @@
     <div class="part-form">
         <span for="tipo" class="label-form">Tipo *</span>
         <p-select inputId="tipo" formControlName="tipo" [options]="tiposCategoria" optionLabel="label"optionValue="value" placeholder="Seleccione un tipo"></p-select>
-        @if (campoInvalido('tipo')) {<p-message severity="error" variant="simple" size="small">Seleccione un tipo</p-message>
+        @if (campoInvalido('tipo')) {
+            <p-message severity="error" variant="simple" size="small">Seleccione un tipo</p-message>
         }
     </div>
 

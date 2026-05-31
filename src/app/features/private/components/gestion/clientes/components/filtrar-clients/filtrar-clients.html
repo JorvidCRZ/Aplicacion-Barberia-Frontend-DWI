@@ -4,14 +4,23 @@
 			@for (filter of filters; track filter.key) {
 				<button
 					type="button"
-					class="group flex min-h-14 min-w-40 flex-1 flex-col justify-center rounded-xl border border-amber-500/15 bg-linear-to-b from-zinc-900 to-zinc-950 px-4 py-3 text-left transition duration-150 hover:-translate-y-0.5 hover:border-amber-500/30 hover:from-zinc-800 hover:to-zinc-900"
+					class="group flex min-h-14 min-w-40 flex-1 flex-col justify-center rounded-xl px-4 py-3 text-left transition duration-150"
 					[class]="activeFilter === filter.key
-						? 'group flex min-h-14 min-w-40 flex-1 flex-col justify-center rounded-xl border border-amber-400/70 bg-linear-to-b from-amber-900/70 to-amber-950/90 px-4 py-3 text-left shadow-[0_0_0_1px_rgba(245,200,76,0.12)] transition duration-150 hover:-translate-y-0.5 hover:border-amber-300'
-						: 'group flex min-h-14 min-w-40 flex-1 flex-col justify-center rounded-xl border border-amber-500/15 bg-linear-to-b from-zinc-900 to-zinc-950 px-4 py-3 text-left transition duration-150 hover:-translate-y-0.5 hover:border-amber-500/30 hover:from-zinc-800 hover:to-zinc-900'"
+						? 'border border-amber-400/70 bg-linear-to-b from-amber-900/70 to-amber-950/90 shadow-[0_0_0_1px_rgba(245,200,76,0.12)] hover:-translate-y-0.5 hover:border-amber-300'
+						: filter.key === 'deshabilitados'
+						? 'border border-rose-500/12 bg-linear-to-b from-zinc-900 to-zinc-950 hover:-translate-y-0.5 hover:border-rose-400/30'
+						: 'border border-amber-500/15 bg-linear-to-b from-zinc-900 to-zinc-950 hover:-translate-y-0.5 hover:border-amber-500/30 hover:from-zinc-800 hover:to-zinc-900'"
 					(click)="selectFilter(filter.key)"
 				>
-					<span class="text-sm font-bold leading-none text-amber-300">{{ filter.label }}</span>
-					<span class="mt-1 text-xs leading-none text-zinc-400">{{ filter.subtitle }}</span>
+					<span class="flex items-center gap-3">
+						<!-- icon -->
+						<svg [hidden]="filter.key !== 'deshabilitados'" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
+							<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="currentColor" class="text-rose-600/20" />
+							<path d="M15 9l-6 6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+						</svg>
+						<span [class.text-rose-300]="filter.key === 'deshabilitados' && activeFilter !== filter.key" class="text-sm font-bold leading-none text-amber-300">{{ filter.label }}</span>
+					</span>
+					<span class="mt-1 text-xs leading-none" [class.text-rose-400]="filter.key === 'deshabilitados'">{{ filter.subtitle }}</span>
 				</button>
 			}
 		</div>

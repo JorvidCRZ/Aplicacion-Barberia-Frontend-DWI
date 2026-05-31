@@ -24,6 +24,7 @@ export class FiltrarClients {
     { key: 'mes', label: 'Este mes', subtitle: 'Actividad mensual' },
     { key: 'anio', label: 'Este año', subtitle: 'Resumen anual' },
     { key: 'personalizado', label: 'Personalizado', subtitle: 'Mes, año o rango' },
+    { key: 'deshabilitados', label: 'Deshabilitados', subtitle: 'Clientes inactivos' },
   ] as const;
 
   readonly months = [

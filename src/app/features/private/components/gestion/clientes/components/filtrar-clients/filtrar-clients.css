@@ -1,3 +1,12 @@
 :host {
 	display: block;
 }
+
+:host svg.shrink-0 {
+	width: 18px;
+	height: 18px;
+}
+
+:host .filter-subtitle {
+	color: rgba(148,163,184,1); /* fallback if Tailwind not applied */
+}

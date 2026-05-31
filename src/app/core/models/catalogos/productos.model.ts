@@ -14,6 +14,7 @@ export interface Producto {
 }
 
 export interface ProductoFilter {
+    id?: number;
     nombre?: string;
     idCategoria?: number;
     estado?: boolean;

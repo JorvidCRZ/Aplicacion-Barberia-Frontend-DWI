@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UsuarioService } from '@/app/core/services/auth/usuario.service';
@@ -15,7 +15,7 @@ import { NotificationService } from '@/app/core/services/common/notification.ser
 export class RegistrarClient {
   form: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router, private usuarioService: UsuarioService, private notification: NotificationService) {
+  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute, private usuarioService: UsuarioService, private notification: NotificationService) {
     this.form = this.fb.group({
       nombre: ['', Validators.required],
       apellido: ['', Validators.required],
@@ -95,7 +95,7 @@ export class RegistrarClient {
         this.isSubmitting = false;
         this.showConfirm = false;
         this.notification.showSuccess(res?.message || 'Cliente creado correctamente');
-        this.router.navigate(['/dashboard/gestion/clientes']);
+        this.router.navigate(['../'], { relativeTo: this.route });
       },
       error: (err) => {
         console.error('Error al registrar cliente', err);

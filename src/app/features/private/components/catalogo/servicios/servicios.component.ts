@@ -11,6 +11,7 @@ import { NotificationService } from '@/app/core/services/common/notification.ser
 import { ServicioService } from '@/app/core/services/catalogos/servicio.service';
 import { Servicio, ServicioRequest } from '@/app/core/models/catalogos/servicios.model';
 import { Categoria, CategoriaTipo } from '@/app/core/models/catalogos/categorias.model';
+import { ServicioFiltro } from '@/app/core/models/catalogos/servicios.model';
 import { CategoriaService } from '@/app/core/services/catalogos/categoria.service';
 import { TableLazyLoadEvent } from 'primeng/table';
 import { tap } from 'rxjs';
@@ -41,7 +42,8 @@ export class ServiciosComponent {
   mostrarFormulario = false;
   icono = 'pi-sparkles';
 
-  filtro: any = {};
+
+  filtro: ServicioFiltro = { page: 0, size: this.rows };
 
   ngOnInit() {
     this.cargarCategorias();
@@ -51,11 +53,12 @@ export class ServiciosComponent {
   cargarServicios(page: number, size: number): void {
     this.pageActual = page;
     this.cargado = false;
+    this.filtro = { ...this.filtro, page, size };
 
-    this.servicioService.obtenerServicios().subscribe({
-      next: (resp) => {
-        this.servicios = resp;
-        this.totalRecords = resp.length;
+    this.servicioService.obtenerServiciosConFiltro(this.filtro).subscribe({
+      next: (resp) => {        
+        this.servicios = resp.data.content;
+        this.totalRecords = resp.data.totalElements;
         this.cargado = true;
         this.cd.detectChanges();
       },

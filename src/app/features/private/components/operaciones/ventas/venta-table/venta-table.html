@@ -1,76 +1,101 @@
-<div class="rounded-2xl overflow-hidden border border-gray-800 bg-[#050505]">
+<div class="table-base p-4 md:p-6 lg:p-8">
+    <div class="relative w-full overflow-x-auto">
 
-    <div class="overflow-x-auto">
+        <p-table
+            [value]="ventas"
+            [loading]="!cargado"
+            dataKey="ventaId"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Viendo {first} a {last} de {totalRecords} entradas"
+            [tableStyle]="{ 'min-width': '1000px' }"
+            class="rounded-xl"
+        >
 
-        <table class="w-full table-fixed text-sm">
-
-            <thead class="bg-[#121212] text-gray-300">
-
-                <tr>
-
-                    <th class="py-4 px-3 text-center">ID</th>
-                    <th class="py-4 px-3 text-center">Cliente</th>
-                    <th class="py-4 px-3 text-center">Barbero</th>
-                    <th class="py-4 px-3 text-center">Productos</th>
-                    <th class="py-4 px-3 text-center">Fecha</th>
-                    <th class="py-4 px-3 text-center">Total</th>
-                    <th class="py-4 px-3 text-center">Acciones</th>
-
+            <!-- HEADER -->
+            <ng-template #header>
+                <tr class="table-header">
+                    <th class="text-center">ID</th>
+                    <th class="text-center">Cliente</th>
+                    <th class="text-center">Comprobante</th>
+                    <th class="text-center">Productos</th>
+                    <th class="text-center">Fecha</th>
+                    <th class="text-center">Total</th>
+                    <th class="text-center">Acciones</th>
                 </tr>
+            </ng-template>
 
-            </thead>
+            <!-- BODY -->
+            <ng-template #body let-venta pTemplate="body">
 
-            <tbody>
+                <tr class="table-row transition-all duration-200">
 
-                @for (venta of ventas; track venta.ventaId) {
+                    <td class="px-4 py-3 whitespace-nowrap text-center">
 
-                <tr class="border-b border-gray-800 hover:bg-[#1f1f1f] transition-all">
+                        <span
+                            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200"
+                        >
+                            #{{ venta.ventaId }}
+                        </span>
 
-                    <!-- ID -->
-                    <td class="py-4 px-3 font-semibold text-brand-gold">
-                        #{{ venta.ventaId }}
                     </td>
 
-                    <!-- CLIENTE -->
-                    <td class="py-4 px-3 text-center align-middle">
+                    <td class="px-4 py-3 whitespace-nowrap text-center">
+
                         <div class="flex flex-col">
-                            <span class="font-semibold">
+                            <span class="font-medium text-gray-800">
                                 {{ venta.clienteNombre }}
                             </span>
                         </div>
+
                     </td>
 
-                    <!-- BARBERO -->
-                    <td class="py-4 px-3 text-center align-middle">
-                        {{ venta.barberoNombre }}
+                    <!-- COMPROBANTE -->
+                    <td class="px-4 py-3 whitespace-nowrap text-center">
+
+                        <!-- BOLETA -->
+                        @if(venta.tipoComprobante === 'BOLETA'){
+
+                            <span
+                                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide
+                                bg-purple-100 text-purple-700 border border-purple-200"
+                            >
+                                {{ venta.tipoComprobante }}
+                            </span>
+
+                        }
+
+                        <!-- FACTURA -->
+                        @if(venta.tipoComprobante === 'FACTURA'){
+
+                            <span
+                                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide
+                                bg-blue-100 text-blue-700 border border-blue-200"
+                            >
+                                {{ venta.tipoComprobante }}
+                            </span>
+
+                        }
+
                     </td>
 
                     <!-- PRODUCTOS -->
-                    <td class="py-4 px-3 text-center align-middle">
+                    <td class="px-4 py-3 text-center">
 
-                        <div class="flex flex-wrap justify-center gap-2">
+                        <div class="flex flex-col items-center gap-1">
 
                             @for (detalle of venta.detalles; track detalle.detalleVentaId) {
 
-                            <div
-                                class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#111827] border border-[#1f2937]">
+                                <div class="text-sm text-gray-700">
 
-                                <span class="text-sm font-medium text-gray-200">
+                                    <span class="font-medium">
+                                        {{ detalle.productoNombre || ('#' + detalle.productoId) }}
+                                    </span>
 
-                                    {{
-                                    detalle.productoNombre
-                                    || ('Producto #' + detalle.productoId)
-                                    }}
+                                    <span class="font-semibold text-primary ml-1">
+                                        x{{ detalle.cantidad }}
+                                    </span>
 
-                                </span>
-
-                                <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-brand-gold text-black">
-
-                                    x{{ detalle.cantidad }}
-
-                                </span>
-
-                            </div>
+                                </div>
 
                             }
 
@@ -79,35 +104,49 @@
                     </td>
 
                     <!-- FECHA -->
-                    <td class="py-4 px-3 text-center align-middle">
+                    <td class="px-4 py-3 whitespace-nowrap text-center">
 
-                        {{ venta.fecha | date:'short' }}
+                        <div class="flex flex-col items-center">
+
+                            <span class="font-medium text-gray-700">
+                                {{ venta.fecha | date:'dd/MM/yyyy' }}
+                            </span>
+
+                            <span class="text-xs text-gray-400">
+                                {{ venta.fecha | date:'HH:mm' }}
+                            </span>
+
+                        </div>
 
                     </td>
 
                     <!-- TOTAL -->
-                    <td class="py-4 px-3 text-center align-middle">
+                    <td class="px-4 py-3 whitespace-nowrap text-center">
 
-                        <span class="font-bold text-emerald-400 text-base">
+                        <span class="text-base font-semibold text-green-600">
 
-                            S/ {{ calcularTotal(venta) }}
+                            S/ {{ calcularTotal(venta) | number:'1.2-2' }}
 
                         </span>
 
                     </td>
 
                     <!-- ACCIONES -->
-                    <td class="py-4 px-3 text-center align-middle">
+                    <td class="px-4 py-3 whitespace-nowrap text-center">
 
-                        <div class="flex justify-center items-center gap-2">
+                        <div class="table-actions flex justify-center gap-2">
 
-                            <button pButton icon="pi pi-pencil" class="p-button-sm p-button-warning"
-                                (click)="editar.emit(venta)">
-                            </button>
+                            <p-button
+                                icon="pi pi-pencil"
+                                class="boton-editar-tabla"
+                                (click)="editar.emit(venta)"
+                            ></p-button>
 
-                            <button pButton icon="pi pi-trash" class="p-button-sm p-button-danger"
-                                (click)="eliminar.emit(venta)">
-                            </button>
+                            <p-button
+                                icon="pi pi-trash"
+                                class="boton-eliminar-tabla"
+                                (click)="eliminar.emit(venta)"
+                            ></p-button>
 
                         </div>
 
@@ -115,12 +154,32 @@
 
                 </tr>
 
-                }
+            </ng-template>
 
-            </tbody>
+            <!-- EMPTY -->
+            <ng-template #empty>
 
-        </table>
+                <tr>
+
+                    <td colspan="7" class="py-20 text-center">
+
+                        <div class="flex flex-col items-center text-gray-400">
+
+                            <i class="pi pi-inbox text-4xl mb-3 opacity-30"></i>
+
+                            <p class="text-sm">
+                                Sin ventas registradas
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            </ng-template>
+
+        </p-table>
 
     </div>
-
 </div>

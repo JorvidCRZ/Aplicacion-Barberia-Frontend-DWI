@@ -1,5 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BarberoService } from '@/app/core/services/gestion/barbero.service';
+import { ResumenGeneralBarbero } from '@/app/core/models/gestion/barbero/barbero-resumen.model';
+
+interface ResumenCard {
+  valor: string | number;
+  titulo: string;
+  delta: string | null;
+  positivo: boolean;
+  icono: string;
+}
 
 @Component({
   selector: 'app-resumen-general-barbero',
@@ -8,18 +18,73 @@ import { CommonModule } from '@angular/common';
   templateUrl: './resumen-general-barbero.html',
   styleUrl: './resumen-general-barbero.css',
 })
-export class ResumenGeneralBarbero implements OnInit {
-  resumen: any[] = [];
+export class ResumenGeneralBarberoComponent implements OnInit {
+
+  private barberoService = inject(BarberoService);
+
+  resumen: ResumenCard[] = [];
+  cargando = true;
+  error = false;
 
   ngOnInit(): void {
-    // Valores ejemplo — sustituir por llamada a API cuando exista servicio
-    this.resumen = [
-      { valor: 6, titulo: 'Total barberos', delta: null, positivo: true, icono: 'pi-users' },
-      { valor: 3, titulo: 'Disponibles', delta: null, positivo: true, icono: 'pi-check-circle' },
-      { valor: 2, titulo: 'Ocupados', delta: null, positivo: false, icono: 'pi-clock' },
-      { valor: 'S/1,840', titulo: 'Ventas hoy', delta: '+12% vs ayer', positivo: true, icono: 'pi-dollar' },
-      { valor: 'Diego M.', titulo: 'Mejor del mes', delta: 'S/5,200 generados', positivo: true, icono: 'pi-star' }
-    ];
+    this.cargarResumen();
   }
 
+  private cargarResumen(): void {
+    this.cargando = true;
+    this.error = false;
+
+    this.barberoService.obtenerResumenGeneral().subscribe({
+      next: (response) => {
+        this.resumen = this.mapearResumen(response.data);
+        this.cargando = false;
+      },
+      error: () => {
+        this.error = true;
+        this.cargando = false;
+      }
+    });
+  }
+
+  private mapearResumen(data: ResumenGeneralBarbero): ResumenCard[] {
+    const esPositivo = data.porcentajeVsAyer.startsWith('+');
+
+    return [
+      {
+        valor: data.totalBarberos,
+        titulo: 'Total barberos',
+        delta: null,
+        positivo: true,
+        icono: 'pi-users'
+      },
+      {
+        valor: data.disponibles,
+        titulo: 'Disponibles',
+        delta: null,
+        positivo: true,
+        icono: 'pi-check-circle'
+      },
+      {
+        valor: data.ocupados,
+        titulo: 'Ocupados',
+        delta: null,
+        positivo: false,
+        icono: 'pi-clock'
+      },
+      {
+        valor: `S/${data.ventasHoy.toLocaleString('es-PE', { minimumFractionDigits: 0 })}`,
+        titulo: 'Ventas hoy',
+        delta: data.porcentajeVsAyer,
+        positivo: esPositivo,
+        icono: 'pi-dollar'
+      },
+      {
+        valor: data.mejorDelMes,
+        titulo: 'Mejor del mes',
+        delta: `S/${data.totalGeneradoMejor.toLocaleString('es-PE')} generados`,
+        positivo: true,
+        icono: 'pi-star'
+      }
+    ];
+  }
 }

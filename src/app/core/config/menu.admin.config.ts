@@ -7,23 +7,70 @@ export const ADMIN_MENU = [
   },
 
   {
-    label: "Operaciones",
-    icon: "pi pi-briefcase",
-    items: [
-      {
-        label: "Reservas",
-        icon: "pi pi-calendar",
-        routerLink: ["operaciones/reservas"],
-        permission: "RESERVA_READ_ALL"
-      },
-      {
-        label: "Ventas",
-        icon: "pi pi-shopping-cart",
-        routerLink: ["operaciones/ventas"],
-        permission: "VENTA_READ_ALL"
-      }
-    ]
-  },
+  label: "Operaciones",
+  icon: "pi pi-briefcase",
+  items: [
+
+    {
+      label: "Reservas",
+      icon: "pi pi-calendar",
+      permission: "RESERVA_READ_ALL",
+      items: [
+
+        {
+          label: "Todas las Reservas",
+          icon: "pi pi-globe",
+          routerLink: ["operaciones/reservas"],
+          permission: "RESERVA_READ_ALL"
+        },
+
+        {
+          label: "Calendario",
+          icon: "pi pi-calendar",
+          routerLink: ["operaciones/reservas/calendario"],
+          permission: "RESERVA_READ_ALL"
+        },
+
+        {
+          label: "Reservas de Hoy",
+          icon: "pi pi-calendar-check",
+          routerLink: ["operaciones/reservas/hoy"],
+          permission: "RESERVA_READ_ALL"
+        },
+
+        {
+          label: "Pendientes",
+          icon: "pi pi-clock",
+          routerLink: ["operaciones/reservas/pendientes"],
+          permission: "RESERVA_READ_ALL"
+        },
+
+        {
+          label: "Historial",
+          icon: "pi pi-history",
+          routerLink: ["operaciones/reservas/historial"],
+          permission: "RESERVA_READ_ALL"
+        },
+
+        {
+          label: "Nueva Reserva",
+          icon: "pi pi-plus",
+          routerLink: ["operaciones/reservas/nueva"],
+          permission: "RESERVA_CREATE"
+        }
+
+      ]
+    },
+
+    {
+      label: "Ventas",
+      icon: "pi pi-shopping-cart",
+      routerLink: ["operaciones/ventas"],
+      permission: "VENTA_READ_ALL"
+    }
+
+  ]
+},
 
   {
     label: "Gestión",

@@ -1,31 +1,35 @@
 <div class="table-base p-4 md:p-6 lg:p-8">
 
-	<div class="summary-grid-3">
-		<div class="summary-card" *ngFor="let item of resumen | slice:0:3">
-			<div class="summary-top">
-				<i class="pi" [ngClass]="item.icono"></i>
-				<span class="summary-value">{{ item.valor }}</span>
-			</div>
-			<div class="summary-title">{{ item.titulo }}</div>
-			<div *ngIf="item.delta" class="summary-delta" [class.negative]="!item.positivo">
-				<span class="summary-delta-icon">{{ item.positivo ? '↗' : '↘' }}</span>
-				<span>{{ item.delta }}</span>
-			</div>
-		</div>
-	</div>
+  <!-- Estado: cargando -->
+  <div *ngIf="cargando" class="summary-grid-5">
+    <div class="summary-card skeleton" *ngFor="let i of [1,2,3,4,5]">
+      <div class="summary-top">
+        <div class="skeleton-icon"></div>
+        <div class="skeleton-value"></div>
+      </div>
+      <div class="skeleton-title"></div>
+    </div>
+  </div>
 
-	<div class="mt-4 summary-grid-2">
-		<div class="summary-card" *ngFor="let item of resumen | slice:3:5">
-			<div class="summary-top">
-				<i class="pi" [ngClass]="item.icono"></i>
-				<span class="summary-value">{{ item.valor }}</span>
-			</div>
-			<div class="summary-title">{{ item.titulo }}</div>
-			<div *ngIf="item.delta" class="summary-delta" [class.negative]="!item.positivo">
-				<span class="summary-delta-icon">{{ item.positivo ? '↗' : '↘' }}</span>
-				<span>{{ item.delta }}</span>
-			</div>
-		</div>
-	</div>
+  <!-- Estado: error -->
+  <div *ngIf="!cargando && error" class="summary-error">
+    <i class="pi pi-exclamation-triangle"></i>
+    <span>No se pudo cargar el resumen. Intenta de nuevo.</span>
+  </div>
+
+  <!-- Estado: datos -->
+  <div *ngIf="!cargando && !error" class="summary-grid-5">
+    <div class="summary-card" *ngFor="let item of resumen">
+      <div class="summary-top">
+        <i class="pi" [ngClass]="item.icono"></i>
+        <span class="summary-value">{{ item.valor }}</span>
+      </div>
+      <div class="summary-title">{{ item.titulo }}</div>
+      <div *ngIf="item.delta" class="summary-delta" [class.negative]="!item.positivo">
+        <span class="summary-delta-icon">{{ item.positivo ? '↗' : '↘' }}</span>
+        <span>{{ item.delta }}</span>
+      </div>
+    </div>
+  </div>
 
 </div>

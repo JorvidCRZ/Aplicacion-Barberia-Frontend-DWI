@@ -1,0 +1,44 @@
+
+
+/* Básicos para el formulario */
+.form-section { background: var(--color-ui-card); }
+
+label span { color: var(--color-text-primary); }
+
+.rounded-3xl { border-radius: 1rem; }
+
+/* Hide native number spinners */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type=number] { -moz-appearance: textfield; }
+
+.input-with-icon { position: relative; }
+.input-with-icon .icon-btn {
+	position: absolute;
+	right: 8px;
+	top: 50%;
+	transform: translateY(-50%);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	border-radius: 8px;
+	background: rgba(255,255,255,0.02);
+	border: 1px solid rgba(255,255,255,0.03);
+	color: var(--color-text-primary);
+}
+.input-with-icon .icon-btn:hover { background: rgba(245,200,76,0.06); color: var(--color-brand-gold); }
+
+.spinner-controls { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); display:flex; flex-direction:column; gap:4px; }
+.spinner-controls .icon-btn { width: 28px; height: 28px; border-radius:6px; font-size:0.7rem; }
+.spinner-controls .spin-up { margin-bottom:2px; }
+.spinner-controls .spin-down {}
+
+.calendar-icon { right: 8px; }
+
+/* Small adjustments for responsive */
+@media (max-width: 768px) {
+	.input-with-icon .icon-btn { width: 30px; height: 30px; }
+}
+

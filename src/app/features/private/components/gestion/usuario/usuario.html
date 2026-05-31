@@ -1,0 +1,198 @@
+<div class="mt-5">
+  <app-header-usuario
+    (search)="onSearch($event)"
+    (create)="abrirModalAdmin()">
+  </app-header-usuario>
+</div>
+
+<div class="mt-5">
+  <app-filtrar-users
+    (apply)="onApplyFilters($event)"
+    (clear)="onClearFilters()">
+  </app-filtrar-users>
+</div>
+
+<div *ngIf="errorCarga" class="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+  {{ errorCarga }}
+</div>
+
+<div class="mt-5">
+  <app-table-users
+    [usuarios]="usuarios"
+    [totalElements]="totalElements"
+    [currentPage]="currentPage"
+    [totalPages]="totalPages"
+    [pageSize]="10"
+    (prev)="onPrevPage()"
+    (next)="onNextPage()"
+    (createAdmin)="abrirModalAdmin()">
+  </app-table-users>
+</div>
+
+<p-dialog
+  [(visible)]="showCrearAdminModal"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="true"
+  [closable]="false"
+  [style]="{ width: 'min(95vw, 860px)' }"
+  contentStyleClass="p-0"
+  (onHide)="cerrarModalAdmin()">
+  <div class="overflow-hidden rounded-3xl border border-brand-gold-soft bg-[#070707] text-white shadow-2xl shadow-black/60">
+    <div class="relative overflow-hidden border-b border-brand-gold-soft/30 bg-linear-to-br from-brand-black via-[#111111] to-[#050505] px-6 py-6 sm:px-8">
+      <div class="absolute inset-0 opacity-50 bg-[radial-gradient(circle_at_top_right,rgba(212,175,55,0.18),transparent_32%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.06),transparent_28%)]"></div>
+      <div class="relative flex items-start justify-between gap-4">
+        <div>
+          <p class="text-[11px] uppercase tracking-[0.45em] text-brand-gold/70">Nuevo acceso</p>
+          <h2 class="mt-2 text-2xl font-semibold text-brand-gold sm:text-3xl">Crear administrador</h2>
+          <p class="mt-2 max-w-2xl text-sm leading-relaxed text-gray-400">
+            Registra un nuevo administrador con el rol por defecto asignado automáticamente.
+          </p>
+        </div>
+
+        <button
+          pButton
+          type="button"
+          icon="pi pi-times"
+          class="p-button-text text-brand-gold! hover:bg-white/5!"
+          (click)="cerrarModalAdmin()">
+        </button>
+      </div>
+    </div>
+
+    <form [formGroup]="adminForm" (ngSubmit)="onSubmitAdmin()" class="p-6 sm:p-8">
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div class="space-y-2">
+          <label for="adminNombre" class="text-sm font-medium text-gray-300">Nombre</label>
+          <input
+            pInputText
+            id="adminNombre"
+            type="text"
+            formControlName="nombre"
+            placeholder="Juan"
+            class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-gray-500 focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/30"
+            [class.border-red-500]="isAdminInvalid('nombre')">
+          @if (isAdminInvalid('nombre')) {
+            <p-message severity="error" variant="simple" size="small">El nombre es obligatorio.</p-message>
+          }
+        </div>
+
+        <div class="space-y-2">
+          <label for="adminApellido" class="text-sm font-medium text-gray-300">Apellido</label>
+          <input
+            pInputText
+            id="adminApellido"
+            type="text"
+            formControlName="apellido"
+            placeholder="Pérez"
+            class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-gray-500 focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/30"
+            [class.border-red-500]="isAdminInvalid('apellido')">
+          @if (isAdminInvalid('apellido')) {
+            <p-message severity="error" variant="simple" size="small">El apellido es obligatorio.</p-message>
+          }
+        </div>
+
+        <div class="space-y-2">
+          <label for="adminTelefono" class="text-sm font-medium text-gray-300">Teléfono</label>
+          <input
+            pInputText
+            id="adminTelefono"
+            type="tel"
+            formControlName="telefono"
+            placeholder="+51 999 888 777"
+            class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-gray-500 focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/30">
+        </div>
+
+        <div class="space-y-2">
+          <label for="adminEmail" class="text-sm font-medium text-gray-300">Correo electrónico</label>
+          <input
+            pInputText
+            id="adminEmail"
+            type="email"
+            formControlName="email"
+            placeholder="admin@correo.com"
+            class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-gray-500 focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/30"
+            [class.border-red-500]="isAdminInvalid('email')">
+          @if (isAdminInvalid('email')) {
+            <p-message severity="error" variant="simple" size="small">Ingresa un correo válido.</p-message>
+          }
+        </div>
+
+        <div class="space-y-2">
+          <label for="adminUsername" class="text-sm font-medium text-gray-300">Username</label>
+          <input
+            pInputText
+            id="adminUsername"
+            type="text"
+            formControlName="username"
+            placeholder="admin.barberia"
+            class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-gray-500 focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/30"
+            [class.border-red-500]="isAdminInvalid('username')">
+          @if (isAdminInvalid('username')) {
+            <p-message severity="error" variant="simple" size="small">El username es obligatorio.</p-message>
+          }
+        </div>
+
+        <div class="space-y-2">
+          <label for="adminPassword" class="text-sm font-medium text-gray-300">Contraseña</label>
+          <p-password
+            inputId="adminPassword"
+            formControlName="password"
+            [feedback]="false"
+            [toggleMask]="true"
+            styleClass="w-full"
+            [inputStyle]="{ width: '100%' }"
+            [ngClass]="{ 'p-invalid': isAdminInvalid('password') }"
+            placeholder="••••••••">
+          </p-password>
+          @if (isAdminInvalid('password')) {
+            <p-message severity="error" variant="simple" size="small">La contraseña debe tener al menos 8 caracteres.</p-message>
+          }
+        </div>
+
+        <div class="space-y-2 sm:col-span-2">
+          <label for="adminPasswordConfirm" class="text-sm font-medium text-gray-300">Confirmar contraseña</label>
+          <p-password
+            inputId="adminPasswordConfirm"
+            formControlName="passwordConfirm"
+            [feedback]="false"
+            [toggleMask]="true"
+            styleClass="w-full"
+            [inputStyle]="{ width: '100%' }"
+            [ngClass]="{ 'p-invalid': isAdminInvalid('passwordConfirm') }"
+            placeholder="••••••••">
+          </p-password>
+          @if (isAdminInvalid('passwordConfirm')) {
+            <p-message severity="error" variant="simple" size="small">Confirma la contraseña.</p-message>
+          }
+        </div>
+      </div>
+
+      @if (adminError) {
+        <div class="mt-4 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+          {{ adminError }}
+        </div>
+      }
+
+      <div class="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+        <button
+          pButton
+          type="button"
+          label="Cancelar"
+          class="p-button-secondary boton-secundario w-full sm:w-auto"
+          (click)="cerrarModalAdmin()">
+        </button>
+
+        <button
+          pButton
+          type="submit"
+          [loading]="adminLoading"
+          [label]="adminLoading ? 'Registrando...' : 'Crear administrador'"
+          class="boton-primary w-full sm:w-auto">
+        </button>
+      </div>
+    </form>
+  </div>
+</p-dialog>
+

@@ -1,4 +1,97 @@
 /* PANEL */
+:host {
+  display: block;
+}
+
+.sidebar-shell {
+  position: relative;
+}
+
+.sidebar-menu {
+  overscroll-behavior: contain;
+}
+
+.sidebar-compact-brand {
+  min-height: 6rem;
+}
+
+.brand-mark-compact {
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-bottom: 0;
+}
+
+.sidebar-initial {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  display: block;
+  margin-top: -0.35rem;
+  text-shadow: 0 0 0.5rem rgba(212, 175, 55, 0.22);
+}
+
+:host(.sidebar-collapsed) .sidebar-shell {
+  align-items: center;
+}
+
+:host(.sidebar-collapsed) .sidebar-brand {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+:host(.sidebar-collapsed) ::ng-deep .custom-panelmenu .p-panelmenu-header-link,
+:host(.sidebar-collapsed) ::ng-deep .custom-panelmenu .p-menuitem-link,
+:host(.sidebar-collapsed) ::ng-deep .custom-panelmenu .p-panelmenu-item-content {
+  width: 3.6rem;
+  min-height: 3.6rem;
+  justify-content: center;
+  padding: 0.7rem !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  gap: 0 !important;
+}
+
+:host(.sidebar-collapsed) ::ng-deep .custom-panelmenu .p-menuitem-text,
+:host(.sidebar-collapsed) ::ng-deep .custom-panelmenu .p-panelmenu-header-label,
+:host(.sidebar-collapsed) ::ng-deep .custom-panelmenu .p-menuitem-label,
+:host(.sidebar-collapsed) ::ng-deep .custom-panelmenu .p-panelmenu-submenu-icon,
+:host(.sidebar-collapsed) ::ng-deep .custom-panelmenu .p-panelmenu-header-label + .p-panelmenu-submenu-icon {
+  display: none !important;
+}
+
+:host(.sidebar-collapsed) ::ng-deep .custom-panelmenu .p-panelmenu-item-icon,
+:host(.sidebar-collapsed) ::ng-deep .custom-panelmenu .p-panelmenu-header-icon,
+:host(.sidebar-collapsed) ::ng-deep .custom-panelmenu .p-icon {
+  margin-right: 0 !important;
+}
+
+:host(.sidebar-collapsed) ::ng-deep .custom-panelmenu .p-panelmenu-panel {
+  margin-bottom: .6rem;
+  padding: 0;
+  background: transparent;
+}
+
+:host(.sidebar-collapsed) ::ng-deep .custom-panelmenu .p-panelmenu-header-link:hover,
+:host(.sidebar-collapsed) ::ng-deep .custom-panelmenu .p-panelmenu-item-content:hover {
+  transform: translateY(-1px);
+}
+
+:host(.sidebar-collapsed) .sidebar-footer .boton-logout span span {
+  display: none;
+}
+
+:host(.sidebar-collapsed) .sidebar-footer .boton-logout {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  justify-content: center;
+}
+
+:host(.sidebar-collapsed) .sidebar-footer {
+  padding: 0.75rem 0.5rem;
+}
+
 :host ::ng-deep .custom-panelmenu .p-panelmenu-panel {
   margin-bottom: .8rem;
   background: var(--color-ui-black);
@@ -102,6 +195,11 @@
   background: var(--color-brand-gold);
   border: none;
   padding: .45rem 0 .15rem;
+}
+
+:host(.sidebar-collapsed) ::ng-deep .custom-panelmenu .p-panelmenu-panel,
+:host(.sidebar-collapsed) ::ng-deep .custom-panelmenu :ng-star-inserted {
+  background: transparent !important;
 }
 
 :host ::ng-deep .custom-panelmenu .p-panelmenu-expanded {

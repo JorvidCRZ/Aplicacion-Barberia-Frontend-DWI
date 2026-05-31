@@ -13,6 +13,7 @@ export class HeaderClient {
   @Input() icon: string = 'pi-users';
   @Input() description: string = 'Gestión y administración de clientes';
   @Input() buttonLabel: string = 'Nuevo';
+  @Input() searchValue: string = '';
   @Output() create = new EventEmitter<void>();
   @Output() search = new EventEmitter<string>();
 

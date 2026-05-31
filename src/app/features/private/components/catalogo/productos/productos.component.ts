@@ -91,7 +91,7 @@ export class ProductosComponent implements OnInit {
   }
 
   abrirVer(id: number) {
-    this.router.navigate(['/dashboard/catalogo/productos/detalle', id]);
+    this.router.navigate(['/dashboard/admin/catalogo/productos/detalle', id]);
   }
 
   abrirCrear() {

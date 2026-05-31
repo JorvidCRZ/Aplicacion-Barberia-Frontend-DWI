@@ -15,6 +15,7 @@ import { Categoria } from '@/app/core/models/catalogos/categorias.model';
 
 @Component({
   selector: 'app-categoria-table',
+  standalone: true,
   imports: [
     ButtonModule, CommonModule, TableModule, ConfirmPopoverComponent, ToggleSwitchModule, FormsModule,
     CategoriaTreeComponent, ImageModule, IconFieldModule, InputIconModule, StatusBadgeComponent,

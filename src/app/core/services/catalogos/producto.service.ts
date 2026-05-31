@@ -12,6 +12,14 @@ export class ProductoService {
     private http = inject(HttpClient);
     private apiUrl = `${environment.apiUrl}/productos`;
 
+    obtenerProductosPublico(filter?: ProductoFilter) {
+        return this.http.get<ApiResponse<Page<Producto>>>(`${this.apiUrl}/publicados`, { params: buildHttpParamsComponent(filter) });
+    }
+
+    obtenerProductosPublicoId(id: number) {
+        return this.http.get<ApiResponse<Producto>>(`${this.apiUrl}/publicados/${id}`);
+    }
+
     obtenerProductoId(id:number){
         return this.http.get<ApiResponse<Producto>>(`${this.apiUrl}/${id}`);
     }

@@ -1,0 +1,83 @@
+<div class="max-w-4xl mx-auto px-6 pb-12">
+
+  <!-- HEADER -->
+  <header class="flex items-center justify-between pt-6 pb-2">
+    <div>
+      <h1 class="text-2xl font-bold">Hola, {{ username }} 👋</h1>
+      <p class="text-sm text-gray-400">Bienvenido nuevamente a Fadex Barber</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <button class="boton-base border border-[--color-ui-card] text-gray-400 w-10 h-10 p-0 flex items-center justify-center hover:border-[--color-gold] hover:text-[--color-gold]">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- LOADING -->
+  <div *ngIf="loading" class="flex justify-center py-16">
+    <div class="w-9 h-9 rounded-full border-2 border-[--color-ui-card] border-t-[--color-gold] animate-spin"></div>
+  </div>
+
+  <!-- ERROR -->
+  <div *ngIf="error && !loading"
+    class="mt-8 p-5 rounded-xl border border-red-500/30 bg-red-500/8 text-red-400 text-sm">
+    ⚠️ {{ error }}
+  </div>
+
+  <!-- CONTENIDO -->
+  <ng-container *ngIf="!loading && !error">
+
+    <!-- Próxima cita -->
+    <app-proxima-cita
+      [reserva]="proximaCita"
+      (verDetalle)="onVerDetalle($event)"
+      (reprogramar)="onReprogramar($event)"
+    />
+
+    <!-- KPIs -->
+    <div *ngIf="kpis; else kpiSkeleton" class="grid grid-cols-2 gap-3 mt-5">
+
+      <div class="border border-[--color-ui-card] rounded-xl p-4 bg-[--color-ui-card]">
+        <span class="text-lg">✂️</span>
+        <p class="text-[10px] font-bold tracking-widest text-gray-500 mt-1">CORTES</p>
+        <p class="text-2xl font-bold mt-1">{{ kpis.totalCortes }}</p>
+      </div>
+
+      <div class="border border-[--color-ui-card] rounded-xl p-4 bg-[--color-ui-card]">
+        <span class="text-sm font-extrabold text-[--color-gold]">S/</span>
+        <p class="text-[10px] font-bold tracking-widest text-gray-500 mt-1">TOTAL</p>
+        <p class="text-2xl font-bold mt-1">{{ kpis.totalGastado | number:'1.0-0' }}</p>
+      </div>
+
+      <div class="border border-[--color-ui-card] rounded-xl p-4 bg-[--color-ui-card]">
+        <span class="text-lg">🕐</span>
+        <p class="text-[10px] font-bold tracking-widest text-gray-500 mt-1">ÚLTIMA VISITA</p>
+        <p class="text-base font-bold mt-1">{{ formatUltimaVisita(kpis.ultimaVisita) }}</p>
+      </div>
+
+      <div class="border border-[--color-ui-card] rounded-xl p-4 bg-[--color-ui-card]">
+        <span class="text-lg">📋</span>
+        <p class="text-[10px] font-bold tracking-widest text-gray-500 mt-1">RESERVAS</p>
+        <p class="text-2xl font-bold mt-1">{{ kpis.totalReservas }}</p>
+      </div>
+
+    </div>
+
+    <ng-template #kpiSkeleton>
+      <div class="grid grid-cols-2 gap-3 mt-5">
+        <div class="kpi-card--skeleton rounded-xl h-24" *ngFor="let i of [1,2,3,4]"></div>
+      </div>
+    </ng-template>
+
+    <!-- Recomendados -->
+    <app-servicios-recomendados
+      [servicios]="servicios"
+      (reservar)="onReservar($event)"
+    />
+
+  </ng-container>
+</div>

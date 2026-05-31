@@ -1,5 +1,5 @@
 <div class="mt-5">
-	<app-header-client [title]="'Clientes'" [icon]="icono" [description]="'Gestión y administración de clientes'" [buttonLabel]="'Nuevo'" (create)="abrirCrear()" (search)="onSearch($event)"></app-header-client>
+	<app-header-client [title]="'Clientes'" [icon]="icono" [description]="'Gestión y administración de clientes'" [buttonLabel]="'Nuevo'" [searchValue]="searchTerm" (create)="abrirCrear()" (search)="onSearch($event)"></app-header-client>
 </div>
 
 <div class="mt-5">
@@ -24,7 +24,11 @@
 		[totalElements]="totalElements"
 		[currentPage]="currentPage"
 		[totalPages]="totalPages"
+		[activeFilter]="activeFilter"
+		[isSearchMode]="isSearchActive"
 		(prev)="onPrevPage()"
-		(next)="onNextPage()">
+		(next)="onNextPage()"
+		(delete)="onDisableCliente($event)"
+		(reactivate)="onReactivateCliente($event)">
 	</app-table-client>
 </div>

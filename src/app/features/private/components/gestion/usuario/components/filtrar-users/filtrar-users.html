@@ -1,0 +1,51 @@
+<!-- FILTROS -->
+<div class="form-base mb-6">
+
+	<div class="flex flex-col gap-4 sm:gap-6 md:flex-row md:items-start">
+
+		<!-- IZQUIERDA: TÍTULO + DESCRIPCIÓN -->
+		<div class="md:flex-1">
+			<h3 class="text-xs sm:text-sm font-semibold tracking-[0.15em] text-brand-gold uppercase">Filtros</h3>
+			<p class="mt-1 text-xs sm:text-sm text-text-secondary">Organiza y administra el listado de usuarios.</p>
+		</div>
+
+		<!-- DERECHA: CONTROLES -->
+		<div class="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4 md:ml-auto md:items-end">
+
+			<div class="filter-group flex-1 sm:flex-none">
+				<label class="label-form">Rol</label>
+				<select #rolSelect class="inputs-text w-full sm:w-auto">
+					<option value="">Todos</option>
+					<option value="ADMIN">Admin</option>
+					<option value="BARBERO">Barbero</option>
+					<option value="CLIENTE">Cliente</option>
+				</select>
+			</div>
+
+
+			<div class="filter-group flex-1 sm:flex-none">
+				<label class="label-form">QR</label>
+				<select #qrSelect class="inputs-text w-full sm:w-auto">
+					<option value="">Todos</option>
+					<option value="conQr">Con QR</option>
+					<option value="sinQr">Sin QR</option>
+				</select>
+			</div>
+
+			<div class="filter-group flex-1 sm:flex-none">
+				<label class="label-form">Cantidad de roles</label>
+				<select #cantidadRolesSelect class="inputs-text w-full sm:w-auto">
+					<option value="">Todos</option>
+					<option value="unRol">Un rol</option>
+					<option value="multiplesRoles">Múltiples roles</option>
+				</select>
+			</div>
+
+			<div class="flex flex-col sm:flex-row w-full sm:w-auto gap-2 actions">
+				<button pButton type="button" class="p-button boton-secondary text-xs sm:text-sm" (click)="onApply(rolSelect.value, qrSelect.value, cantidadRolesSelect.value)">Aplicar</button>
+				<button pButton type="button" class="p-button boton-ghost text-xs sm:text-sm" (click)="onClear(rolSelect, qrSelect, cantidadRolesSelect)"><i class="pi pi-filter-slash"></i> <span class="hidden sm:inline">Limpiar</span></button>
+			</div>
+
+		</div>
+	</div>
+</div>

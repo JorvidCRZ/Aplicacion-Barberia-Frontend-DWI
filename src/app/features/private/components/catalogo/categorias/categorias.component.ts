@@ -14,6 +14,7 @@ import { Categoria, CategoriaFilter } from '@/app/core/models/catalogos/categori
 
 @Component({
   selector: 'app-categorias',
+  standalone: true,
   imports: [
     CategoriaTableComponent, CategoriaFormComponent, DialogModule, ButtonModule,
     CommonModule, FormsModule, SearchBarComponent, DialogHeaderComponent

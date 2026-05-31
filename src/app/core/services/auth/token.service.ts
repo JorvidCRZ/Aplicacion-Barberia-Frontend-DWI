@@ -40,7 +40,7 @@ export class TokenService {
     return !!this.getAccessToken();
   }
 
-  private getDecodedToken(): any | null {
+  getDecodedToken(): any | null {
     try {
       const token = this.getAccessToken();
       if (!token || token.split('.').length !== 3) {
@@ -50,6 +50,16 @@ export class TokenService {
     } catch {
       return null;
     }
+  }
+
+  /**
+   * Devuelve el id del usuario/cliente contenido en el payload del JWT.
+   * Busca varias claves comunes: `clienteId`, `userId`, `id`, `sub`.
+   */
+  getUserId(): number | string | null {
+    const decoded = this.getDecodedToken();
+    if (!decoded) return null;
+    return decoded.clienteId ?? decoded.userId ?? decoded.id ?? decoded.sub ?? null;
   }
 
   getRoles(): string[] {
@@ -84,16 +94,14 @@ export class TokenService {
     }
 
     if (roles.includes('ROLE_cliente')) {
-      return '/dashboard/cliente';
+      return '/mi-cuenta';
     }
 
     return '/login';
   }
 
   getPrimaryRole(): string {
-
     const roles = this.getRoles();
-
     if (roles.includes('ROLE_admin')) {
       return 'admin';
     }

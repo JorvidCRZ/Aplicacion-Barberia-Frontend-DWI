@@ -1,0 +1,115 @@
+<div class="overflow-hidden rounded-3xl border border-brand-gold/15 bg-gradient-to-br from-[#11110f] via-[#0c0c0a] to-[#080807] shadow-[0_20px_50px_rgba(0,0,0,0.45)] backdrop-blur-sm">
+
+  <!-- Header -->
+  <div class="flex flex-col gap-4 border-b border-brand-gold/10 px-5 py-5 md:flex-row md:items-center md:justify-between md:px-7">
+    <div>
+      <p class="mb-2 text-[0.72rem] uppercase tracking-[0.28em] text-brand-gold/80">Información básica</p>
+      <h2 class="text-2xl font-bold text-gray-100">Datos del barbero</h2>
+      <p class="mt-1 text-sm text-gray-400">Perfil profesional y datos generales del colaborador.</p>
+    </div>
+
+    <div class="flex gap-2">
+      <button *ngIf="!editando" (click)="onEditar()"
+        class="group flex items-center justify-center gap-2 rounded-full border border-brand-gold/30 bg-brand-gold/10 px-5 py-2 text-sm font-semibold text-brand-gold transition-all duration-300 hover:border-brand-gold/50 hover:bg-brand-gold hover:text-black hover:shadow-[0_0_20px_rgba(212,175,55,0.35)]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform duration-300 group-hover:rotate-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5h2m-1-1v2m-6 9l8-8 4 4-8 8H6v-4z" />
+        </svg>
+        Editar
+      </button>
+
+      <button *ngIf="editando" (click)="onGuardar()" [disabled]="guardando"
+        class="flex items-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-5 py-2 text-sm font-semibold text-emerald-400 transition-all duration-300 hover:bg-emerald-500 hover:text-black disabled:opacity-50">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        {{ guardando ? 'Guardando...' : 'Guardar' }}
+      </button>
+
+      <button *ngIf="editando" (click)="onCancelar()" [disabled]="guardando"
+        class="flex items-center gap-2 rounded-full border border-red-500/40 bg-red-500/10 px-5 py-2 text-sm font-semibold text-red-400 transition-all duration-300 hover:bg-red-500 hover:text-black disabled:opacity-50">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+        Cancelar
+      </button>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="grid grid-cols-1 gap-0 md:grid-cols-2">
+
+    <!-- Nombre -->
+    <div class="group border-b border-r border-brand-gold/10 p-5 transition-all duration-300 hover:bg-brand-gold/[0.03]">
+      <p class="mb-2 text-xs uppercase tracking-[0.18em] text-brand-gold/70">Nombre</p>
+      <h3 *ngIf="!editando" class="text-base font-semibold text-gray-100">{{ nombre }}</h3>
+      <input *ngIf="editando" type="text" [(ngModel)]="form.nombre"
+        class="w-full rounded-lg border border-brand-gold/20 bg-[#1a1a16] px-3 py-2 text-sm text-gray-100 outline-none focus:border-brand-gold/50" />
+    </div>
+
+    <!-- Apellido -->
+    <div class="group border-b border-brand-gold/10 p-5 transition-all duration-300 hover:bg-brand-gold/[0.03]">
+      <p class="mb-2 text-xs uppercase tracking-[0.18em] text-brand-gold/70">Apellido</p>
+      <h3 *ngIf="!editando" class="text-base font-semibold text-gray-100">{{ apellido }}</h3>
+      <input *ngIf="editando" type="text" [(ngModel)]="form.apellido"
+        class="w-full rounded-lg border border-brand-gold/20 bg-[#1a1a16] px-3 py-2 text-sm text-gray-100 outline-none focus:border-brand-gold/50" />
+    </div>
+
+    <!-- Teléfono -->
+    <div class="group border-b border-r border-brand-gold/10 p-5 transition-all duration-300 hover:bg-brand-gold/[0.03]">
+      <p class="mb-2 text-xs uppercase tracking-[0.18em] text-brand-gold/70">Teléfono</p>
+      <h3 *ngIf="!editando" class="text-base font-semibold text-gray-100">{{ telefono }}</h3>
+      <input *ngIf="editando" type="text" [(ngModel)]="form.telefono"
+        class="w-full rounded-lg border border-brand-gold/20 bg-[#1a1a16] px-3 py-2 text-sm text-gray-100 outline-none focus:border-brand-gold/50" />
+    </div>
+
+    <!-- Email -->
+    <div class="group border-b border-brand-gold/10 p-5 transition-all duration-300 hover:bg-brand-gold/[0.03]">
+      <p class="mb-2 text-xs uppercase tracking-[0.18em] text-brand-gold/70">Email</p>
+      <h3 *ngIf="!editando" class="text-base font-semibold text-gray-100 break-all">{{ email }}</h3>
+      <input *ngIf="editando" type="email" [(ngModel)]="form.email"
+        class="w-full rounded-lg border border-brand-gold/20 bg-[#1a1a16] px-3 py-2 text-sm text-gray-100 outline-none focus:border-brand-gold/50" />
+    </div>
+
+    <!-- Experiencia -->
+    <div class="group border-b border-r border-brand-gold/10 p-5 transition-all duration-300 hover:bg-brand-gold/[0.03]">
+      <p class="mb-2 text-xs uppercase tracking-[0.18em] text-brand-gold/70">Experiencia</p>
+      <h3 *ngIf="!editando" class="text-base font-semibold text-gray-100">{{ experiencia }}</h3>
+      <input *ngIf="editando" type="number" [(ngModel)]="form.experiencia" min="0" max="60"
+        class="w-full rounded-lg border border-brand-gold/20 bg-[#1a1a16] px-3 py-2 text-sm text-gray-100 outline-none focus:border-brand-gold/50" />
+    </div>
+
+    <!-- Fecha ingreso — solo lectura siempre -->
+    <div class="group border-b border-brand-gold/10 p-5 transition-all duration-300 hover:bg-brand-gold/[0.03]">
+      <p class="mb-2 text-xs uppercase tracking-[0.18em] text-brand-gold/70">Fecha ingreso</p>
+      <h3 class="text-base font-semibold text-gray-100">{{ fechaIngreso }}</h3>
+    </div>
+
+    <!-- Sueldo -->
+    <div class="group border-b border-r border-brand-gold/10 p-5 transition-all duration-300 hover:bg-brand-gold/[0.03]">
+      <p class="mb-2 text-xs uppercase tracking-[0.18em] text-brand-gold/70">Sueldo base</p>
+      <h3 *ngIf="!editando" class="text-base font-semibold text-emerald-400">{{ sueldo }}</h3>
+      <input *ngIf="editando" type="number" [(ngModel)]="form.sueldo" min="0"
+        class="w-full rounded-lg border border-brand-gold/20 bg-[#1a1a16] px-3 py-2 text-sm text-gray-100 outline-none focus:border-brand-gold/50" />
+    </div>
+
+    <!-- Comisión -->
+    <div class="group border-b border-brand-gold/10 p-5 transition-all duration-300 hover:bg-brand-gold/[0.03]">
+      <p class="mb-2 text-xs uppercase tracking-[0.18em] text-brand-gold/70">Comisión</p>
+      <h3 *ngIf="!editando" class="text-base font-semibold text-brand-gold">{{ comision }}</h3>
+      <input *ngIf="editando" type="number" [(ngModel)]="form.comision" min="0" max="100"
+        class="w-full rounded-lg border border-brand-gold/20 bg-[#1a1a16] px-3 py-2 text-sm text-gray-100 outline-none focus:border-brand-gold/50" />
+    </div>
+
+    <!-- Descripción -->
+    <div class="md:col-span-2 p-6">
+      <p class="mb-3 text-xs uppercase tracking-[0.18em] text-brand-gold/70">Descripción</p>
+      <div *ngIf="!editando" class="rounded-2xl border border-brand-gold/10 bg-[#12120f] p-5 text-sm leading-relaxed text-gray-300">
+        {{ descripcion }}
+      </div>
+      <textarea *ngIf="editando" [(ngModel)]="form.descripcion" rows="4"
+        class="w-full rounded-2xl border border-brand-gold/20 bg-[#1a1a16] px-4 py-3 text-sm leading-relaxed text-gray-300 outline-none focus:border-brand-gold/50 resize-none">
+      </textarea>
+    </div>
+
+  </div>
+</div>

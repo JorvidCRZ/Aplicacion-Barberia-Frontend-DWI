@@ -1,0 +1,322 @@
+<div class="min-h-screen bg-black py-8 px-4">
+    <div class="max-w-6xl mx-auto">
+
+       
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-yellow-500 rounded-2xl mb-4">
+                <i class="pi pi-calendar-plus text-3xl text-black"></i>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">
+                Agendar una cita
+            </h1>
+            <p class="text-gray-400">
+                Selecciona el barbero, servicio y horario que prefieras
+            </p>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-6">
+
+            <div class="lg:col-span-2">
+                <div class="bg-neutral-900/50 backdrop-blur-sm rounded-2xl border border-neutral-800 p-6">
+
+                    <form [formGroup]="citaForm">
+
+                       
+                        <div class="mb-6">
+                            <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                                <i class="pi pi-user text-yellow-500"></i>
+                                Tus datos
+                            </h3>
+                            <div class="bg-black rounded-xl p-4 border border-neutral-800">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-12 h-12 bg-yellow-500/20 rounded-full flex items-center justify-center">
+                                        <i class="pi pi-user text-yellow-500 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-white font-medium">
+                                            {{ getNombreCompletoCliente() }}
+                                        </p>
+                                        <p class="text-gray-400 text-sm">
+                                            {{ clienteActual.email }}
+                                        </p>
+                                        @if (clienteActual.telefono) {
+                                        <p class="text-gray-500 text-xs">
+                                            📱 {{ clienteActual.telefono }}
+                                        </p>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                       
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-300 mb-2">
+                                Elige tu barbero <span class="text-red-500">*</span>
+                            </label>
+                            <p-select formControlName="barberoId" [options]="barberos$ | async"
+                                optionLabel="nombreCompleto" optionValue="barberoId" placeholder="Selecciona un barbero"
+                                class="w-full" [class.border-red-500]="barberoInvalido">
+                                <ng-template let-barbero pTemplate="item">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-10 h-10 bg-yellow-500/20 rounded-full flex items-center justify-center">
+                                            <i class="pi pi-user text-yellow-500"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-medium text-white">{{ barbero.nombreCompleto }}</div>
+                                            <div class="text-xs text-gray-500">{{ barbero.especialidad || 'Barbero' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </p-select>
+                            @if (barberoInvalido) {
+                            <p class="text-red-500 text-xs mt-1">Selecciona un barbero</p>
+                            }
+                        </div>
+
+                       
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-300 mb-2">
+                                Elige tu servicio <span class="text-red-500">*</span>
+                            </label>
+                            <p-select formControlName="servicioId" [options]="servicios$ | async" optionLabel="nombre"
+                                optionValue="servicioId" placeholder="Selecciona un servicio" class="w-full"
+                                [class.border-red-500]="servicioInvalido">
+                                <ng-template let-servicio pTemplate="item">
+                                    <div class="flex justify-between items-center w-full">
+                                        <div>
+                                            <div class="font-medium text-white">{{ servicio.nombre }}</div>
+                                            <div class="text-xs text-gray-500">{{ servicio.duracion || 30 }} min</div>
+                                        </div>
+                                        <div class="text-yellow-500 font-semibold">
+                                            {{ servicio.precio | currency:'COP' }}
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </p-select>
+                            @if (servicioInvalido) {
+                            <p class="text-red-500 text-xs mt-1">Selecciona un servicio</p>
+                            }
+                        </div>
+
+                      
+                        <div class="grid md:grid-cols-2 gap-4 mb-6">
+                           
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-300 mb-2">
+                                    Fecha <span class="text-red-500">*</span>
+                                </label>
+                                <input type="date" [formControlName]="'fecha'" [min]="getFechaMinimaInput()"
+                                    class="w-full px-4 py-2 bg-black border border-neutral-800 rounded-xl text-white focus:outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 transition-all"
+                                    [class.border-red-500]="fechaInvalida">
+                                @if (fechaInvalida) {
+                                <p class="text-red-500 text-xs mt-1">{{ fechaErrorMensaje }}</p>
+                                }
+                            </div>
+
+                           
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">
+                                    Hora <span class="text-red-500">*</span>
+                                </label>
+                                <div class="relative">
+                                    <p-select formControlName="hora" [options]="horarios" optionLabel="label"
+                                        optionValue="value" placeholder="Selecciona una hora" class="w-full"
+                                        [disabled]="checkingDisponibility">
+                                    </p-select>
+                                    @if (checkingDisponibility) {
+                                    <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                        <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-yellow-500">
+                                        </div>
+                                    </div>
+                                    }
+                                </div>
+                                @if (horaInvalida && citaForm.get('hora')?.errors?.['noDisponible']) {
+                                <p class="text-orange-500 text-xs mt-1 flex items-center gap-1">
+                                    <i class="pi pi-clock"></i>
+                                    Horario no disponible, selecciona otra hora
+                                </p>
+                                }
+                                @if (horaInvalida && !citaForm.get('hora')?.errors?.['noDisponible']) {
+                                <p class="text-red-500 text-xs mt-1">Selecciona una hora</p>
+                                }
+                            </div>
+                        </div>
+
+                      
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-300 mb-2">
+                                Notas adicionales (opcional)
+                            </label>
+                            <textarea pInputTextarea formControlName="notas" rows="3"
+                                placeholder="¿Alguna indicación especial? (corte específico, alergias, etc.)"
+                                class="w-full resize-none bg-black border-neutral-800 text-white">
+                            </textarea>
+                            <p class="text-gray-500 text-xs mt-1">
+                                {{ (citaForm.get('notas')?.value?.length || 0) }}/300 caracteres
+                            </p>
+                        </div>
+
+                  
+                        <div class="mb-6">
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" formControlName="aceptaTerminos"
+                                    class="w-4 h-4 rounded border-neutral-600 bg-black text-yellow-500 focus:ring-yellow-500 focus:ring-offset-black">
+                                <span class="text-gray-300 text-sm">
+                                    Acepto los <a href="#" class="text-yellow-500 hover:text-yellow-400">términos y
+                                        condiciones</a>
+                                </span>
+                            </label>
+                            @if (terminosInvalido) {
+                            <p class="text-red-500 text-xs mt-1">Debes aceptar los términos para continuar</p>
+                            }
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+           
+            <div class="lg:col-span-1">
+                <div
+                    class="bg-gradient-to-br from-yellow-500/10 to-transparent rounded-2xl border border-yellow-500/20 p-6 sticky top-6 bg-neutral-900/30 backdrop-blur-sm">
+
+                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                        <i class="pi pi-shopping-cart text-yellow-500"></i>
+                        Resumen de la cita
+                    </h3>
+
+                    <div class="space-y-4">
+
+                       
+                        <div class="border-b border-neutral-800 pb-3">
+                            <p class="text-gray-400 text-sm mb-1">Barbero</p>
+                            <p class="text-white font-medium">{{ getBarberoNombre() }}</p>
+                        </div>
+
+                       
+                        <div class="border-b border-neutral-800 pb-3">
+                            <p class="text-gray-400 text-sm mb-1">Servicio</p>
+                            <p class="text-white font-medium">{{ getServicioNombre() }}</p>
+                            <p class="text-gray-500 text-sm">Duración: {{ getServicioDuracion() }} min</p>
+                        </div>
+
+                       
+                        <div class="border-b border-neutral-800 pb-3">
+                            <div class="flex justify-between text-white font-semibold text-lg mt-2 pt-2">
+                                <span>Total a pagar</span>
+                                <span class="text-yellow-500">{{ getServicioPrecio() | currency:'COP' }}</span>
+                            </div>
+                        </div>
+
+                      
+                        <div class="space-y-2">
+                            <div class="flex items-start gap-2 text-sm">
+                                <i class="pi pi-check-circle text-green-500 mt-0.5"></i>
+                                <p class="text-gray-400">Pago contra entrega en el local</p>
+                            </div>
+                            <div class="flex items-start gap-2 text-sm">
+                                <i class="pi pi-clock text-yellow-500 mt-0.5"></i>
+                                <p class="text-gray-400">Llegar 5 minutos antes de tu cita</p>
+                            </div>
+                            <div class="flex items-start gap-2 text-sm">
+                                <i class="pi pi-whatsapp text-green-500 mt-0.5"></i>
+                                <p class="text-gray-400">Cancelación con 2 horas de anticipación</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    
+                    <div class="mt-6 space-y-3">
+                        <button (click)="guardarCita()" [disabled]="citaForm.invalid"
+                            class="w-full py-3 bg-yellow-500 hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed text-black font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2">
+                            <i class="pi pi-calendar-plus"></i>
+                            Agendar cita
+                        </button>
+
+                        <button (click)="cancelar()"
+                            class="w-full py-3 bg-neutral-800 hover:bg-neutral-700 text-white font-medium rounded-xl transition-all duration-200 flex items-center justify-center gap-2">
+                            <i class="pi pi-times"></i>
+                            Cancelar
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<div *ngIf="showConfirmDialog" class="fixed inset-0 bg-black/90 flex items-center justify-center z-50"
+    (click)="showConfirmDialog = false">
+    <div class="bg-neutral-900 rounded-2xl shadow-2xl max-w-md w-full mx-4 border border-neutral-800"
+        (click)="$event.stopPropagation()">
+
+        <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 px-6 py-4 rounded-t-2xl">
+            <div class="flex items-center gap-3">
+                <i class="pi pi-question-circle text-2xl text-black"></i>
+                <h3 class="text-xl font-semibold text-black m-0">Confirmar cita</h3>
+            </div>
+        </div>
+
+        <div class="p-6">
+            <div class="flex items-center gap-3 mb-4 p-3 bg-yellow-500/10 rounded-xl border border-yellow-500/20">
+                <i class="pi pi-info-circle text-2xl text-yellow-500"></i>
+                <div>
+                    <h4 class="m-0 text-white font-semibold">¿Estás seguro?</h4>
+                    <p class="m-0 text-sm text-gray-400">Confirma los detalles de tu cita</p>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <div class="flex justify-between py-2 border-b border-neutral-800">
+                    <span class="font-medium text-gray-400">Barbero:</span>
+                    <span class="text-white">{{ getBarberoNombre() }}</span>
+                </div>
+                <div class="flex justify-between py-2 border-b border-neutral-800">
+                    <span class="font-medium text-gray-400">Servicio:</span>
+                    <span class="text-white">{{ getServicioNombre() }}</span>
+                </div>
+                <div class="flex justify-between py-2 border-b border-neutral-800">
+                    <span class="font-medium text-gray-400">Fecha:</span>
+                    <span class="text-white">{{ citaForm.get('fecha')?.value | date:'dd/MM/yyyy' }}</span>
+                </div>
+                <div class="flex justify-between py-2 border-b border-neutral-800">
+                    <span class="font-medium text-gray-400">Hora:</span>
+                    <span class="text-white">{{ citaForm.get('hora')?.value }}</span>
+                </div>
+                <div class="flex justify-between py-2">
+                    <span class="font-medium text-gray-400">Total:</span>
+                    <span class="text-yellow-500 font-bold text-lg">{{ getServicioPrecio() | currency:'COP' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-black px-6 py-4 rounded-b-2xl flex justify-end gap-3">
+            <button (click)="showConfirmDialog = false"
+                class="px-4 py-2 text-gray-300 bg-neutral-800 rounded-lg hover:bg-neutral-700 transition-colors">
+                Cancelar
+            </button>
+            <button (click)="confirmarGuardar()" [disabled]="isLoading"
+                class="px-4 py-2 bg-yellow-500 text-black rounded-lg hover:bg-yellow-600 transition-colors flex items-center gap-2 disabled:opacity-50">
+                @if (isLoading) {
+                <div class="animate-spin rounded-full h-4 w-4 border-2 border-black border-t-transparent"></div>
+                } @else {
+                <i class="pi pi-check"></i>
+                }
+                Confirmar cita
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<p-toast position="top-right"></p-toast>

@@ -1,0 +1,26 @@
+<div class="flex justify-center p-0 md:p-6">
+  <p-card class="producto-card-shell carta" [style]="{ width: '20rem'}">
+    <ng-template #header>
+      <div class="producto-card-media">
+        <img alt="Card" class="producto-card-image" [src]="getImagenProducto(producto) | safeImageUrl" />
+        <app-status-badge type="text" [value]="producto.nombreCategoria" class="producto-card-category" />
+      </div>
+    </ng-template>
+
+    <ng-template #title>
+      <div class="producto-card-title">{{ producto.nombre }}</div>
+    </ng-template>
+    
+    <div class="producto-card-meta">
+      <span class="producto-card-price"> {{ producto.precio | currency:'USD' }} </span>
+      <span class="producto-card-stock"> Stock: {{ producto.stock }} </span>
+    </div>
+
+    <ng-template #footer>
+      <div class="producto-card-actions contenedor align-bottom">
+        <button pButton label="Ver" icon="pi pi-eye" class="boton-ver" (click)="onVer()"></button>
+        <button pButton type="button" icon="pi pi-shopping-cart" class="boton-comprar" (click)="agregarAlCarrito()"></button>
+      </div>
+    </ng-template>
+  </p-card>
+</div>

@@ -5,7 +5,10 @@ export interface Servicio {
     categoriaId: number;
     categoriaNombre: string;
     duracion: number;
-    urlsMultimedia: string[];
+    descripcion?: string;
+    publicado?: boolean;
+    estado?: boolean;
+    urlsMultimedia?: string[];
 }
 
 export interface ServicioRequest {
@@ -13,4 +16,14 @@ export interface ServicioRequest {
     precio: number;
     categoriaId: number;
     duracion: number;
+}
+
+export interface ServicioFiltro {
+    page?: number;
+    size?: number;
+    sort?: string;
+    nombre?: string;
+    categoriaId?: number;
+    precioMin?: number;
+    precioMax?: number;
 }

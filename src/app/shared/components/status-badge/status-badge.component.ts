@@ -5,6 +5,9 @@ import { Component, Input } from '@angular/core';
   selector: 'app-status-badge',
   imports: [CommonModule],
   template: `<span [ngClass]="badgeClass">{{ label }}</span>`,
+ 
+
+  
 })
 export class StatusBadgeComponent {
   @Input({ required: true }) value!: boolean | string | number;
@@ -20,40 +23,55 @@ export class StatusBadgeComponent {
   }
 
   get badgeClass(): string {
-    switch (this.type) {
-      case 'boolean':
-        return Boolean(this.value) ? 'badge-activo' : 'badge-inactivo';
-      case 'text': {
-        let base = 'badge-text';
-        const estado = String(this.value).toLowerCase();
-        if (estado === 'activa') {
-          return base + ' estado-activa';
-        }
-        if (estado === 'anulado' || estado === 'anulada') {
-          return base + ' estado-anulado';
-        }
-        if (estado === 'emitido' || estado === 'emitida') {
-          return base + ' estado-emitido';
-        }
-        if (estado === 'producto') {
-          return base + ' estado-producto';
-        }
-        if (estado === 'servicio') {
-          return base + ' estado-servicio';
-        }
+  switch (this.type) {
 
-        return base;
-      }
-      case 'array':
-        return 'badge-rol';
-      case 'range': {
-        const num = Number(this.value);
-        if (num === 0) return 'badge-stock-cero';
-        if (num <= this.warningLimit) return 'badge-stock-bajo';
-        return 'badge-stock-ok';
-      }
-      default:
-        return 'badge-base';
+    case 'boolean':
+      return Boolean(this.value)
+        ? 'badge-activo'
+        : 'badge-inactivo';
+
+   case 'text': {
+
+  const estado = String(this.value).toLowerCase();
+
+  const clases: Record<string, string> = {
+
+    
+    producto: 'estado-producto',
+    servicio: 'estado-servicio',
+
+    
+    confirmada: 'estado-confirmada',
+    finalizada: 'estado-finalizada',
+    cancelada: 'estado-cancelada',
+    no_asistio: 'estado-no_asistio',
+
+    
+    activa: 'estado-activa',
+    anulado: 'estado-anulado',
+    anulada: 'estado-anulado',
+    emitido: 'estado-emitido',
+    emitida: 'estado-emitido',
+  };
+
+  return `badge-text ${clases[estado] || 'estado-default'}`;
+}
+
+    case 'array':
+      return 'badge-rol';
+
+    case 'range': {
+      const num = Number(this.value);
+
+      if (num === 0) return 'badge-stock-cero';
+      if (num <= this.warningLimit) return 'badge-stock-bajo';
+
+      return 'badge-stock-ok';
     }
+
+    default:
+      return 'badge-base';
+  }
+
   }
 }

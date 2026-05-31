@@ -111,8 +111,7 @@ export class ServicioFormComponent implements OnInit, OnChanges {
       descripcion: [''],
       precio: [0, [Validators.required, Validators.min(0)]],
       duracion: [0, [Validators.required, Validators.min(1)]],
-      idCategoria: [null, Validators.required],
-      estado: [true]
+      idCategoria: [null, Validators.required]
     });
   }
 
@@ -194,7 +193,6 @@ export class ServicioFormComponent implements OnInit, OnChanges {
       descripcion: '',
       precio: 0,
       duracion: 0,
-      estado: true,
       idCategoria: null
     });
     this.limpiarEstadoImagen();

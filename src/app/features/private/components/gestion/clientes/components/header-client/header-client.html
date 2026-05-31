@@ -1,5 +1,5 @@
 <aside class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between px-6 py-4 border-b border-brand-gold-soft bg-brand-black rounded-xl">
   <h1 class="text-lg font-semibold text-brand-gold text-center md:text-start"> <i class="pi" [class]="icon"></i> {{ title }} </h1>
-  <app-search-bar placeholder="Buscar clientes" (search)="onSearch($event)"></app-search-bar>
+  <app-search-bar placeholder="Buscar clientes" [value]="searchValue" (search)="onSearch($event)"></app-search-bar>
   <button pButton [label]="buttonLabel" icon="pi pi-plus" class="p-button-sm boton-primary" (click)="onCreate()"></button>
 </aside>

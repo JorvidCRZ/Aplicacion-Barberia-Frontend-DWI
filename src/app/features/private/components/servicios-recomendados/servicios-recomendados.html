@@ -1,0 +1,30 @@
+<section *ngIf="servicios.length" class="mt-8">
+  <h3 class="text-base font-bold mb-4">Recomendado para ti</h3>
+
+  <div class="grid grid-cols-3 gap-4 max-[900px]:grid-cols-2 max-[600px]:grid-cols-1">
+    <div *ngFor="let s of servicios"
+      class="producto-card-shell overflow-hidden transition-transform hover:-translate-y-1">
+
+      <div class="aspect-[4/3] overflow-hidden">
+        <img
+          [alt]="s.nombre"
+          (error)="onImgError($event)"
+          class="w-full h-full object-cover transition-transform hover:scale-105"
+        />
+      </div>
+
+      <div class="p-4">
+        <p class="font-bold text-base">{{ s.nombre }}</p>
+        <p class="text-xs text-gray-400 mb-3">{{ s.categoriaNombre }}</p>
+        <div class="flex items-center justify-between">
+          <span class="font-bold">S/ {{ s.precio | number:'1.0-0' }}</span>
+          <button class="boton-base bg-[--color-gold] text-black text-xs font-bold px-4 py-2"
+            (click)="reservar.emit(s)">
+            Reservar
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

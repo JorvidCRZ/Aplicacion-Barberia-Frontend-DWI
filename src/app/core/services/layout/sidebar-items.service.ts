@@ -10,7 +10,9 @@ import { CLIENTE_MENU } from '../../config/menu.cliente.confing';
 export class SidebarItemsService {
     getSidebarItems(permisos: string[], role: string): MenuItem[] {
         const menu = this.getMenuByRole(role);
-        return this.filterItems(menu, permisos);
+        // For client role show full menu (no permission filtering) so users see all sections
+        const skipPermission = role === 'cliente';
+        return this.filterItems(menu, permisos, skipPermission);
     }
 
     private getMenuByRole(role: string) {
@@ -22,10 +24,10 @@ export class SidebarItemsService {
         }
     }
 
-    private filterItems(items: any[], permisos: string[]): MenuItem[] {
+    private filterItems(items: any[], permisos: string[], skipPermission = false): MenuItem[] {
         return items.map((item) => {
-            const childItems = item.items ? this.filterItems(item.items, permisos) : undefined;
-            const canShow = permisos.length === 0 || !item.permission || permisos.includes(item.permission) || !!childItems?.length;
+            const childItems = item.items ? this.filterItems(item.items, permisos, skipPermission) : undefined;
+            const canShow = skipPermission || permisos.length === 0 || !item.permission || permisos.includes(item.permission) || !!childItems?.length;
             if (!canShow) {
                 return null;
             }

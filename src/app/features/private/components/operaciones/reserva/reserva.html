@@ -1,0 +1,219 @@
+<div class="flex flex-col gap-6 mt-5">
+
+  <!-- HEADER -->
+  <aside
+    class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between px-6 py-4 border-b border-brand-gold-soft bg-brand-black rounded-xl">
+
+    <h1 class="text-lg font-semibold text-brand-gold text-center md:text-start">
+      <i class="pi pi-calendar"></i> Mis Citas de Hoy
+    </h1>
+
+    <div class="flex items-center gap-3">
+      <span class="text-sm text-zinc-400">
+        {{ citas.length }} cita{{ citas.length !== 1 ? 's' : '' }} hoy
+      </span>
+
+      <p-button
+        icon="pi pi-refresh"
+        label="Actualizar"
+        class="boton-editar-tabla"
+        [disabled]="cargando"
+        (click)="cargarCitas()">
+      </p-button>
+    </div>
+  </aside>
+
+  <!-- TABLA -->
+  <div class="table-base p-4 md:p-6">
+    <div class="relative w-full overflow-x-auto">
+
+      <p-table
+        [value]="citas"
+        [loading]="cargando"
+        [paginator]="true"
+        [rows]="10"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Viendo {first} a {last} de {totalRecords} entradas"
+        [tableStyle]="{
+          'min-width': '850px',
+          'table-layout': 'fixed'
+        }"
+        dataKey="idReserva"
+        class="rounded-xl">
+
+        <!-- HEADER -->
+        <ng-template pTemplate="header">
+          <tr class="table-header">
+
+            <th class="text-center" style="width: 55px">
+              ID
+            </th>
+
+            <th class="text-center" style="width: 170px">
+              Cliente
+            </th>
+
+            <th class="text-center" style="width: 120px">
+              Servicio
+            </th>
+
+            <th class="text-center" style="width: 100px">
+              Fecha
+            </th>
+
+            <th class="text-center" style="width: 70px">
+              Hora
+            </th>
+
+            <th class="text-center" style="width: 110px">
+              Estado
+            </th>
+
+            <th class="text-center" style="width: 170px">
+              Acciones
+            </th>
+
+          </tr>
+        </ng-template>
+
+        <!-- BODY -->
+        <ng-template pTemplate="body" let-cita>
+
+          <tr class="table-row">
+
+            <!-- ID -->
+            <td class="texto whitespace-nowrap text-center" style="width: 55px">
+              #{{ cita.idReserva }}
+            </td>
+
+            <!-- CLIENTE -->
+            <td class="px-3 py-3 whitespace-nowrap text-center" style="width: 170px">
+
+              <div class="flex flex-col items-center">
+
+                <span class="font-medium text-white">
+                  {{ cita.nombreCliente }} {{ cita.apellidoCliente }}
+                </span>
+
+                <span class="text-xs text-zinc-500 mt-1">
+                  {{ cita.telefonoCliente }}
+                </span>
+
+              </div>
+
+            </td>
+
+            <!-- SERVICIO -->
+            <td class="texto whitespace-nowrap text-center" style="width: 120px">
+              {{ cita.servicios[0]?.nombreCorte || '—' }}
+            </td>
+
+            <!-- FECHA -->
+            <td class="texto whitespace-nowrap text-center" style="width: 100px">
+              {{ cita.fecha | date:'dd/MM/yyyy' }}
+            </td>
+
+            <!-- HORA -->
+            <td class="texto whitespace-nowrap text-center" style="width: 70px">
+              {{ cita.horaInicio | slice:0:5 }}
+            </td>
+
+            <!-- ESTADO -->
+            <td class="whitespace-nowrap text-center" style="width: 110px">
+
+              @if (cita.estado === 'PENDIENTE_PAGO') {
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-400 border border-orange-500/30">
+                  Pendiente
+                </span>
+              }
+
+              @if (cita.estado === 'CONFIRMADA') {
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-500/10 text-yellow-400 border border-yellow-500/30">
+                  Confirmada
+                </span>
+              }
+
+              @if (cita.estado === 'EN_PROCESO') {
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/30">
+                  Proceso
+                </span>
+              }
+
+              @if (cita.estado === 'FINALIZADA') {
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-500/10 text-green-400 border border-green-500/30">
+                  Finalizada
+                </span>
+              }
+
+              @if (cita.estado === 'CANCELADA' || cita.estado === 'CANCELADA_AUTOMATICA') {
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-red-500/10 text-red-400 border border-red-500/30">
+                  Cancelada
+                </span>
+              }
+
+              @if (cita.estado === 'NO_ASISTIO') {
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-zinc-500/10 text-zinc-400 border border-zinc-500/30">
+                  No asistió
+                </span>
+              }
+
+            </td>
+
+            <!-- ACCIONES -->
+            <td class="whitespace-nowrap text-center" style="width: 170px">
+
+              <div class="flex items-center justify-center gap-1">
+
+                @if (cita.estado === 'CONFIRMADA') {
+
+                  <p-button
+                    size="small"
+                    icon="pi pi-play"
+                    label="Iniciar"
+                    class="boton-accion-cita"
+                    [disabled]="accionEnCurso === cita.idReserva"
+                    (click)="onCambiarEstado(cita, 'EN_PROCESO')">
+                  </p-button>
+
+                }
+
+                @if (cita.estado === 'EN_PROCESO') {
+
+                  <p-button
+                    size="small"
+                    icon="pi pi-check"
+                    label="Finalizar"
+                    class="boton-accion-cita"
+                    [disabled]="accionEnCurso === cita.idReserva"
+                    (click)="onCambiarEstado(cita, 'FINALIZADA')">
+                  </p-button>
+
+                }
+
+                @if (cita.estado === 'CONFIRMADA' || cita.estado === 'PENDIENTE_PAGO') {
+
+                  <p-button
+                    size="small"
+                    icon="pi pi-user-minus"
+                    label="No asistió"
+                    class="boton-accion-rojo"
+                    [disabled]="accionEnCurso === cita.idReserva"
+                    (click)="onCambiarEstado(cita, 'NO_ASISTIO')">
+                  </p-button>
+
+                }
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </ng-template>
+
+      </p-table>
+
+    </div>
+  </div>
+
+</div>

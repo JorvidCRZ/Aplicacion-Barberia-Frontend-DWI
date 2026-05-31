@@ -1,0 +1,48 @@
+<!-- FILTROS -->
+<div class="form-base mb-6">
+
+	<div class="flex flex-col gap-4 sm:gap-6 md:flex-row md:items-start">
+
+		<!-- IZQUIERDA: TÍTULO + DESCRIPCIÓN -->
+		<div class="md:flex-1">
+			<h3 class="text-xs sm:text-sm font-semibold tracking-[0.15em] text-brand-gold uppercase">Filtros</h3>
+			<p class="mt-1 text-xs sm:text-sm text-text-secondary">Organiza y administra el listado de barberos.</p>
+		</div>
+
+		<!-- DERECHA: CONTROLES -->
+		<div class="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4 md:ml-auto md:items-end">
+
+			<div class="filter-group flex-1 sm:flex-none">
+				<label class="label-form">Estado</label>
+				<select #statusSelect class="inputs-text w-full sm:w-auto">
+					<option value="">Todos</option>
+					<option value="disponible">Disponible</option>
+					<option value="ocupado">Ocupado</option>
+				</select>
+			</div>
+
+			<div class="filter-group flex-1 sm:flex-none">
+				<label class="label-form">Ordenar</label>
+				<select #orderSelect class="inputs-text w-full sm:w-auto">
+					<option value="">Seleccionar</option>
+					<option value="fechaIngreso_desc">Fecha (más recientes)</option>
+					<option value="fechaIngreso_asc">Fecha (más antiguas)</option>
+					<option value="experiencia_desc">Experiencia (mayor)</option>
+					<option value="experiencia_asc">Experiencia (menor)</option>
+					<option value="sueldo_desc">Sueldo (mayor)</option>
+					<option value="sueldo_asc">Sueldo (menor)</option>
+					<option value="comision_desc">Comisión (mayor)</option>
+					<option value="comision_asc">Comisión (menor)</option>
+				</select>
+			</div>
+
+			<div class="flex flex-col sm:flex-row w-full sm:w-auto gap-2 actions">
+				<button pButton type="button" class="p-button boton-secondary text-xs sm:text-sm" (click)="onApply(statusSelect.value, orderSelect.value)">Aplicar</button>
+				
+				<button pButton type="button" class="p-button boton-ghost text-xs sm:text-sm" (click)="onClear(statusSelect, orderSelect)"><i class="pi pi-filter-slash"></i> <span class="hidden sm:inline">Limpiar</span></button>
+				<button pButton type="button" class="p-button boton-secondary text-xs sm:text-sm" (click)="onInhabilitados()">Inhabilitados</button>
+			</div>
+
+		</div>
+	</div>
+</div>

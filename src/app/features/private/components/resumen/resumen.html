@@ -1,1 +1,175 @@
-<p>resumen works!</p>
+<div class="dashboard">
+
+  <!-- ── Header ─────────────────────────────────────────────────────────── -->
+  <div class="dashboard__header">
+    <div class="dashboard__header-left">
+      <h1 class="dashboard__title">Dashboard Administrador</h1>
+      <p class="dashboard__subtitle">Resumen general del negocio</p>
+      <span class="dashboard__date">
+{{ fechaActual | date:'dd/MM/yyyy' }}
+    </span>
+    </div>
+
+    <div class="dashboard__periods">
+      <button
+        *ngFor="let p of periodos"
+        class="period-btn"
+        [class.period-btn--active]="periodoActivo === p.key"
+        (click)="cambiarPeriodo(p.key)"
+      >
+        {{ p.label }}
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Error global ────────────────────────────────────────────────────── -->
+  <div *ngIf="error" class="dashboard__error animate-fade-in">
+    <i class="pi pi-exclamation-triangle mr-2"></i>
+    {{ error }}
+  </div>
+
+  <!-- ── KPI Grid ────────────────────────────────────────────────────────── -->
+  <div class="kpi-grid">
+
+    <!-- Skeleton -->
+    <ng-container *ngIf="loading">
+      <div
+        class="kpi-card kpi-card--skeleton"
+        *ngFor="let i of [1,2,3,4,5,6,7,8]"
+      ></div>
+    </ng-container>
+
+    <!-- Cards reales -->
+    <ng-container *ngIf="!loading">
+      <div
+        class="kpi-card animate-fade-in"
+        *ngFor="let kpi of kpiCards; trackBy: trackByKpi"
+      >
+        <div class="kpi-card__icon">
+          <i class="pi pi-{{ kpi.icon }}"></i>
+        </div>
+        <div class="kpi-card__label">{{ kpi.label }}</div>
+        <div class="kpi-card__value">{{ kpi.value }}</div>
+        <div
+          *ngIf="kpi.delta"
+          class="kpi-card__delta"
+          [class.kpi-card__delta--positive]="kpi.deltaPositive"
+          [class.kpi-card__delta--negative]="!kpi.deltaPositive"
+        >
+          <i
+            class="pi"
+            [class.pi-arrow-up-right]="kpi.deltaPositive"
+            [class.pi-arrow-down-right]="!kpi.deltaPositive"
+          ></i>
+          {{ kpi.delta }}
+        </div>
+      </div>
+    </ng-container>
+
+  </div>
+
+  <!-- ── Próximas Citas ──────────────────────────────────────────────────── -->
+  <div class="citas-section">
+
+    <div class="citas-section__header">
+      <h2 class="citas-section__title">Próximas Citas</h2>
+      <button
+        class="boton-primary p-button"
+        (click)="refrescarCitas()"
+        [disabled]="loadingCitas"
+      >
+        <i class="pi pi-refresh mr-1" [class.spin]="loadingCitas"></i>
+        Actualizar
+      </button>
+    </div>
+
+    <div class="citas-table-wrapper">
+      <table class="citas-table">
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Hora</th>
+            <th>Servicio</th>
+            <th>Tipo</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- Cargando -->
+          <tr *ngIf="loadingCitas">
+            <td colspan="5" class="citas-table__empty">
+              <i class="pi pi-spin pi-spinner mr-2"></i>
+              Actualizando...
+            </td>
+          </tr>
+
+<!-- Sin citas -->
+<tr *ngIf="!loadingCitas && (citas || []).length === 0">
+  <td colspan="5" class="citas-table__empty">
+    <i class="pi pi-calendar mr-2"></i>
+    No hay citas programadas para hoy
+  </td>
+</tr>
+
+<!-- Filas -->
+<tr *ngFor="let cita of (citas || []); trackBy: trackByCita">
+          
+
+          <!-- Filas -->
+          <tr *ngFor="let cita of citas; trackBy: trackByCita">
+
+            <!-- Cliente -->
+            <td>
+              <div class="cliente-nombre">{{ getNombreCompleto(cita) }}</div>
+              <div class="cliente-tel">
+                <i class="pi pi-phone mr-1" style="font-size:10px"></i>
+                {{ cita.telefonoCliente }}
+              </div>
+            </td>
+
+            <!-- Hora -->
+            <td>
+              <span class="hora">
+                <i class="pi pi-clock mr-1"></i>
+                {{ cita.horaInicio }}
+              </span>
+            </td>
+
+            <!-- Servicio -->
+            <td>
+              <span class="badge-base servicio-badge">
+                <i class="pi pi-scissors mr-1"></i>
+                {{ getServicioResumen(cita) }}
+              </span>
+            </td>
+
+            <!-- Tipo -->
+            <td>
+              <span
+                class="badge-base"
+                [class.badge-rol]="cita.tipoReserva === 'ONLINE'"
+                [class.badge-text]="cita.tipoReserva === 'PRESENCIAL'"
+              >
+                {{ cita.tipoReserva }}
+              </span>
+            </td>
+
+            <!-- Estado -->
+            <td>
+              <span
+                class="badge-base"
+                [ngClass]="getEstadoClass(cita.estado)"
+              >
+                {{ getEstadoLabel(cita.estado) }}
+              </span>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>

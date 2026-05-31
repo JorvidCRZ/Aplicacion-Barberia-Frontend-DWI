@@ -1,0 +1,102 @@
+<div class="table-base p-4 md:p-6 lg:p-8">
+
+	<div class="relative w-full overflow-x-auto rounded-xl border border-ui-border bg-brand-black shadow-lg shadow-black/20">
+
+		<table class="w-full min-w-240 table-fixed border-collapse">
+
+			<thead>
+				<tr class="table-header border-b border-gray-800 text-xs uppercase tracking-[0.2em] text-brand-gold/80">
+					<th class="py-3 px-3 text-left w-[19%]">Nombre</th>
+					<th class="py-3 px-3 text-left w-[13%]">Apellido</th>
+					<th class="py-3 px-3 text-left w-[18%]">Correo</th>
+					<th class="py-3 px-3 text-center w-[12%]">Ingreso</th>
+					<th class="py-3 px-3 text-left w-[12%]">Estado</th>
+
+					<th class="py-3 px-3 text-center w-[10%]">Comisión</th>
+					<th class="py-3 px-3 text-center w-[10%]">Sueldo</th>
+
+					<th class="py-3 px-3 text-right w-[6%]">Acción</th>
+				</tr>
+			</thead>
+
+			<tbody class="divide-y divide-gray-800">
+
+				<tr *ngFor="let b of barberos" class="table-row align-middle transition-colors duration-200 hover:bg-white/5">
+					<td class="py-4 px-3" data-label="Nombre">
+						<div class="font-semibold text-gray-100 leading-tight">{{ b.persona?.nombre || b.nombre || '—' }}</div>
+
+					</td>
+
+					<td class="py-4 px-3 font-semibold text-gray-100 leading-tight" data-label="Apellido">
+						{{ b.persona?.apellido || b.apellido || '—' }}
+					</td>
+
+					<td class="py-4 px-3 text-xs text-gray-400" data-label="Correo">{{ b.persona?.email || b.email || '—' }}</td>
+
+					<td class="py-4 px-3 text-center text-gray-300" data-label="Ingreso">{{ b.fechaIngreso || '—' }}</td>
+
+					<td class="py-4 px-3" data-label="Estado">
+						<span *ngIf="b.estado === 'Disponible'" class="inline-flex items-center gap-2 rounded-full border border-lime-400/20 bg-lime-400/10 px-3 py-1 text-xs font-medium text-lime-300">
+							<span class="h-2 w-2 rounded-full bg-lime-400"></span>Disponible
+						</span>
+						<span *ngIf="b.estado === 'Ocupado'" class="inline-flex items-center gap-2 rounded-full border border-red-400/20 bg-red-400/10 px-3 py-1 text-xs font-medium text-red-300">
+							<span class="h-2 w-2 rounded-full bg-red-400"></span>Ocupado
+						</span>
+						<span *ngIf="!b.estado" class="inline-flex items-center gap-2 rounded-full border border-gray-500/20 bg-white/5 px-3 py-1 text-xs font-medium text-gray-300">
+							<span class="h-2 w-2 rounded-full bg-gray-400"></span>—
+						</span>
+					</td>
+
+
+
+					<td class="py-4 px-3 text-center text-gray-300" data-label="Comisión">{{ b.comision || '—' }}</td>
+
+					<td class="py-4 px-3 text-center text-gray-300" data-label="Sueldo">{{ b.sueldo || '—' }}</td>
+
+
+
+					<td class="py-4 px-3 text-right w-[6%]" data-label="Acción">
+
+						<div class="table-actions">
+							@if (isSearchMode) {
+								<p-button icon="pi pi-eye" class="boton-editar-tabla" [routerLink]="['/dashboard/admin/gestion/barberos', b.barberoId || b.id]"></p-button>
+								<p-button icon="pi pi-user-minus" class="boton-eliminar-tabla" (click)="onDelete(b.barberoId || b.id)"></p-button>
+								<p-button icon="pi pi-user-plus" class="boton-editar-tabla" (click)="onReactivate(b.barberoId || b.id)"></p-button>
+							} @else if (inhabilitadosMode) {
+								<p-button icon="pi pi-user-plus" class="boton-editar-tabla" (click)="onReactivate(b.barberoId || b.id)"></p-button>
+							} @else {
+								<p-button icon="pi pi-eye" class="boton-editar-tabla" [routerLink]="['/dashboard/admin/gestion/barberos', b.barberoId || b.id]"></p-button>
+								<p-button icon="pi pi-user-minus" class="boton-eliminar-tabla" (click)="onDelete(b.barberoId || b.id)"></p-button>
+							}
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="flex items-center justify-between gap-3 px-4 py-3 text-sm text-gray-400 border-t border-gray-800">
+
+			<div>
+				Mostrando {{ barberos.length }} de {{ totalElements }}
+			</div>
+
+			<div class="flex items-center gap-2">
+
+				<button pButton type="button" class="boton-paginacion-cliente" label="|Ant"
+					(click)="onPrev()" [disabled]="!canGoPrev">
+				</button>
+
+				<button pButton type="button" class="boton-paginacion-cliente activo"
+					[label]="(currentPage + 1).toString()">
+				</button>
+
+				<button pButton type="button" class="boton-paginacion-cliente" label="Sig"
+					(click)="onNext()" [disabled]="!canGoNext">
+				</button>
+
+			</div>
+
+		</div>
+
+	</div>
+
+</div>

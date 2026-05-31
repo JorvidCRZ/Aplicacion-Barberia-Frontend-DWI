@@ -1,0 +1,48 @@
+:host {
+	display: block;
+}
+
+.perfil-barbero {
+	padding: 1rem;
+	color: #f3f4f6;
+}
+
+.perfil-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 1rem;
+}
+
+.perfil-kicker {
+	margin: 0 0 0.25rem;
+	color: #f5c84c;
+	text-transform: uppercase;
+	letter-spacing: 0.2em;
+	font-size: 0.75rem;
+}
+
+.perfil-title {
+	margin: 0;
+	font-size: 1.5rem;
+	font-weight: 700;
+}
+
+.perfil-card {
+	border: 1px solid rgba(245, 200, 76, 0.16);
+	border-radius: 1rem;
+	background: linear-gradient(180deg, rgba(16, 16, 12, 0.98) 0%, rgba(10, 10, 8, 0.98) 100%);
+	padding: 1.25rem;
+}
+
+.perfil-label {
+	margin: 0 0 0.35rem;
+	color: #f5c84c;
+	font-size: 0.8rem;
+	font-weight: 600;
+}
+
+.perfil-text {
+	margin: 0;
+	color: #9ca3af;
+}

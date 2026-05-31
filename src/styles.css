@@ -106,13 +106,14 @@
 		width: 100%;
 		min-height: 100%;
 		scrollbar-width: none;
-		-ms-overflow-style: none;
 	}
 
+	/* Allow custom scrollbar styles to show (remove hiding rules that caused double/hidden scrollbars) */
 	html::-webkit-scrollbar,
 	body::-webkit-scrollbar,
 	app-root::-webkit-scrollbar {
-		display: none;
+		/* keep default display so custom thumb/track styles apply */
+		width: 10px;
 	}
 
 	body {
@@ -175,6 +176,11 @@ p-button .p-button {
 	@apply boton-tabla bg-amber-500 text-white border border-amber-500/30;
 }
 
+.p-avatar {
+	background: var(--color-brand-gold) !important;
+	color: var(--color-brand-dark) !important;
+	font-weight: bold;
+}
 
 p-password {
 	svg {
@@ -283,7 +289,7 @@ p-treeSelect button {
 	.p-treeselect-label {
 		color: var(--color-text-primary) !important;
 	}
-	
+
 	.p-component-overlay {
 		background: var(--color-ui-card) !important;
 		border: 1px solid var(--color-ui-border) !important;
@@ -342,7 +348,9 @@ p-treeSelect button {
 
 /* INPUTS GLOBAL (SIN inputs-text para evitar errores) */
 input,
-textarea,
+input.p-inputtext,
+p-inputnumber .p-inputnumber-input,
+textarea,p-treeselect.p-treeselect,
 p-select:not(.p-paginator .p-select),
 .p-treeselect-overlay .p-tree,
 p-treeSelect,
@@ -406,12 +414,38 @@ p-colorpicker {
 	@apply font-bold py-3 px-6 rounded-xl transition-all duration-300 cursor-pointer hover:scale-105;
 }
 
-.p-button.boton-primary {
-	@apply boton-base bg-brand-gold text-black border-brand-gold;
+.p-button.boton-ver,
+.boton-ver {
+	@apply boton-base bg-teal-500/10 border border-teal-500/30 text-teal-400;
 }
 
-.p-button.boton-primary:not(:disabled):hover {
-	@apply bg-brand-gold-hover border-brand-gold-hover text-black;
+.p-button.boton-ver:not(:disabled):hover,
+.boton-ver:hover {
+	@apply bg-teal-500 text-white border-teal-400;
+}
+
+/* COMPRAR */
+.p-button.boton-comprar,
+.boton-comprar,
+.p-button.boton-limpiar {
+	@apply boton-base bg-brand-gold/10 border border-brand-gold/30 text-brand-gold;
+}
+
+.p-button.boton-comprar:not(:disabled):hover,
+.boton-comprar:hover,
+.p-button.boton-limpiar:not(:disabled):hover {
+	@apply bg-brand-gold text-white border-brand-gold;
+}
+
+/* PRIMARY */
+.p-button.boton-primary,
+.boton-primary {
+	@apply boton-base bg-brand-gold/10 border border-brand-gold/30 text-brand-gold;
+}
+
+.p-button.boton-primary:not(:disabled):hover,
+.boton-primary:hover {
+	@apply bg-brand-gold-hover text-black border-brand-gold-hover;
 }
 
 .p-button.boton-secondary {
@@ -438,11 +472,12 @@ p-colorpicker {
 	@apply boton-base bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500 hover:text-black;
 }
 
-.p-button.boton-cierre, .boton-cierre {
+.p-button.boton-cierre,
+.boton-cierre {
 	@apply boton-tabla bg-amber-500/10 border border-amber-400 text-amber-400 hover:bg-amber-500 hover:text-white hover:border-amber-400;
 }
 
-.p-button.boton-cierre:not(:disabled):hover	{
+.p-button.boton-cierre:not(:disabled):hover {
 	@apply boton-tabla bg-amber-50 text-white border border-amber-500/30;
 }
 
@@ -465,6 +500,26 @@ p-colorpicker {
 .p-button.boton-cancel:not(:disabled):hover {
 	@apply bg-gray-500 text-black border-gray-400;
 }
+
+.p-button.boton-sidebar-toggle {
+	@apply items-center justify-center rounded-md border border-ui-border bg-transparent p-2 text-brand-gold;
+}
+
+.p-button.boton-sidebar-toggle:not(:disabled):hover {
+	@apply border-brand-gold/40 bg-brand-gold/10 text-brand-gold-hover;
+}
+
+.p-button.boton-google,
+.boton-google {
+	@apply boton-base border border-ui-border bg-ui-black text-white font-semibold py-3 px-6 rounded-full transition-all duration-200 text-sm flex items-center justify-center gap-3;
+}
+
+.p-button.boton-google:not(:disabled):hover,
+.boton-google:hover {
+	@apply boton-base border-brand-gold/50 bg-ui-elevated;
+}
+
+/* Semantic color utilities mapped to CSS variables */
 
 .p-button .boton-delete {
 	@apply boton-base bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-black border-red-400;
@@ -489,7 +544,6 @@ p-colorpicker {
 .p-button.boton-reject {
 	@apply boton-base bg-amber-500/10 text-amber-400 hover:bg-amber-500 hover:text-black border-amber-400;
 }
-
 
 
 /* =========================
@@ -542,20 +596,21 @@ p-colorpicker {
 .boton-agregar .p-button {
 	box-shadow: none !important;
 }
+
 .boton-accion-cita .p-button {
-    @apply rounded-lg mx-1 px-3 py-2 text-sm transition-all duration-200 cursor-pointer hover:scale-105 text-blue-500 border border-blue-500/30 bg-blue-500/10;
+	@apply rounded-lg mx-1 px-3 py-2 text-sm transition-all duration-200 cursor-pointer hover:scale-105 text-blue-500 border border-blue-500/30 bg-blue-500/10;
 }
 
 .boton-accion-cita .p-button:not(:disabled):hover {
-    @apply bg-blue-500 text-white border border-blue-500/30;
+	@apply bg-blue-500 text-white border border-blue-500/30;
 }
 
 .boton-accion-rojo .p-button {
-    @apply rounded-lg mx-1 px-3 py-2 text-sm transition-all duration-200 cursor-pointer hover:scale-105 text-red-500 border border-red-500/30 bg-red-500/10;
+	@apply rounded-lg mx-1 px-3 py-2 text-sm transition-all duration-200 cursor-pointer hover:scale-105 text-red-500 border border-red-500/30 bg-red-500/10;
 }
 
 .boton-accion-rojo .p-button:not(:disabled):hover {
-    @apply bg-red-500 text-white border border-red-500/30;
+	@apply bg-red-500 text-white border border-red-500/30;
 }
 
 /* =========================
@@ -633,12 +688,17 @@ p-colorpicker {
 ========================= */
 
 .container-main {
-	@apply max-w-[1200px] mx-auto w-full px-4 md:px-6;
+	max-width: 1200px;
+	margin-left: auto;
+	margin-right: auto;
+	width: 100%;
+	padding-left: 1rem;
+	padding-right: 1rem;
 }
 
 @media (min-width: 1800px) {
 	.container-main {
-		@apply max-w-[1600px];
+		max-width: 1600px;
 	}
 }
 
@@ -765,7 +825,7 @@ app-footer i {
 
 .p-datatable .p-paginator {
 	padding: 1rem;
-	border-top: 1px solid var(--color-ui-border);
+	border-top: 1px solid var(--color-brand-gold);
 	background-color: var(--color-brand-dark);
 }
 
@@ -847,4 +907,412 @@ app-footer i {
 
 .contenido-imagen img {
 	@apply border border-brand-gold;
+}
+
+.estado-confirmada {
+	@apply badge-base bg-green-500/10 text-green-400 border border-green-500/30;
+}
+
+.estado-finalizada {
+	@apply badge-base bg-blue-500/10 text-blue-400 border border-blue-500/30;
+}
+
+.estado-cancelada {
+	@apply badge-base bg-red-500/10 text-red-400 border border-red-500/30;
+}
+
+.estado-no_asistio {
+	@apply badge-base bg-gray-500/10 text-gray-400 border border-gray-500/30;
+}
+
+.estado-default {
+	@apply badge-base bg-zinc-500/10 text-zinc-400 border border-zinc-500/30;
+}
+
+p-paginator.p-paginator {
+	@apply flex items-center gap-2 mt-4 bg-ui-card p-3 rounded-lg border border-brand-gold;
+
+	p-select {
+		@apply w-auto bg-ui-card border border-ui-border text-text-primary rounded-lg;
+	}
+}
+
+/* =========================
+   PRODUCTOS (PUBLIC)
+========================= */
+.producto-page-hero {
+	@apply relative overflow-hidden bg-brand-black text-brand-white;
+}
+
+.producto-page-overlay {
+	@apply absolute inset-0 bg-linear-to-b from-black/75 via-black/70 to-brand-black;
+}
+
+.producto-page-hero-inner {
+	@apply relative mx-auto flex min-h-72 max-w-7xl items-center px-4 py-14 sm:px-6 lg:px-8;
+}
+
+.producto-page-section {
+	@apply bg-ui-surface px-4 py-10 text-brand-white sm:px-6 lg:px-8 p-0;
+}
+
+.producto-page-panel {
+	@apply rounded-3xl border border-brand-gold bg-ui-black p-5 shadow-2xl shadow-black/30 backdrop-blur-sm sm:p-6;
+}
+
+.producto-page-summary {
+	@apply mt-6 flex items-center justify-between text-sm text-text-secondary;
+}
+
+.producto-page-paginator {
+	@apply mt-8 rounded-3xl bg-brand-dark px-5 py-4 text-brand-white;
+}
+
+.producto-page-detail img {
+	@apply rounded-xl object-cover;
+}
+
+.producto-card-shell {
+	@apply overflow-hidden rounded-3xl border border-ui-border bg-ui-card shadow-lg shadow-black/20 transition-transform duration-300 hover:-translate-y-1 hover:shadow-2xl;
+}
+
+.producto-card-media {
+	@apply relative;
+}
+
+.producto-card-image {
+	@apply h-56 w-full object-cover;
+}
+
+.producto-card-category {
+	@apply absolute left-2 top-2 rounded-2xl bg-ui-card px-2 py-1 text-xs font-semibold text-brand-gold;
+}
+
+.producto-card-body {
+	display: flex;
+	height: 12rem;
+	flex-direction: column;
+	padding: 1rem 1.5rem 1.5rem;
+}
+
+.producto-card-title {
+	@apply line-clamp-1 text-lg font-semibold text-brand-white;
+}
+
+.producto-card-description {
+	@apply line-clamp-2 text-sm text-text-muted;
+}
+
+.producto-card-meta {
+	@apply mt-auto flex items-center justify-between pt-3 text-yellow-300;
+}
+
+.producto-card-price {
+	@apply text-xl font-bold;
+}
+
+.producto-card-stock {
+	@apply text-sm text-text-secondary;
+}
+
+.producto-card-actions {
+	@apply flex gap-2 mt-4;
+}
+
+.producto-list-empty {
+	@apply col-span-full py-10 text-center text-text-secondary;
+}
+
+.producto-list-grid {
+	@apply mt-8 grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+}
+
+.producto-detail-page {
+	@apply bg-ui-surface px-4 pb-10 pt-6 text-brand-white sm:px-6 lg:px-8;
+}
+
+.producto-detail-hero {
+	@apply mb-6 flex flex-col gap-4 rounded-3xl border border-ui-borderSoft bg-white/5 p-5 shadow-2xl shadow-black/30 backdrop-blur-sm lg:flex-row lg:items-end lg:justify-between;
+}
+
+.producto-detail-back {
+	@apply w-fit;
+	margin: 1rem 0 1.5rem 0.5rem;
+}
+
+
+.producto-detail-loading {
+	@apply rounded-3xl border border-ui-borderSoft bg-white/5 p-8 text-center text-text-secondary;
+}
+
+.producto-detail-layout {
+	@apply grid gap-10 rounded-3xl shadow-black/30 backdrop-blur-sm lg:p-8;
+	grid-template-columns: 1fr;
+}
+
+@media (min-width: 1024px) {
+	.producto-detail-layout {
+		grid-template-columns: 380px minmax(0, 1fr) 320px;
+		align-items: start;
+	}
+
+	.producto-detail-gallery {
+		display: grid;
+		grid-template-columns: 72px 1fr;
+		gap: 32px;
+		align-items: start;
+	}
+
+	.producto-detail-buy {
+		padding: 18px;
+		border-radius: 12px;
+	}
+
+	.p-galleria-thumbnails-content {
+		max-height: 520px;
+		overflow-y: auto;
+		padding-right: 6px;
+	}
+}
+
+.producto-detail-gallery {
+	@apply flex flex-col gap-4;
+}
+
+.producto-detail-main-image {
+	@apply overflow-hidden rounded-3xl border border-brand-gold bg-ui-card;
+}
+
+.producto-detail-main-image img {
+	@apply w-full object-contain;
+	height: 28rem;
+}
+
+.producto-detail-price-row {
+	@apply flex items-end justify-between gap-4 border-t border-ui-borderSoft pt-4;
+}
+
+.producto-detail-price {
+	@apply text-3xl font-black text-brand-gold;
+}
+
+.producto-detail-stock {
+	@apply text-sm text-text-secondary;
+}
+
+.producto-detail-quantity {
+	@apply flex flex-col gap-2;
+}
+
+.producto-detail-actions {
+	position: sticky;
+	top: 120px;
+	order: 3;
+	padding: 0 1rem 1.5rem 1rem;
+}
+
+.producto-detail-note {
+	@apply flex items-center justify-between rounded-2xl border border-ui-borderSoft bg-white/5 px-4 py-3 text-sm text-text-secondary;
+}
+
+.producto-detail-name {
+	letter-spacing: .4px;
+	color: var(--color-text-primary);
+	font-weight: 800;
+	font-size: 1.6rem;
+	margin-bottom: .5rem
+}
+
+.producto-detail-price {
+	color: var(--color-brand-gold);
+	font-weight: 900;
+	letter-spacing: .6px;
+	font-size: 1.7rem
+}
+
+.producto-detail-desc {
+	color: var(--color-text-secondary);
+	line-height: 1.65;
+	margin-top: .9rem;
+	letter-spacing: .2px
+}
+
+.producto-detail-buy {
+	background: linear-gradient(180deg, rgba(18, 18, 18, 1), rgba(22, 22, 22, 0.95));
+	padding: 1.15rem;
+	border-radius: 12px;
+}
+
+.producto-detail-buy .p-button {
+	width: 100%;
+	margin-top: .7rem;
+	padding: .75rem 1rem;
+	border-radius: 10px
+}
+
+.producto-detail-thumbs {
+	display: flex;
+	gap: .6rem;
+	margin-top: 1rem;
+	gap: 12px;
+	align-items: center;
+	width: 100%;
+	height: 64px;
+}
+
+.producto-detail-thumb img {
+	width: 60px;
+	height: 60px;
+	object-fit: cover;
+	border-radius: 8px;
+	cursor: pointer;
+	border: 2px solid transparent;
+	transition: all .15s
+}
+
+.producto-detail-thumb img.selected {
+	transform: scale(1.03);
+	box-shadow: 0 8px 20px rgba(0, 0, 0, .55);
+	border-color: var(--color-brand-gold)
+}
+
+.producto-detail-main-image img {
+	border-radius: 12px;
+	box-shadow: 0 16px 36px rgba(0, 0, 0, .5)
+}
+
+.producto-card-image:hover {
+	transition: all .3s ease;
+	transform: scale(1.05);
+}
+
+@media (max-width: 1024px) {
+	.producto-detail-layout {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 1rem;
+		align-items: start;
+	}
+
+	.producto-detail-gallery {
+		order: 1;
+		padding: 0 1rem;
+	}
+
+	.producto-detail-main-image img {
+		height: auto;
+		max-height: 46vh;
+		object-fit: contain;
+	}
+
+	.producto-detail-thumbs {
+		gap: .5rem;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.producto-detail-thumb {
+		flex: 0 0 auto;
+	}
+
+	.producto-detail-thumb img {
+		width: 52px;
+		height: 52px;
+		border: 1px solid var(--color-brand-gold);
+	}
+
+	.producto-detail-info {
+		order: 2;
+		padding: 0 1rem;
+	}
+	.producto-detail-actions{
+		padding: 0;
+	}
+
+	.producto-detail-buy {
+		width: 100% !important;
+		max-width: 420px;
+		margin: 0.8rem auto 0;
+		position: static !important;
+		padding: 1rem 1rem 1.1rem 1rem;
+		border-radius: 12px;
+		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+		border: 1px solid rgba(255, 255, 255, 0.03);
+	}
+
+	.producto-detail-buy .p-button {
+		padding: .65rem .9rem;
+		height: 48px;
+	}
+
+	.producto-detail-name {
+		font-size: 1.25rem;
+		margin-bottom: .6rem
+	}
+
+	.producto-detail-price {
+		font-size: 1.4rem;
+	}
+
+	.producto-detail-gallery {
+		padding: 0 1rem 0 1rem
+	}
+
+	.producto-detail-main-image img {
+		max-height: 55vh;
+		width: 100%;
+		height: auto;
+	}
+
+	.producto-detail-back {
+		margin: 1rem 0 0.8rem 0.5rem;
+	}
+
+	@media (max-width: 640px) {
+		.producto-detail-buy {
+			bottom: 12px;
+			left: 50%;
+			width: 100%;
+			max-width: 520px;
+			z-index: 80;
+			border-radius: 14px;
+			padding: 0.85rem 1rem;
+		}
+
+		.producto-detail-buy .p-button {
+			height: 52px;
+			font-size: 1rem;
+		}
+
+		.producto-detail-main-image img {
+			box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+		}
+
+		.producto-detail-buy {
+			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+		}
+
+		.producto-detail-thumbs {
+			margin: 1.5rem 0;
+			gap: .75rem;
+			flex-wrap: wrap;
+			justify-content: center;
+			height: auto;
+			max-width: 360px;
+		}
+
+		.producto-detail-thumb img {
+			width: 72px;
+			height: 72px;
+		}
+
+		.producto-detail-name {
+			margin-bottom: 1rem;
+		}
+
+		.producto-detail-price {
+			margin-top: .25rem;
+		}
+
+	}
 }

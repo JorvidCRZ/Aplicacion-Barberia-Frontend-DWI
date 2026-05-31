@@ -1,0 +1,43 @@
+<div *ngIf="reserva; else sinCita"
+  class="border border-[--color-ui-card] rounded-2xl p-5 mt-5 bg-[--color-ui-card]">
+
+  <div class="flex justify-between items-center mb-3">
+    <span class="text-[10px] font-bold tracking-widest text-[--color-gold]">PRÓXIMA CITA</span>
+    <span class="text-xs font-bold px-3 py-1 rounded-full bg-green-500/10 text-green-400">
+      {{ reserva.estado ? estadoLabel(reserva.estado) : 'Confirmada' }}
+    </span>
+  </div>
+
+  <p class="text-sm font-semibold mb-1">{{ formatFechaHora(reserva.fecha, reserva.horaInicio) }}</p>
+  <h2 class="text-2xl font-bold mb-2">{{ reserva.servicio }}</h2>
+
+  <p class="text-sm text-gray-400 flex items-center gap-1 mb-5">
+    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+      fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+      <circle cx="9" cy="7" r="4"/>
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+    </svg>
+    {{ reserva.barberoNombre }}
+  </p>
+
+  <div class="flex gap-3">
+    <button class="boton-base flex-1 bg-[--color-gold] text-black font-bold"
+      (click)="verDetalle.emit(reserva.reservaId)">
+      Ver detalle
+    </button>
+    <button class="boton-base flex-1 border border-[--color-ui-card] text-white hover:border-[--color-gold]"
+      (click)="reprogramar.emit(reserva.reservaId)">
+      Reprogramar
+    </button>
+  </div>
+</div>
+
+<ng-template #sinCita>
+  <div class="border border-dashed border-gray-700 rounded-2xl p-5 mt-5 text-center">
+    <p class="text-gray-500 text-sm mb-4">No tienes citas programadas</p>
+    <button class="boton-base bg-[--color-gold] text-black font-bold px-8">
+      Reservar ahora
+    </button>
+  </div>
+</ng-template>

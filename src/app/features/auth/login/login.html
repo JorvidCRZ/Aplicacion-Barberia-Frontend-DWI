@@ -17,7 +17,7 @@
       <form [formGroup]="formularioLogin" (ngSubmit)="login()" class="flex flex-col gap-5">
         <div class="part-form">
           <label for="username">Usuario</label>
-            <input pInputText formControlName="username" placeholder="Ingrese su usuario" class="input-auth" />
+            <input pInputText formControlName="username" placeholder="Ingrese su usuario" autocomplete="username" class="input-auth" />
             @if(campoInvalido('username')){
               <p-message severity="error" variant="simple" size="small">El usuario es obligatorio</p-message>
             }
@@ -25,7 +25,7 @@
 
         <div class="part-form">
           <label for="password">Contraseña</label>
-          <p-password inputId="password" formControlName="password" [toggleMask]="true" [feedback]="false" autocomplete="new-password" placeholder="••••••••" />
+          <p-password inputId="password" formControlName="password" [toggleMask]="true" [feedback]="false" autocomplete="current-password" placeholder="••••••••" />
           @if(campoInvalido('password')){
             <p-message severity="error" variant="simple" size="small">La contraseña es obligatoria</p-message>
           }
@@ -48,15 +48,15 @@
         <div class="space-y-2 text-text-secondary">
           <div class="flex justify-between">
             <span>Admin:</span>
-            <span class="text-brand-gold">admin / admin123</span>
+            <span class="text-brand-gold">admin1 / admin123</span>
           </div>
           <div class="flex justify-between">
             <span>Cliente:</span>
-            <span class="text-brand-gold">cliente / cliente123</span>
+            <span class="text-brand-gold">dejoda2 / dejoda123</span>
           </div>
           <div class="flex justify-between">
             <span>Barbero:</span>
-            <span class="text-brand-gold">barbero / barbero123</span>
+            <span class="text-brand-gold">juan123 / juan123</span>
           </div>
         </div>
       </div>

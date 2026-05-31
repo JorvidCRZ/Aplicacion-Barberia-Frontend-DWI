@@ -1,0 +1,41 @@
+<app-header-perfil-usuario
+	[usuarioNombre]="usuarioNombre"
+	[usuarioIniciales]="usuarioIniciales"
+	[usuarioDescripcion]="usuarioDescripcion"
+	[volver]="volver"
+></app-header-perfil-usuario>
+
+<div *ngIf="errorCarga" class="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+	{{ errorCarga }}
+</div>
+
+<div *ngIf="cargando" class="mt-4 rounded-lg border border-brand-gold/20 bg-brand-black px-4 py-3 text-sm text-brand-gold/80">
+	Cargando perfil de usuario...
+</div>
+
+<!-- Aquí van el resto de bloques del perfil (roles, datos, credenciales) -->
+
+
+
+<!-- Datos básicos -->
+<div class="mt-6">
+	<app-datos-basicos-perfil-usuario
+		[usuarioId]="usuarioId"
+		[personaId]="personaId"
+		[nombre]="nombre"
+		[apellido]="apellido"
+		[telefono]="telefono"
+		[email]="email"
+	></app-datos-basicos-perfil-usuario>
+</div>
+
+<!-- Credenciales -->
+<div class="mt-6">
+	<app-credenciales-perfil-usuario [usuario]="usuario" [idUsuario]="usuarioId"></app-credenciales-perfil-usuario>
+</div>
+
+<!-- Roles y permisos -->
+<div class="mt-6">
+	<app-roles-permisos-perfil-usuario [usuarioId]="usuarioId"></app-roles-permisos-perfil-usuario>
+</div>
+

@@ -1,0 +1,96 @@
+app-search-bar {
+	width: 260px;
+}
+
+select.inputs-text {
+	min-height: 44px;
+}
+
+/* Ajustes visuales para filtros */
+.form-base {
+	background: linear-gradient(180deg, #0b0b0b, rgba(0,0,0,0.6));
+	border: 1px solid rgba(255,255,255,0.04);
+	padding: 12px;
+}
+
+.filter-group { 
+	display: flex; 
+	flex-direction: column; 
+	gap: 6px; 
+}
+
+.filter-group .label-form { 
+	font-size: 10px;
+	text-transform: uppercase; 
+	letter-spacing: 0.18em; 
+	color: var(--color-text-secondary); 
+}
+
+.inputs-text { 
+	background: #070707; 
+	border: 1px solid rgba(255,255,255,0.06); 
+	color: var(--color-text-primary);
+	padding: 10px 12px;
+	border-radius: 4px;
+	font-size: 14px;
+}
+
+.inputs-text:focus { 
+	box-shadow: 0 0 0 4px rgba(250, 204, 21, 0.06); 
+	border-color: rgba(250,204,21,0.4);
+	outline: none;
+}
+
+.actions { 
+	align-self: auto;
+	display: flex;
+	gap: 8px;
+}
+
+/* TABLET (640px - 767px) */
+@media (min-width: 640px) and (max-width: 767px) {
+	.form-base { 
+		padding: 14px; 
+	}
+	.filter-group .label-form { 
+		font-size: 10px; 
+	}
+}
+
+/* TABLET Y DESKTOP (768px+) */
+@media (min-width: 768px) {
+	.form-base { 
+		padding: 16px 18px; 
+	}
+	app-search-bar { 
+		width: 260px; 
+	}
+}
+
+/* DESKTOP GRANDE (1024px+) */
+@media (min-width: 1024px) {
+	.form-base { 
+		padding: 18px; 
+	}
+	.actions { 
+		align-self: end; 
+	}
+}
+
+/* MOBILE PEQUEÑO (max-width: 640px) */
+@media (max-width: 639px) {
+	app-search-bar { 
+		width: 100%; 
+	}
+	.form-base { 
+		padding: 10px; 
+	}
+	.filter-group .label-form { 
+		font-size: 9px; 
+	}
+	.inputs-text {
+		font-size: 13px;
+		padding: 8px 10px;
+	}
+}
+

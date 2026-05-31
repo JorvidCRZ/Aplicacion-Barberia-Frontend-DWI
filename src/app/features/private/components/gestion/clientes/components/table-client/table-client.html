@@ -28,9 +28,6 @@
 						Correo
 					</th>
 
-					<th class="py-3 px-3 text-right whitespace-nowrap w-[12%]">
-						Fecha
-					</th>
 
 					<th class="py-3 px-3 text-right w-[8%]">
 						Acción
@@ -69,15 +66,21 @@
 						{{ c.persona.email }}
 					</td>
 
-					<td class="py-4 px-3 text-right whitespace-nowrap text-gray-400">
-						{{ c.fechaRegistro }}
-					</td>
 
 					<td class="py-4 px-3 text-right w-[8%]">
 
-						<button pButton type="button" class="boton-ver-cliente" label="ver"
-							[routerLink]="['/dashboard/gestion/clientes', c.clienteId]">
-						</button>
+						<div class="table-actions">
+							@if (isSearchMode) {
+								<p-button icon="pi pi-eye" class="boton-editar-tabla" [routerLink]="[c.clienteId]"></p-button>
+								<p-button icon="pi pi-user-minus" class="boton-eliminar-tabla" (click)="onDelete(c.clienteId)"></p-button>
+								<p-button icon="pi pi-user-plus" class="boton-editar-tabla" (click)="onReactivate(c.clienteId)"></p-button>
+							} @else if (activeFilter === 'deshabilitados') {
+								<p-button icon="pi pi-user-plus" class="boton-editar-tabla" (click)="onReactivate(c.clienteId)"></p-button>
+							} @else {
+								<p-button icon="pi pi-eye" class="boton-editar-tabla" [routerLink]="[c.clienteId]"></p-button>
+								<p-button icon="pi pi-user-minus" class="boton-eliminar-tabla" (click)="onDelete(c.clienteId)"></p-button>
+							}
+						</div>
 
 					</td>
 

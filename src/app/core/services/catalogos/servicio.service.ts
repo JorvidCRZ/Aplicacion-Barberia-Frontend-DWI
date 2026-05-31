@@ -3,32 +3,39 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@/environments/environment.development';
 import { Servicio, ServicioRequest } from '../../models/catalogos/servicios.model';
-import { ApiResponse } from '../../models/common/index.model';
+import { ApiResponse, PageResponse } from '../../models/common/index.model';
+import { buildHttpParamsComponent } from '@/app/shared/utils/build-http-params.component';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ServicioService {
 
-    private apiUrl = `${environment.apiUrl}/servicio`;
+    private apiUrl = `${environment.apiUrl}/servicios`;
     private http = inject(HttpClient);
 
-    // falta corregir en el backend para traer bien los endpoints 
-
-    obtenerServicios(): Observable<Servicio[]> {
-        return this.http.get<Servicio[]>(this.apiUrl);
+    obtenerServicioPublicos(filter?: Record<string, any>) {
+        return this.http.get<ApiResponse<PageResponse<Servicio>>>(`${this.apiUrl}/publicados`, { params: buildHttpParamsComponent(filter) });
     }
 
-    obtenerPorId(id: number): Observable<Servicio> {
-        return this.http.get<Servicio>(`${this.apiUrl}/${id}`);
+    obtenerServicioPublicosId(id: number) {
+        return this.http.get<ApiResponse<Servicio>>(`${this.apiUrl}/publicados/${id}`);
+    }
+
+    obtenerServiciosConFiltro(filter?: Record<string, any>) {
+        return this.http.get<ApiResponse<PageResponse<Servicio>>>(this.apiUrl, { params: buildHttpParamsComponent(filter) });
+    }
+
+    obtenerPorId(id: number) {
+        return this.http.get<ApiResponse<Servicio>>(`${this.apiUrl}/${id}`);
     }
 
     crearServicio(data: ServicioRequest, archivos?: File[]) {
         return this.http.post<ApiResponse<Servicio>>(this.apiUrl, this.construirFormData(data, archivos));
     }
 
-    actualizarServicio(id: number, data: ServicioRequest): Observable<Servicio> {
-        return this.http.put<Servicio>(`${this.apiUrl}/${id}`, data);
+    actualizarServicio(id: number, data: ServicioRequest, archivos?: File[]) {
+        return this.http.put<ApiResponse<Servicio>>(`${this.apiUrl}/${id}`, this.construirFormData(data, archivos));
     }
 
     eliminarServicio(id: number): Observable<void> {
@@ -37,8 +44,8 @@ export class ServicioService {
 
     private construirFormData(data: ServicioRequest, archivos?: File[]): FormData {
         const formData = new FormData();
-        formData.append('servicio',new Blob([JSON.stringify(data)], { type: 'application/json' }));
-        if (archivos?.length) {archivos.forEach(file => {formData.append('archivos', file);});}
+        formData.append('servicio', new Blob([JSON.stringify(data)], { type: 'application/json' }));
+        if (archivos?.length) { archivos.forEach(file => { formData.append('archivos', file); }); }
         return formData;
     }
 }

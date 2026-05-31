@@ -1,0 +1,75 @@
+:host { display: block; }
+
+/* Minimal native CSS: everything else via Tailwind utilities */
+/* Keep a tiny rule for inner shadow on avatar if needed */
+.cliente-avatar, .cliente-avatar * { box-shadow: none; }
+
+/* Button styles copied from table-client to match action buttons */
+.boton-ver-cliente,
+.boton-paginacion-cliente {
+	background: transparent;
+}
+
+.boton-ver-cliente.p-button,
+.boton-paginacion-cliente.p-button {
+	border-color: rgba(245, 200, 76, 0.28);
+	color: #f5c84c;
+	min-width: 3.5rem;
+	min-height: 2.5rem;
+	padding: 0.55rem 0.95rem;
+	font-size: 0.9rem;
+	box-shadow: none;
+}
+
+.boton-ver-cliente.p-button:not(:disabled):hover,
+.boton-paginacion-cliente.p-button:not(:disabled):hover {
+	background: rgba(245, 200, 76, 0.12);
+	border-color: rgba(245, 200, 76, 0.4);
+}
+
+.boton-paginacion-cliente.activo.p-button {
+	background: rgba(245, 200, 76, 0.18);
+	border-color: rgba(245, 200, 76, 0.6);
+	color: #f9dc7a;
+}
+
+.boton-eliminar-cliente.p-button {
+	border-color: rgba(244, 63, 94, 0.28);
+	color: #fb7185;
+	min-width: 3.5rem;
+	min-height: 2.5rem;
+	padding: 0.55rem 0.95rem;
+	font-size: 0.9rem;
+	box-shadow: none;
+}
+
+.boton-eliminar-cliente.p-button:not(:disabled):hover {
+	background: rgba(244, 63, 94, 0.12);
+	border-color: rgba(244, 63, 94, 0.4);
+}
+
+.boton-editar-tabla.p-button,
+.boton-eliminar-tabla.p-button {
+	width: 2.5rem;
+	height: 2.5rem;
+	padding: 0;
+	box-shadow: none;
+	border-radius: 0.5rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.table-actions {
+	display: flex;
+	flex-direction: column;
+	gap: 0.45rem;
+	align-items: flex-end;
+	justify-content: flex-end;
+}
+
+td[data-label="Acción"] {
+	min-width: 64px;
+	padding-right: 0.5rem;
+}
+

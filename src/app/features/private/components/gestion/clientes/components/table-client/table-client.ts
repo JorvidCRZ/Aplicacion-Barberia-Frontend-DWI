@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
+import { ClienteFilterMode } from '@/app/core/models/gestion/cliente/cliente-filter.model';
 
 @Component({
   selector: 'app-table-client',
@@ -19,9 +20,17 @@ export class TableClient {
 
   @Input() totalPages: number = 0;
 
+  @Input() activeFilter: ClienteFilterMode = 'todos';
+
+  @Input() isSearchMode: boolean = false;
+
   @Output() prev = new EventEmitter<void>();
 
   @Output() next = new EventEmitter<void>();
+  
+  @Output() delete = new EventEmitter<number>();
+
+  @Output() reactivate = new EventEmitter<number>();
 
   get canGoPrev(): boolean {
     return this.currentPage > 0;
@@ -39,6 +48,14 @@ export class TableClient {
   onNext(): void {
     if (!this.canGoNext) return;
     this.next.emit();
+  }
+
+  onDelete(id: number): void {
+    this.delete.emit(id);
+  }
+
+  onReactivate(id: number): void {
+    this.reactivate.emit(id);
   }
 
   initials(name: string) {

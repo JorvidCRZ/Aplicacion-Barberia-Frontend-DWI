@@ -13,6 +13,7 @@ import { campoInvalido, marcarFormulario } from '@/app/shared/utils/form-utils.c
 
 @Component({
   selector: 'app-categoria-form',
+  standalone: true,
   imports: [
     ReactiveFormsModule, InputTextModule, SelectModule, TextareaModule,
     CheckboxModule, ButtonModule, MessageModule, FileUploadModule

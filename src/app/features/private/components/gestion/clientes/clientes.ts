@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderClient } from './components/header-client/header-client';
 import { ResumenGeneralClient } from './components/resumen-general-client/resumen-general-client';
 import { FiltrarClients } from './components/filtrar-clients/filtrar-clients';
@@ -17,6 +17,7 @@ import { Cliente } from '@/app/core/models/gestion/cliente/cliente.model';
 })
 export class Clientes implements OnInit {
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private clienteService = inject(ClienteService);
   private readonly pageSize = 7;
 
@@ -62,10 +63,11 @@ export class Clientes implements OnInit {
   }
 
   abrirCrear() {
-    this.router.navigate(['/dashboard/gestion/clientes/registrar-client']);
+    this.router.navigate(['register-cliente'], { relativeTo: this.route });
   }
 
   onFilterChange(criteria: ClienteFilterCriteria) {
+    this.searchTerm = '';
     this.filterCriteria = criteria;
     this.activeFilter = criteria.mode;
     this.cargarClientesFiltrados(0, criteria);
@@ -76,8 +78,27 @@ export class Clientes implements OnInit {
     this.cargarPaginaActual(0);
   }
 
+  get isSearchActive(): boolean {
+    return this.searchTerm.trim().length > 0;
+  }
+
+  onDisableCliente(id: number): void {
+    this.clienteService.deshabilitar(id).subscribe({
+      next: () => this.cargarPaginaActual(this.currentPage),
+      error: (error) => console.error('Error al deshabilitar cliente', error),
+    });
+  }
+
+  onReactivateCliente(id: number): void {
+    this.clienteService.reactivar(id).subscribe({
+      next: () => this.cargarPaginaActual(this.currentPage),
+      error: (error) => console.error('Error al reactivar cliente', error),
+    });
+  }
+
   onCustomModeChange(isCustomMode: boolean): void {
     if (isCustomMode) {
+      this.searchTerm = '';
       this.activeFilter = 'personalizado';
       this.filterCriteria = {
         mode: 'personalizado',
@@ -86,7 +107,7 @@ export class Clientes implements OnInit {
         fromDate: '',
         toDate: '',
       };
-      this.visibleClients = this.clients;
+      this.cargarClientesBase(0);
       return;
     }
 
@@ -108,6 +129,14 @@ export class Clientes implements OnInit {
       this.clienteService.filtrarPorTipo(criteria.mode, page, size).subscribe({
         next: (response) => this.aplicarRespuestaListado(response, page),
         error: (error) => console.error('Error al filtrar clientes', error),
+      });
+      return;
+    }
+
+    if (criteria.mode === 'deshabilitados') {
+      this.clienteService.listarInhabilitados(page, size).subscribe({
+        next: (response) => this.aplicarRespuestaListado(response, page),
+        error: (error) => console.error('Error al cargar clientes inhabilitados', error),
       });
       return;
     }

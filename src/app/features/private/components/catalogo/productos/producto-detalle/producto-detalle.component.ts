@@ -36,7 +36,7 @@ export class ProductoDetalleComponent implements OnInit {
   }
 
   volver() {
-    this.router.navigate(['/dashboard/catalogo/productos']);
+    this.router.navigate(['/dashboard/admin/catalogo/productos']);
   }
 
   private obtenerDetalleProducto(id: number) {

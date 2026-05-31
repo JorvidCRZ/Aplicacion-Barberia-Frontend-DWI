@@ -1,0 +1,279 @@
+<!-- rewards.html -->
+<div class="min-h-screen bg-[#0d0d0d] text-white p-6">
+
+  <!-- Encabezado -->
+  <p class="text-xs tracking-widest uppercase text-[#b8952a] mb-1">Programa de puntos</p>
+  <h2 class="text-2xl font-medium mb-6">Tu tarjeta de fidelización</h2>
+
+  <!-- CARGANDO -->
+  <div *ngIf="cargando" class="text-white/40 text-sm py-10 text-center">
+    Cargando tarjeta...
+  </div>
+
+  <!-- ERROR -->
+  <div *ngIf="error && !cargando" class="text-red-400 text-sm py-4 text-center">
+    {{ error }}
+  </div>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <ng-container *ngIf="recompensa && !cargando">
+
+    <!-- TARJETA VIRTUAL -->
+    <div class="bg-[#111] border border-[#b8952a]/20 rounded-2xl p-6 mb-4 relative overflow-hidden">
+      <!-- Círculos decorativos -->
+      <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full border border-[#b8952a]/10"></div>
+      <div class="absolute -top-16 -right-16 w-56 h-56 rounded-full border border-[#b8952a]/5"></div>
+
+      <!-- Header tarjeta -->
+      <div class="flex justify-between items-start mb-5 relative">
+        <div>
+          <p class="text-[#b8952a] font-medium tracking-wide">✦ FadeX</p>
+          <p class="text-[#b8952a]/50 text-xs tracking-widest uppercase mt-0.5">Tarjeta Fidelización</p>
+        </div>
+        <span class="text-xs tracking-wide uppercase border border-[#b8952a]/30 text-[#b8952a] px-3 py-1 rounded-full bg-[#b8952a]/10">
+          {{ getLevelLabel() }}
+        </span>
+      </div>
+
+      <!-- Grid coronitas -->
+      <div class="grid grid-cols-5 gap-2 mb-5">
+        <div *ngFor="let n of slots" class="flex flex-col items-center gap-1">
+          <div
+            class="w-11 h-11 rounded-xl flex items-center justify-center text-lg border transition-all"
+            [ngClass]="n <= recompensa.cortesAcumulados
+              ? 'bg-[#b8952a]/10 border-[#b8952a]/50 text-[#b8952a]'
+              : 'bg-white/5 border-white/10 text-white/10'"
+          ><i class="pi pi-crown text-lg"></i></div>
+          <span
+            class="text-[10px]"
+            [ngClass]="n <= recompensa.cortesAcumulados ? 'text-[#b8952a]/60' : 'text-white/20'"
+          >{{ n }}</span>
+        </div>
+      </div>
+
+      <!-- Footer tarjeta -->
+      <div class="flex justify-between items-center pt-4 border-t border-white/10">
+        <p class="text-sm text-white/40">
+          <span class="text-[#b8952a] font-medium">{{ recompensa.cortesAcumulados }} / 10</span> cortes
+        </p>
+        <div class="text-right">
+          <p class="text-[10px] text-white/30 mb-1">
+            {{ canRedeem() ? '¡Recompensa disponible!' : 'Faltan ' + recompensa.cortesParaProximo + ' para recompensa' }}
+          </p>
+          <div class="w-36 h-1 bg-white/10 rounded-full overflow-hidden">
+            <div
+              class="h-full bg-gradient-to-r from-[#8a6a15] to-[#ddb84a] rounded-full transition-all duration-500"
+              [style.width.%]="progressPct()"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BANNER RECOMPENSA -->
+    <div
+      class="flex items-center gap-3 rounded-xl p-4 border mb-4 transition-all"
+      [ngClass]="canRedeem()
+        ? 'bg-[#b8952a]/10 border-[#b8952a]/50'
+        : 'bg-[#b8952a]/5 border-[#b8952a]/20'"
+    >
+      <div class="w-11 h-11 rounded-xl bg-[#b8952a]/20 border border-[#b8952a]/30 flex items-center justify-center text-xl flex-shrink-0">
+        <i class="pi pi-crown"></i>
+      </div>
+      <div class="flex-1">
+        <h4 class="text-sm font-medium text-[#b8952a]">
+          {{ canRedeem() ? '¡Corte gratis disponible!' : 'Corte gratis pendiente' }}
+        </h4>
+        <p class="text-xs text-white/40 mt-0.5">
+          {{ canRedeem()
+            ? 'Completaste los 10 cortes. Muéstrale tu tarjeta al barbero.'
+            : 'Acumula ' + recompensa.cortesParaProximo + ' corte(s) más para tu próximo corte gratis.' }}
+        </p>
+      </div>
+      <button
+        (click)="onCanjear()"
+        [disabled]="!canRedeem()"
+        class="px-4 py-2 rounded-lg text-xs font-medium tracking-wide transition-all flex-shrink-0"
+        [ngClass]="canRedeem()
+          ? 'bg-[#b8952a] text-[#111] hover:opacity-85 cursor-pointer'
+          : 'bg-white/10 text-white/20 cursor-not-allowed'"
+      >
+        Canjear
+      </button>
+    </div>
+
+    <!-- STATS (se eliminó 'Gratis ganados') -->
+    <div class="grid grid-cols-2 gap-3 mb-6">
+      <div class="bg-[#111] border border-white/10 rounded-xl p-4 text-center">
+        <p class="text-2xl font-medium text-[#b8952a]">{{ recompensa.cortesAcumulados }}</p>
+        <p class="text-[10px] uppercase tracking-widest text-white/40 mt-1">Acumulados</p>
+      </div>
+      <div class="bg-[#111] border border-white/10 rounded-xl p-4 text-center">
+        <p class="text-2xl font-medium text-[#b8952a]">{{ recompensa.cortesParaProximo }}</p>
+        <p class="text-[10px] uppercase tracking-widest text-white/40 mt-1">Faltan</p>
+      </div>
+    </div>
+
+    <!-- Historial eliminado: ya no se usa -->
+
+  </ng-container>
+
+</div>
+
+<!-- MODAL RESERVA GRATUITA -->
+<div
+  *ngIf="showReservaModal"
+  class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
+  (click)="cerrarModal()"
+>
+  <div
+    class="bg-[#111] border border-[#b8952a]/30 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl"
+    (click)="$event.stopPropagation()"
+  >
+
+    <!-- Header modal -->
+    <div class="bg-gradient-to-r from-[#b8952a]/20 to-[#8a6a15]/10 px-6 py-4 border-b border-[#b8952a]/20 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-[#b8952a]/20 border border-[#b8952a]/40 flex items-center justify-center">
+          <i class="pi pi-crown text-[#b8952a]"></i>
+        </div>
+        <div>
+          <h3 class="text-white font-semibold m-0 text-base">Reserva Gratuita</h3>
+          <p class="text-[#b8952a]/60 text-xs m-0">Canjeando tu corte gratis</p>
+        </div>
+      </div>
+      <button
+        (click)="cerrarModal()"
+        class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"
+      >
+        <i class="pi pi-times text-white/40 text-sm"></i>
+      </button>
+    </div>
+
+    <!-- Formulario -->
+    <form [formGroup]="reservaGratisForm" (ngSubmit)="guardarReservaGratis()" class="p-6 flex flex-col gap-5">
+
+      <!-- Badge corte gratis -->
+      <div class="flex items-center gap-2 bg-[#b8952a]/10 border border-[#b8952a]/30 rounded-xl px-4 py-3">
+        <i class="pi pi-gift text-[#b8952a]"></i>
+        <span class="text-sm text-[#b8952a] font-medium">Este corte es completamente gratis 🎉</span>
+      </div>
+
+      <!-- Barbero -->
+      <div>
+        <label class="block text-xs tracking-widest uppercase text-[#b8952a]/60 mb-2">Barbero *</label>
+        <p-select
+          formControlName="barberoId"
+          [options]="barberos"
+          optionLabel="nombreCompleto"
+          optionValue="barberoId"
+          placeholder="Selecciona un barbero"
+          class="w-full"
+          styleClass="bg-[#1a1a1a] border-white/10 text-white w-full"
+        >
+          <ng-template let-barbero pTemplate="item">
+            <div class="flex flex-col py-1">
+              <span class="text-white font-medium">{{ barbero.nombreCompleto }}</span>
+              <span class="text-white/40 text-xs">{{ barbero.descripcion || ('Exp. ' + barbero.experiencia + ' años') }}</span>
+            </div>
+          </ng-template>
+        </p-select>
+        <p *ngIf="campoInvalido('barberoId')" class="text-red-400 text-xs mt-1 flex items-center gap-1">
+          <i class="pi pi-exclamation-circle"></i> El barbero es requerido
+        </p>
+      </div>
+
+      <!-- Servicio -->
+      <div>
+        <label class="block text-xs tracking-widest uppercase text-[#b8952a]/60 mb-2">Servicio *</label>
+        <p-select
+          formControlName="servicioId"
+          [options]="servicios"
+          optionLabel="nombre"
+          optionValue="servicioId"
+          placeholder="Selecciona un servicio"
+          class="w-full"
+          styleClass="bg-[#1a1a1a] border-white/10 text-white w-full"
+        >
+          <ng-template let-servicio pTemplate="item">
+            <div class="flex justify-between items-center py-1 w-full">
+              <span class="text-white">{{ servicio.nombre }}</span>
+              <span class="text-[#b8952a]/60 text-xs line-through">{{ servicio.precio | currency:'PEN':'symbol':'1.2-2' }}</span>
+            </div>
+          </ng-template>
+        </p-select>
+        <p *ngIf="campoInvalido('servicioId')" class="text-red-400 text-xs mt-1 flex items-center gap-1">
+          <i class="pi pi-exclamation-circle"></i> El servicio es requerido
+        </p>
+      </div>
+
+      <!-- Fecha -->
+      <div>
+        <label class="block text-xs tracking-widest uppercase text-[#b8952a]/60 mb-2">Fecha *</label>
+        <p-datepicker
+          formControlName="fecha"
+          [showIcon]="true"
+          [minDate]="today"
+          dateFormat="dd/mm/yy"
+          placeholder="Selecciona una fecha"
+          class="w-full"
+        ></p-datepicker>
+        <p *ngIf="campoInvalido('fecha')" class="text-red-400 text-xs mt-1 flex items-center gap-1">
+          <i class="pi pi-exclamation-circle"></i> La fecha es requerida
+        </p>
+      </div>
+
+      <!-- Hora -->
+      <div>
+        <label class="block text-xs tracking-widest uppercase text-[#b8952a]/60 mb-2">Hora *</label>
+        <p-select
+          formControlName="hora"
+          [options]="horarios"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Selecciona una hora"
+          class="w-full"
+          styleClass="bg-[#1a1a1a] border-white/10 text-white w-full"
+        ></p-select>
+        <p *ngIf="campoInvalido('hora')" class="text-red-400 text-xs mt-1 flex items-center gap-1">
+          <i class="pi pi-exclamation-circle"></i> La hora es requerida
+        </p>
+      </div>
+
+      <!-- Observaciones -->
+      <div>
+        <label class="block text-xs tracking-widest uppercase text-[#b8952a]/60 mb-2">Observaciones</label>
+        <textarea
+          pTextarea
+          rows="2"
+          formControlName="observacion"
+          placeholder="Notas adicionales..."
+          class="w-full resize-none bg-[#1a1a1a] border border-white/10 rounded-xl p-3 text-white text-sm placeholder:text-white/20 focus:border-[#b8952a]/50 focus:outline-none transition-colors"
+        ></textarea>
+      </div>
+
+      <!-- Acciones -->
+      <div class="flex gap-3 pt-1">
+        <button
+          type="button"
+          (click)="cerrarModal()"
+          class="flex-1 px-4 py-2.5 rounded-xl border border-white/10 text-white/50 hover:bg-white/5 text-sm transition-colors"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          [disabled]="isGuardando"
+          class="flex-1 px-4 py-2.5 rounded-xl bg-[#b8952a] text-[#111] font-semibold text-sm hover:opacity-85 transition-opacity flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <div *ngIf="isGuardando" class="animate-spin rounded-full h-4 w-4 border-2 border-[#111] border-t-transparent"></div>
+          <i *ngIf="!isGuardando" class="pi pi-check"></i>
+          {{ isGuardando ? 'Reservando...' : 'Confirmar reserva gratis' }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<p-toast position="top-right"></p-toast>

@@ -4,7 +4,8 @@ export type ClienteFilterMode =
   | 'mes'
   | 'anio'
   | 'rango'
-  | 'personalizado';
+  | 'personalizado'
+  | 'deshabilitados';
 
 export interface ClienteFilterCriteria {
   mode: ClienteFilterMode;

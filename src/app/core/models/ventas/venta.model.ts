@@ -8,11 +8,9 @@ export interface Venta {
 
   clienteNombre?: string;
 
-  barberoId?: number;
-
-  barberoNombre?: string;
-
   fecha?: string;
+
+  tipoComprobante?: 'BOLETA' | 'FACTURA';
 
   detalles?: VentaDetalle[];
 

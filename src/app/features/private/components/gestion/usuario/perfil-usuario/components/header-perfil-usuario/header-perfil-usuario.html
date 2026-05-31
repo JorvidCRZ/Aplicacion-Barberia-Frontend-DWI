@@ -1,0 +1,21 @@
+<div class="rounded-2xl border border-brand-gold/15 bg-[#0c0c0a] px-6 py-4 shadow-[0_10px_30px_rgba(0,0,0,0.2)]">
+	<div class="flex items-center justify-between gap-4">
+		<div class="flex items-center gap-4">
+			<div class="flex h-16 w-16 items-center justify-center rounded-full border border-brand-gold/30 bg-brand-gold/10 text-2xl font-bold text-brand-gold">
+				{{ usuarioIniciales }}
+			</div>
+			<div>
+				<p class="m-0 text-xs uppercase tracking-[0.2em] text-brand-gold/70">Perfil de usuario</p>
+				<h1 class="m-0 text-2xl font-bold text-gray-100">{{ usuarioNombre }}</h1>
+				<p class="mt-1 text-sm text-gray-400">{{ usuarioDescripcion }}</p>
+			</div>
+		</div>
+		<button
+			type="button"
+			class="rounded-lg border border-brand-gold/30 bg-brand-gold/10 px-4 py-2 text-sm font-semibold text-brand-gold transition hover:bg-brand-gold hover:text-black"
+			(click)="volver()"
+		>
+			Volver
+		</button>
+	</div>
+</div>

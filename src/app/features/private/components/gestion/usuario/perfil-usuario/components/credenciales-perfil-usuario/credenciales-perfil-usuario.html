@@ -1,0 +1,236 @@
+<div class="overflow-hidden rounded-2xl border border-brand-gold/15 bg-[#0c0c0a] shadow-[0_10px_30px_rgba(0,0,0,0.2)]">
+
+	<div class="flex items-center justify-between border-b border-brand-gold/10 px-4 py-4 md:px-5">
+		<div>
+			<p class="mb-1 text-[0.78rem] uppercase tracking-[0.18em] text-brand-gold">Datos de acceso</p>
+			<h2 class="m-0 text-lg font-semibold text-gray-100">Credenciales del usuario</h2>
+		</div>
+	</div>
+
+	<div class="divide-y divide-brand-gold/10">
+
+		<!-- Usuario -->
+		<div class="flex flex-col gap-2 px-4 py-4 transition-colors hover:bg-brand-gold/3 md:flex-row md:items-center md:gap-4 md:px-5">
+			<div class="w-32 shrink-0 text-sm font-medium text-brand-gold">Usuario:</div>
+			<div class="flex-1 md:border-l md:border-brand-gold/10 md:pl-4">
+				<span class="text-base font-semibold text-gray-100">{{ usuario }}</span>
+			</div>
+		</div>
+		<!-- QR -->
+		<div class="flex flex-col gap-4 px-4 py-5 md:px-5">
+
+			<div class="flex flex-col gap-1">
+				<div class="text-sm font-medium text-brand-gold">Código QR</div>
+				<p class="text-xs text-gray-500">El QR permite al usuario iniciar sesión escaneándolo en lugar de ingresar sus credenciales.</p>
+			</div>
+
+			<!-- Sin QR generado -->
+			<div *ngIf="!qrImageUrl" class="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
+				<div class="flex h-28 w-28 shrink-0 items-center justify-center rounded-2xl border border-dashed border-brand-gold/20 bg-black/30">
+					<i class="pi pi-qrcode text-4xl text-brand-gold/25"></i>
+				</div>
+				<div class="flex flex-col justify-center gap-3">
+					<p class="text-sm text-gray-400">Este usuario aún no tiene un QR generado.</p>
+					<button type="button" (click)="openGenerateQrModal()"
+						[disabled]="isGeneratingQr"
+						class="w-fit rounded-xl border border-emerald-400/40 bg-emerald-400/10 px-4 py-2 text-sm font-semibold text-emerald-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-300 hover:bg-emerald-400/20 disabled:cursor-not-allowed disabled:opacity-60">
+						<i class="pi pi-qrcode mr-2"></i>
+						{{ isGeneratingQr ? 'Generando...' : 'Generar QR' }}
+					</button>
+				</div>
+			</div>
+
+			<!-- Con QR generado -->
+			<div *ngIf="qrImageUrl" class="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
+				<div class="shrink-0">
+					<img [src]="qrImageUrl" alt="QR del usuario"
+						class="h-28 w-28 rounded-2xl border border-brand-gold/20 bg-white object-contain p-1 shadow-md" />
+				</div>
+				<div class="flex flex-col justify-center gap-3">
+					<p class="text-sm text-gray-400">QR activo. El usuario puede escanearlo para acceder al sistema.</p>
+					<div class="flex flex-wrap gap-2">
+						<a [href]="qrImageUrl" [download]="'qr-' + usuario + '.png'"
+							class="inline-flex items-center gap-2 rounded-xl border border-brand-gold/30 bg-brand-gold/10 px-4 py-2 text-sm font-semibold text-brand-gold transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-gold/50 hover:bg-brand-gold/20">
+							<i class="pi pi-download"></i> Descargar
+						</a>
+						<button type="button" (click)="openRegenerateQrModal()"
+							class="rounded-xl border border-amber-300/40 bg-amber-300/10 px-4 py-2 text-sm font-semibold text-amber-200 transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-200 hover:bg-amber-300/20">
+							<i class="pi pi-refresh mr-2"></i>Regenerar QR
+						</button>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<!-- Botones de credenciales -->
+		<div class="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:justify-end md:px-5">
+			<button type="button" (click)="openEditUsernameModal()"
+				class="rounded-xl border border-blue-400/40 bg-blue-400/10 px-4 py-2 text-sm font-semibold text-blue-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-400/20">
+				Editar usuario
+			</button>
+			<button type="button" (click)="openResetModal()"
+				class="rounded-xl border border-amber-300/40 bg-amber-300/10 px-4 py-2 text-sm font-semibold text-amber-200 transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-200 hover:bg-amber-300/20">
+				Reset contraseña
+			</button>
+		</div>
+
+		<!-- ─── Modal Reset Contraseña ─────────────────────────────────────── -->
+		@if (showResetModal) {
+			<div class="fixed inset-0 z-50 flex items-center justify-center px-4">
+				<div class="absolute inset-0 bg-black/70 backdrop-blur-sm" (click)="closeResetModal()"></div>
+				<div class="relative z-10 w-full max-w-md overflow-hidden rounded-3xl border border-brand-gold/15 bg-[#0d0d0b] shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
+
+					<div class="border-b border-brand-gold/10 px-5 py-4">
+						<p class="text-[0.78rem] uppercase tracking-[0.18em] text-brand-gold">Reset de contraseña</p>
+						<h3 class="mt-1 text-xl font-semibold text-gray-100">Ingresar nueva contraseña</h3>
+						<p class="mt-1 text-sm text-gray-400">Escribe y confirma la nueva contraseña para este usuario.</p>
+					</div>
+
+					<form [formGroup]="form" (ngSubmit)="confirmResetPassword()" class="space-y-4 px-5 py-5">
+
+						<label class="grid gap-2">
+							<span class="text-sm font-medium text-gray-200">Nueva contraseña</span>
+							<div class="relative">
+								<input formControlName="newPassword" [type]="showNewPassword ? 'text' : 'password'"
+									placeholder="Nueva contraseña"
+									class="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 pr-12 text-white outline-none transition placeholder:text-white/25 focus:border-amber-300/70 focus:ring-4 focus:ring-amber-300/10" />
+								<button type="button" (click)="toggleNewPassword()"
+									class="absolute right-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-amber-200 transition hover:bg-white/10">
+									<i [ngClass]="showNewPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+								</button>
+							</div>
+							<div *ngIf="f.newPassword.touched && f.newPassword.errors" class="text-sm text-red-400">
+								<div *ngIf="f.newPassword.errors['required']">La contraseña es requerida.</div>
+								<div *ngIf="f.newPassword.errors['minlength']">Debe tener al menos 8 caracteres.</div>
+							</div>
+						</label>
+
+						<label class="grid gap-2">
+							<span class="text-sm font-medium text-gray-200">Repetir contraseña</span>
+							<div class="relative">
+								<input formControlName="confirmPassword" [type]="showConfirmPassword ? 'text' : 'password'"
+									placeholder="Repite la contraseña"
+									class="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 pr-12 text-white outline-none transition placeholder:text-white/25 focus:border-amber-300/70 focus:ring-4 focus:ring-amber-300/10" />
+								<button type="button" (click)="toggleConfirmPassword()"
+									class="absolute right-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-amber-200 transition hover:bg-white/10">
+									<i [ngClass]="showConfirmPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+								</button>
+							</div>
+							<div *ngIf="f.confirmPassword.touched && f.confirmPassword.errors" class="text-sm text-red-400">
+								<div *ngIf="f.confirmPassword.errors['required']">Debes repetir la contraseña.</div>
+								<div *ngIf="f.confirmPassword.errors['mismatch']">Las contraseñas no coinciden.</div>
+							</div>
+						</label>
+
+						<div class="flex items-center justify-end gap-3 pt-2">
+							<button type="button" (click)="closeResetModal()"
+								class="rounded-xl border border-white/10 bg-transparent px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/5">
+								Cancelar
+							</button>
+							<button type="submit" [disabled]="isSubmitting"
+								class="rounded-xl border border-amber-300/40 bg-amber-300/10 px-4 py-2 text-sm font-semibold text-amber-200 transition hover:-translate-y-0.5 hover:border-amber-200 hover:bg-amber-300/20 disabled:cursor-not-allowed disabled:opacity-60">
+								{{ isSubmitting ? 'Cambiando...' : 'Confirmar cambio' }}
+							</button>
+						</div>
+
+					</form>
+				</div>
+			</div>
+		}
+
+		<!-- ─── Modal Editar Usuario ──────────────────────────────────────── -->
+		@if (showEditUsernameModal) {
+			<div class="fixed inset-0 z-50 flex items-center justify-center px-4">
+				<div class="absolute inset-0 bg-black/70 backdrop-blur-sm" (click)="closeEditUsernameModal()"></div>
+				<div class="relative z-10 w-full max-w-md overflow-hidden rounded-3xl border border-blue-500/15 bg-[#0d0d0b] shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
+
+					<div class="border-b border-blue-500/10 px-5 py-4">
+						<p class="text-[0.78rem] uppercase tracking-[0.18em] text-blue-400">Editar usuario</p>
+						<h3 class="mt-1 text-xl font-semibold text-gray-100">Cambiar nombre de usuario</h3>
+						<p class="mt-1 text-sm text-gray-400">Ingresa el nuevo nombre de usuario para este usuario.</p>
+					</div>
+
+					<form [formGroup]="usernameForm" (ngSubmit)="confirmUpdateUsername()" class="space-y-4 px-5 py-5">
+
+						<label class="grid gap-2">
+							<span class="text-sm font-medium text-gray-200">Nuevo nombre de usuario</span>
+							<input formControlName="username" type="text" placeholder="Nuevo usuario"
+								class="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-white/25 focus:border-blue-400/70 focus:ring-4 focus:ring-blue-400/10" />
+							<div *ngIf="uf.username.touched && uf.username.errors" class="text-sm text-red-400">
+								<div *ngIf="uf.username.errors['required']">El nombre de usuario es requerido.</div>
+								<div *ngIf="uf.username.errors['minlength']">Debe tener al menos 3 caracteres.</div>
+							</div>
+						</label>
+
+						<div class="flex items-center justify-end gap-3 pt-2">
+							<button type="button" (click)="closeEditUsernameModal()"
+								class="rounded-xl border border-white/10 bg-transparent px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/5">
+								Cancelar
+							</button>
+							<button type="submit" [disabled]="isSubmitting"
+								class="rounded-xl border border-blue-400/40 bg-blue-400/10 px-4 py-2 text-sm font-semibold text-blue-300 transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-400/20 disabled:cursor-not-allowed disabled:opacity-60">
+								{{ isSubmitting ? 'Actualizando...' : 'Confirmar cambio' }}
+							</button>
+						</div>
+
+					</form>
+				</div>
+			</div>
+		}
+
+		<!-- ─── Modal Generar / Regenerar QR ─────────────────────────────── -->
+		@if (showQrModal) {
+			<div class="fixed inset-0 z-50 flex items-center justify-center px-4">
+				<div class="absolute inset-0 bg-black/70 backdrop-blur-sm" (click)="closeQrModal()"></div>
+				<div class="relative z-10 w-full max-w-sm overflow-hidden rounded-3xl border border-emerald-500/15 bg-[#0d0d0b] shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
+
+					<div class="border-b border-emerald-500/10 px-5 py-4">
+						<p class="text-[0.78rem] uppercase tracking-[0.18em] text-emerald-400">
+							{{ qrImageUrl ? 'Regenerar QR' : 'Generar QR' }}
+						</p>
+						<h3 class="mt-1 text-xl font-semibold text-gray-100">Código QR de acceso</h3>
+						<p class="mt-1 text-sm text-gray-400">
+							{{ qrImageUrl
+								? 'Se generará un nuevo QR. El QR anterior quedará inválido.'
+								: 'Se generará un QR vinculado a este usuario para acceso rápido.' }}
+						</p>
+					</div>
+
+					<div class="px-5 py-5">
+
+						<!-- Preview QR actual si va a regenerar -->
+						<div *ngIf="qrImageUrl" class="mb-4 flex justify-center">
+							<div class="relative">
+								<img [src]="qrImageUrl" alt="QR actual"
+									class="h-24 w-24 rounded-xl border border-white/10 bg-white object-contain p-1 opacity-40 grayscale" />
+								<div class="absolute inset-0 flex items-center justify-center rounded-xl bg-black/40">
+									<i class="pi pi-ban text-2xl text-red-400/80"></i>
+								</div>
+							</div>
+						</div>
+
+						<div *ngIf="!qrImageUrl" class="mb-4 flex justify-center">
+							<div class="flex h-24 w-24 items-center justify-center rounded-xl border border-dashed border-emerald-400/20 bg-emerald-400/5">
+								<i class="pi pi-qrcode text-4xl text-emerald-400/40"></i>
+							</div>
+						</div>
+
+						<div class="flex items-center justify-end gap-3 pt-2">
+							<button type="button" (click)="closeQrModal()"
+								class="rounded-xl border border-white/10 bg-transparent px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/5">
+								Cancelar
+							</button>
+							<button type="button" (click)="confirmGenerateQr()" [disabled]="isGeneratingQr"
+								class="rounded-xl border border-emerald-400/40 bg-emerald-400/10 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:-translate-y-0.5 hover:border-emerald-300 hover:bg-emerald-400/20 disabled:cursor-not-allowed disabled:opacity-60">
+								{{ isGeneratingQr ? 'Generando...' : (qrImageUrl ? 'Sí, regenerar' : 'Generar QR') }}
+							</button>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		}
+
+	</div>
+</div>

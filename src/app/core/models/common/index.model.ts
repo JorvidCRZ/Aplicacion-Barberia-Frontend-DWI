@@ -14,3 +14,11 @@ export interface Page<T> {
     first?: boolean;
     last: boolean;
 }
+
+export interface PageResponse<T> {
+    content: T[];
+    totalElements: number;
+    totalPages: number;
+    number: number;
+    size: number;
+}

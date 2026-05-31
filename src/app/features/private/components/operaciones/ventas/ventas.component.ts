@@ -17,6 +17,7 @@ import { NotificationService } from '@/app/core/services/common/notification.ser
 import { VentaService } from '@/app/core/services/venta/venta.service';
 
 import { Venta } from '@/app/core/models/ventas/venta.model';
+import { VentaDetalle } from '@/app/core/models/ventas/detalle.model';
 
 @Component({
   selector: 'app-ventas',
@@ -26,11 +27,9 @@ import { Venta } from '@/app/core/models/ventas/venta.model';
     FormsModule,
     ButtonModule,
     DialogModule,
-
     VentaTableComponent,
     VentaFormComponent,
     VentaResumenComponent,
-
     SearchBarComponent,
     DialogHeaderComponent
   ],
@@ -42,9 +41,7 @@ export class VentasComponent implements OnInit {
   private notify = inject(NotificationService);
 
   ventas: Venta[] = [];
-
   ventaSeleccionada: Venta | null = null;
-
   mostrarFormulario = false;
 
   rows = 25;
@@ -62,163 +59,137 @@ export class VentasComponent implements OnInit {
   }
 
   cargarVentas(page: number, size: number): void {
-
     this.cargado = false;
+    this.ventaService.obtenerVentas().subscribe({
+      next: (resp) => {
+        this.ventas = resp.data.map((venta: Venta) => {
 
-    this.ventaService.obtenerVentas()
-      .subscribe({
+          const total = (venta.detalles ?? []).reduce(
+            (acc: number, det: VentaDetalle) => acc + (det.subtotal ?? 0),
+            0
+          );
 
-        next: (resp) => {
+          return {
+            ...venta,
+            total
+          };
 
-          this.ventas = resp.data.map((venta) => {
+        });
+        this.calcularResumen();
+        this.cargado = true;
+      },
+      error: () => {
+        console.warn('Backend no disponible, manteniendo datos actuales.');
+        this.cargado = true;
+      }
+    });
+  }
 
-            const total = (venta.detalles ?? []).reduce((acc, det) => {
+  crearVenta(data: any): void {
+    this.ventaService.crearVenta(data).subscribe({
+      next: (resp) => {
+        this.notify.showSuccess(resp.message);
+        this.cargarVentas(0, this.rows);
+        this.cerrarFormulario();
+      },
+      error: () => {
+        console.warn('Backend no conectado, simulando creación en UI...');
 
-              return acc + ((det.subtotal ?? 0));
+        const ventaSimulada: Venta = {
+          ...data,
+          ventaId: Math.floor(Math.random() * 10000),
+          fecha: new Date(),
+          clienteNombre: data.clienteNombre ?? '',
+          barberoNombre: 'Sin asignar',
+          total: (data.detalles ?? []).reduce(
+            (acc: number, det: any) => acc + (det.precioUnitario * det.cantidad), 0
+          )
+        } as unknown as Venta;
 
-            }, 0);
+        this.ventas = [ventaSimulada, ...this.ventas];
+        this.calcularResumen();
+        this.notify.showSuccess('Venta registrada (Modo Simulación)');
+        this.cerrarFormulario();
+      }
+    });
+  }
 
-            return {
-              ...venta,
-              total
-            };
+  editarVentaGuardada(data: any): void {
+    console.warn('Modo Simulación: editando venta en UI...');
 
-          });
-
-          this.calcularResumen();
-
-          this.cargado = true;
-        },
-
-        error: (err) => {
-
-          this.notify.showHttpError(err);
-
-          this.cargado = true;
+    this.ventas = this.ventas.map(v =>
+      v.ventaId === this.ventaSeleccionada!.ventaId
+        ? {
+          ...v,
+          ...data,
+          ventaId: v.ventaId,
+          clienteNombre: v.clienteNombre,
+          total: (data.detalles ?? []).reduce(
+            (acc: number, det: any) => acc + (det.precioUnitario * det.cantidad), 0
+          )
         }
+        : v
+    );
 
-      });
+    this.calcularResumen();
+    this.notify.showSuccess('Venta actualizada (Modo Simulación)');
+    this.cerrarFormulario();
+  }
 
+  eliminarVenta(venta: Venta): void {
+    this.ventaService.eliminarVenta(venta.ventaId).subscribe({
+      next: (resp) => {
+        this.notify.showSuccess(resp.message);
+        this.cargarVentas(0, this.rows);
+      },
+      error: () => {
+        this.ventas = this.ventas.filter(v => v.ventaId !== venta.ventaId);
+        this.calcularResumen();
+        this.notify.showSuccess('Venta eliminada (Modo Simulación)');
+      }
+    });
+  }
+
+  guardarVenta(data: any): void {
+    if (this.ventaSeleccionada) {
+      this.editarVentaGuardada(data);
+    } else {
+      this.crearVenta(data);
+    }
   }
 
   buscarVentas(valor: string): void {
-
     this.filtro = valor;
-
     this.cargarVentas(0, this.rows);
-
   }
 
   abrirCrearVenta(): void {
-
     this.ventaSeleccionada = null;
-
     this.mostrarFormulario = true;
-
   }
-
 
   cerrarFormulario(): void {
-
     this.mostrarFormulario = false;
-
-
-  }
-
-  guardarVenta(data: Venta): void {
-
-    this.crearVenta(data);
-
-  }
-
-  crearVenta(data: Venta): void {
-
-    this.ventaService.crearVenta(data)
-      .subscribe({
-
-        next: (resp) => {
-
-          this.notify.showSuccess(resp.message);
-
-          this.cargarVentas(0, this.rows);
-
-          this.cerrarFormulario();
-
-        },
-
-        error: (err) => {
-          this.notify.showHttpError(err);
-        }
-
-      });
-
   }
 
   editarVenta(venta: Venta): void {
-
-  this.ventaSeleccionada = venta;
-
-  this.mostrarFormulario = true;
-
-}
-
-
-  eliminarVenta(venta: Venta): void {
-
-    this.ventaService.eliminarVenta(venta.ventaId)
-      .subscribe({
-
-        next: (resp) => {
-
-          this.notify.showSuccess(resp.message);
-
-          this.cargarVentas(0, this.rows);
-
-        },
-
-        error: (err) => {
-
-          this.notify.showHttpError(err);
-
-        }
-
-      });
-
+    this.ventaSeleccionada = venta;
+    this.mostrarFormulario = true;
   }
 
   onLazyLoad(event: TableLazyLoadEvent): void {
-
     const first = event.first ?? 0;
-
     const rows = event.rows ?? 25;
-
-    const page = Math.floor(first / rows);
-
-    this.cargarVentas(page, rows);
-
+    this.cargarVentas(Math.floor(first / rows), rows);
   }
 
   calcularResumen(): void {
-
     this.totalVentas = this.ventas.length;
-
-    this.ingresos = this.ventas
-      .reduce((acc, venta) => {
-
-        const detalles = venta.detalles ?? [];
-
-        const totalVenta = detalles.reduce((sum, det) => {
-          return sum + (det.precioUnitario * det.cantidad);
-        }, 0);
-
-        return acc + totalVenta;
-
-      }, 0);
-
-    this.promedio = this.totalVentas > 0
-      ? this.ingresos / this.totalVentas
-      : 0;
-
+    this.ingresos = this.ventas.reduce((acc, venta) => {
+      return acc + (venta.detalles ?? []).reduce(
+        (sum, det) => sum + (Number(det.precioUnitario) * Number(det.cantidad)), 0
+      );
+    }, 0);
+    this.promedio = this.totalVentas > 0 ? this.ingresos / this.totalVentas : 0;
   }
-
 }

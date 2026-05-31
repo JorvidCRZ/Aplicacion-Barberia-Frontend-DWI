@@ -1,0 +1,280 @@
+<p-toast position="top-right" />
+
+<div class="flex flex-col gap-6 mt-5">
+
+  <aside
+    class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between px-6 py-4 border-b border-brand-gold-soft bg-brand-black rounded-xl">
+
+    <h1 class="text-lg font-semibold text-brand-gold text-center md:text-start">
+      <i class="pi pi-cog"></i> Configuración de Cuenta
+    </h1>
+
+    <span class="text-sm text-zinc-400 text-center md:text-end">
+      Administra tu información personal y seguridad
+    </span>
+
+  </aside>
+
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+    <!-- Columna izquierda -->
+    <div class="table-base p-6 flex flex-col items-center gap-5">
+
+      <div class="w-24 h-24 rounded-full bg-brand-gold flex items-center justify-center text-brand-black text-3xl font-bold shadow-lg select-none">
+        {{ inicialesAvatar }}
+      </div>
+
+      <div class="text-center">
+        <p class="text-white font-semibold text-lg leading-tight">
+          {{ perfil.nombre }} {{ perfil.apellido }}
+        </p>
+        <p class="text-zinc-400 text-sm mt-1">
+          &#64;{{ perfil.usuario }}
+        </p>
+      </div>
+
+      <span class="px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase bg-brand-gold/10 text-brand-gold border border-brand-gold/30">
+        {{ labelRol }}
+      </span>
+
+      <p-divider styleClass="w-full border-zinc-700" />
+
+      <ul class="w-full flex flex-col gap-3">
+
+        <li class="flex items-center gap-3 text-sm">
+          <i class="pi pi-envelope text-brand-gold w-5 shrink-0"></i>
+          <span class="text-zinc-300 truncate">{{ perfil.email }}</span>
+        </li>
+
+        <li class="flex items-center gap-3 text-sm">
+          <i class="pi pi-phone text-brand-gold w-5 shrink-0"></i>
+          <span class="text-zinc-300">{{ perfil.telefono || '—' }}</span>
+        </li>
+
+        <li class="flex items-center gap-3 text-sm">
+          <i class="pi pi-id-card text-brand-gold w-5 shrink-0"></i>
+          <span class="text-zinc-300">ID: {{ perfil.idUsuario }}</span>
+        </li>
+
+      </ul>
+
+    </div>
+
+    <!-- Columna derecha -->
+    <div class="xl:col-span-2 flex flex-col gap-6">
+
+      <!-- Datos personales -->
+      <div class="table-base p-6 flex flex-col gap-5">
+
+        <h2 class="text-base font-semibold text-brand-gold flex items-center gap-2">
+          <i class="pi pi-user"></i> Datos Personales
+        </h2>
+
+        <p-divider styleClass="border-zinc-700 mt-0" />
+
+        <form [formGroup]="formPerfil" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <div class="flex flex-col gap-1">
+            <label class="text-xs text-zinc-400 font-medium uppercase tracking-wide">Nombre</label>
+            <input pInputText formControlName="nombre" placeholder="Nombre"
+              class="input-field w-full" [class.border-red-500]="campoInvalido(formPerfil, 'nombre')" />
+            @if (campoInvalido(formPerfil, 'nombre')) {
+              <span class="text-xs text-red-400">El nombre es requerido (mín. 2 caracteres).</span>
+            }
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label class="text-xs text-zinc-400 font-medium uppercase tracking-wide">Apellido</label>
+            <input pInputText formControlName="apellido" placeholder="Apellido"
+              class="input-field w-full" [class.border-red-500]="campoInvalido(formPerfil, 'apellido')" />
+            @if (campoInvalido(formPerfil, 'apellido')) {
+              <span class="text-xs text-red-400">El apellido es requerido (mín. 2 caracteres).</span>
+            }
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label class="text-xs text-zinc-400 font-medium uppercase tracking-wide">
+              Usuario <span class="ml-1 text-zinc-600 normal-case">(no editable)</span>
+            </label>
+            <input pInputText formControlName="usuario"
+              class="input-field w-full opacity-50 cursor-not-allowed" />
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label class="text-xs text-zinc-400 font-medium uppercase tracking-wide">Correo</label>
+            <input pInputText formControlName="email" type="email" placeholder="correo@ejemplo.com"
+              class="input-field w-full" [class.border-red-500]="campoInvalido(formPerfil, 'email')" />
+            @if (campoInvalido(formPerfil, 'email')) {
+              <span class="text-xs text-red-400">Ingresa un correo válido.</span>
+            }
+          </div>
+
+          <div class="flex flex-col gap-1 md:col-span-2">
+            <label class="text-xs text-zinc-400 font-medium uppercase tracking-wide">Teléfono</label>
+            <input pInputText formControlName="telefono" placeholder="9XXXXXXXX"
+              class="input-field w-full md:w-1/2" [class.border-red-500]="campoInvalido(formPerfil, 'telefono')" />
+            @if (campoInvalido(formPerfil, 'telefono')) {
+              <span class="text-xs text-red-400">Ingresa un teléfono válido (9-15 dígitos).</span>
+            }
+          </div>
+
+        </form>
+
+        <div class="flex justify-end pt-2">
+          <button
+            type="button"
+            (click)="guardarPerfil()"
+            [disabled]="formPerfil.invalid || guardandoPerfil()"
+            style="background-color: transparent; border: 1.5px solid #C9A84C; color: #C9A84C; cursor: pointer;"
+            class="inline-flex items-center justify-center gap-2 w-full rounded-lg py-3 text-sm font-semibold tracking-wide transition-all duration-200 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+            onmouseover="if(!this.disabled) this.style.backgroundColor='#C9A84C'; if(!this.disabled) this.style.color='#0a0a0a';"
+            onmouseout="this.style.backgroundColor='transparent'; this.style.color='#C9A84C';">
+            @if (guardandoPerfil()) {
+              <i class="pi pi-spin pi-spinner"></i>
+              <span>Guardando...</span>
+            } @else {
+              <i class="pi pi-save"></i>
+              <span>Guardar cambios</span>
+            }
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Cambiar contraseña -->
+      <div class="table-base p-6 flex flex-col gap-5">
+
+        <h2 class="text-base font-semibold text-brand-gold flex items-center gap-2">
+          <i class="pi pi-lock"></i> Cambiar Contraseña
+        </h2>
+
+        <p-divider styleClass="border-zinc-700 mt-0" />
+
+        <form [formGroup]="formPassword" class="flex flex-col gap-4">
+
+          <div class="flex flex-col gap-1">
+            <label class="text-xs text-zinc-400 font-medium uppercase tracking-wide">Contraseña actual</label>
+            <div class="relative">
+              <input pInputText formControlName="passwordActual"
+                [type]="mostrarPasswordActual() ? 'text' : 'password'"
+                placeholder="••••••••"
+                class="input-field w-full pr-10"
+                [class.border-red-500]="campoInvalido(formPassword, 'passwordActual')" />
+              <button type="button"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-brand-gold transition-colors"
+                (click)="toggleVisible('actual')">
+                <i [class]="mostrarPasswordActual() ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+              </button>
+            </div>
+            @if (campoInvalido(formPassword, 'passwordActual')) {
+              <span class="text-xs text-red-400">La contraseña actual es requerida.</span>
+            }
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <div class="flex flex-col gap-1">
+              <label class="text-xs text-zinc-400 font-medium uppercase tracking-wide">Nueva contraseña</label>
+              <div class="relative">
+                <input pInputText formControlName="passwordNueva"
+                  [type]="mostrarPasswordNueva() ? 'text' : 'password'"
+                  placeholder="Mín. 8 caracteres"
+                  class="input-field w-full pr-10"
+                  [class.border-red-500]="campoInvalido(formPassword, 'passwordNueva')" />
+                <button type="button"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-brand-gold transition-colors"
+                  (click)="toggleVisible('nueva')">
+                  <i [class]="mostrarPasswordNueva() ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+                </button>
+              </div>
+              @if (campoInvalido(formPassword, 'passwordNueva')) {
+                <span class="text-xs text-red-400">Mínimo 8 caracteres.</span>
+              }
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <label class="text-xs text-zinc-400 font-medium uppercase tracking-wide">Confirmar contraseña</label>
+              <div class="relative">
+                <input pInputText formControlName="confirmarPassword"
+                  [type]="mostrarConfirmar() ? 'text' : 'password'"
+                  placeholder="Repite la nueva contraseña"
+                  class="input-field w-full pr-10"
+                  [class.border-red-500]="campoInvalido(formPassword, 'confirmarPassword') || formPassword.errors?.['noCoinciden']" />
+                <button type="button"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-brand-gold transition-colors"
+                  (click)="toggleVisible('confirmar')">
+                  <i [class]="mostrarConfirmar() ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+                </button>
+              </div>
+              @if (formPassword.errors?.['noCoinciden'] && formPassword.get('confirmarPassword')?.touched) {
+                <span class="text-xs text-red-400">Las contraseñas no coinciden.</span>
+              }
+            </div>
+
+          </div>
+
+          @if (formPassword.get('passwordNueva')?.value) {
+            <div class="flex flex-col gap-1">
+              <span class="text-xs text-zinc-500">Seguridad de la contraseña</span>
+              <div class="flex gap-1">
+                @for (i of [1,2,3,4]; track i) {
+                  <div class="h-1 flex-1 rounded-full transition-all duration-300"
+                    [class]="nivelSeguridad >= i ? colorSeguridad : 'bg-zinc-700'">
+                  </div>
+                }
+              </div>
+              <span class="text-xs" [class]="textoColorSeguridad">{{ textoSeguridad }}</span>
+            </div>
+          }
+
+          <div class="flex justify-end pt-2">
+            <button
+              type="button"
+              (click)="cambiarPassword()"
+              [disabled]="formPassword.invalid || guardandoPassword()"
+              style="background-color: transparent; border: 1.5px solid #C9A84C; color: #C9A84C; cursor: pointer;"
+              class="inline-flex items-center justify-center gap-2 w-full rounded-lg py-3 text-sm font-semibold tracking-wide transition-all duration-200 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+              onmouseover="if(!this.disabled) this.style.backgroundColor='#C9A84C'; if(!this.disabled) this.style.color='#0a0a0a';"
+              onmouseout="this.style.backgroundColor='transparent'; this.style.color='#C9A84C';">
+              @if (guardandoPassword()) {
+                <i class="pi pi-spin pi-spinner"></i>
+                <span>Actualizando...</span>
+              } @else {
+                <i class="pi pi-key"></i>
+                <span>Cambiar contraseña</span>
+              }
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+
+      <!-- Permisos -->
+      <div class="table-base p-6 flex flex-col gap-5">
+
+        <h2 class="text-base font-semibold text-brand-gold flex items-center gap-2">
+          <i class="pi pi-shield"></i> Permisos Asignados
+        </h2>
+
+        <p-divider styleClass="border-zinc-700 mt-0" />
+
+        <p class="text-sm text-zinc-400">
+          Los permisos son asignados automáticamente según tu rol
+          <span class="text-brand-gold font-semibold">"{{ labelRol }}"</span>.
+          Contacta al administrador del sistema si necesitas cambiarlos.
+        </p>
+
+        <div class="flex flex-wrap gap-2">
+          @for (permiso of permisosDelRol; track permiso) {
+            <span class="px-3 py-1 rounded-full text-xs font-mono font-medium bg-zinc-800 text-zinc-300 border border-zinc-700">
+              {{ permiso }}
+            </span>
+          }
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>

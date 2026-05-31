@@ -1,67 +1,92 @@
 <div class="container-main">
   <div class="flex items-center justify-between mb-6">
     <div class="flex items-center gap-4">
-      <img src="/assets/avatar-placeholder.png" alt="avatar" class="w-14 h-14 rounded-full border border-ui-border" />
+      <img [src]="avatarUrl" alt="avatar" class="w-14 h-14 rounded-full border border-ui-border" />
       <div>
-        <h1 class="text-2xl font-bold">¡Hola, Carlos!</h1>
+        <h1 class="text-2xl font-bold">¡Hola, {{ primerNombre }}!</h1>
         <p class="text-text-muted">Aquí está tu resumen del día</p>
       </div>
     </div>
     <div class="flex items-center gap-3">
-      <button pButton class="p-button boton-ghost">Estado: Disponible</button>
-      <button pButton class="p-button boton-danger">Cerrar Sesión</button>
+      <button pButton class="p-button boton-ghost" [class.boton-ocupado]="isOcupado" (click)="toggleEstado()">
+        {{ estadoLabel }}
+      </button>
     </div>
   </div>
 
-  <!-- Cards -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-    <div class="form-base"> <h3 class="text-sm text-text-muted">Cortes Hoy</h3><div class="text-2xl font-bold">8/12</div></div>
-    <div class="form-base"> <h3 class="text-sm text-text-muted">Ingresos Hoy</h3><div class="text-2xl font-bold">$240</div></div>
-    <div class="form-base"> <h3 class="text-sm text-text-muted">Comisión Hoy</h3><div class="text-2xl font-bold">$36</div></div>
-    <div class="form-base"> <h3 class="text-sm text-text-muted">Clientes Hoy</h3><div class="text-2xl font-bold">8</div></div>
+    <div class="form-base">
+      <h3 class="text-sm text-text-muted">Cortes Hoy</h3>
+      <div class="text-2xl font-bold">{{ cortesHoy }}/{{ metaCortes }}</div>
+    </div>
+    <div class="form-base">
+      <h3 class="text-sm text-text-muted">Ingresos Hoy</h3>
+      <div class="text-2xl font-bold">${{ ingresosHoy | number:'1.0-0' }}</div>
+    </div>
+    <div class="form-base">
+      <h3 class="text-sm text-text-muted">Comisión Hoy</h3>
+      <div class="text-2xl font-bold">${{ comisionHoy | number:'1.0-0' }}</div>
+    </div>
+    <div class="form-base">
+      <h3 class="text-sm text-text-muted">Clientes Hoy</h3>
+      <div class="text-2xl font-bold">{{ clientesHoy }}</div>
+    </div>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <div class="form-base">
       <h2 class="title-form">Mi Agenda Hoy</h2>
-      <ul class="space-y-3">
-        <li class="p-4 bg-ui-card rounded-lg flex justify-between items-center">
-          <div>
-            <div class="font-semibold">09:00 AM</div>
-            <div class="text-text-secondary">Juan Pérez — Fade Clásico</div>
-          </div>
-          <div class="text-green-400 font-semibold">$25.00</div>
-        </li>
-        <li class="p-4 bg-ui-card rounded-lg flex justify-between items-center">
-          <div>
-            <div class="font-semibold">10:30 AM</div>
-            <div class="text-text-secondary">Miguel Ángel — Degradado Alto</div>
-          </div>
-          <div class="text-green-400 font-semibold">$45.00</div>
-        </li>
-      </ul>
+      @if (citasLoading) {
+        <p class="text-text-muted text-sm py-4">Cargando citas...</p>
+      } @else if (citas.length === 0) {
+        <p class="text-text-muted text-sm py-4">No hay citas para hoy.</p>
+      } @else {
+        <ul class="space-y-3">
+          @for (cita of citas; track $index) {
+            <li class="p-4 bg-ui-card rounded-lg flex justify-between items-center">
+              <div>
+                <div class="font-semibold">{{ getHora(cita) }}</div>
+                <div class="text-text-secondary">
+                  {{ getNombreCliente(cita) }}@if (getNombreServicio(cita)) { — {{ getNombreServicio(cita) }} }
+                </div>
+              </div>
+              <div class="text-green-400 font-semibold">${{ getPrecio(cita) | number:'1.2-2' }}</div>
+            </li>
+          }
+        </ul>
+      }
     </div>
 
     <div class="form-base">
       <h2 class="title-form">Resumen Semanal</h2>
-      <div class="space-y-3">
-        <div>
-          <div class="flex justify-between text-sm text-text-muted"><span>Lun</span><span>10 cortes - $280</span></div>
-          <div class="w-full bg-ui-border rounded-full h-3 mt-2"><div class="bg-brand-gold h-3 rounded-full" style="width:65%"></div></div>
+      @if (semanalLoading) {
+        <p class="text-text-muted text-sm py-4">Cargando semana...</p>
+      } @else {
+        <div class="space-y-3">
+          @for (dia of dias; track $index) {
+            <div>
+              <div class="flex justify-between text-sm text-text-muted">
+                <span>{{ getDiaLabel(dia) }}</span>
+                <span>{{ getCortesDia(dia) }} cortes · ${{ getIngresosDia(dia) | number:'1.0-0' }}</span>
+              </div>
+              <div class="w-full bg-ui-border rounded-full h-3 mt-2">
+                <div class="bg-brand-gold h-3 rounded-full transition-all duration-500" [style.width.%]="getPorcentajeBarra(dia)"></div>
+              </div>
+            </div>
+          }
         </div>
-
-        <div>
-          <div class="flex justify-between text-sm text-text-muted"><span>Mar</span><span>12 cortes - $340</span></div>
-          <div class="w-full bg-ui-border rounded-full h-3 mt-2"><div class="bg-brand-gold h-3 rounded-full" style="width:78%"></div></div>
+        <div class="mt-6 p-4 bg-ui-card rounded-lg">
+          <div class="flex justify-between text-sm text-text-muted">
+            <span>Sueldo Base</span><span>${{ sueldoBase | number:'1.2-2' }}</span>
+          </div>
+          <div class="flex justify-between text-sm text-text-muted mt-2">
+            <span>Comisión (15%)</span><span>${{ comisionSemanal | number:'1.2-2' }}</span>
+          </div>
+          <div class="flex justify-between text-lg font-bold mt-3">
+            <span>Total Semana</span><span>${{ totalSemana | number:'1.2-2' }}</span>
+          </div>
         </div>
-
-      </div>
-
-      <div class="mt-6 p-4 bg-ui-card rounded-lg">
-        <div class="flex justify-between text-sm text-text-muted"><span>Sueldo Base</span><span>$1500.00</span></div>
-        <div class="flex justify-between text-sm text-text-muted mt-2"><span>Comisión (15%)</span><span>$276.00</span></div>
-        <div class="flex justify-between text-lg font-bold mt-3"><span>Total Semana</span><span>$1776.00</span></div>
-      </div>
+      }
     </div>
   </div>
 </div>

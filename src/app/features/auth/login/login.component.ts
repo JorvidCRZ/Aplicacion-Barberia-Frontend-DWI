@@ -24,18 +24,18 @@ import { campoInvalido } from '@/app/shared/utils/form-utils.component';
 })
 export class LoginComponent implements OnInit {
 
+  private router = inject(Router);
   private fb = inject(FormBuilder);
+  private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
   private tokenService = inject(TokenService);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
   private notify = inject(NotificationService);
 
   formularioLogin!: FormGroup;
   loading = false;
   submitted = false;
   formSubmitted = false;
-  
+
   campoInvalido = (campo: string) => campoInvalido(this.formularioLogin, campo, this.formSubmitted);
 
   ngOnInit() {
@@ -57,20 +57,16 @@ export class LoginComponent implements OnInit {
       return;
     }
     this.loading = true;
-    this.authService.login(this.formularioLogin.value).pipe(finalize(() => this.loading = false))
-      .subscribe({
-        next: (res) => {
-          this.notify.showSuccess('Bienvenido al sistema');
-          const returnUrl = this.route.snapshot.queryParams['returnUrl'];
-          const home = this.tokenService.getHomeByRole();
-          this.router.navigate([returnUrl || home], {
-            replaceUrl: true
-          });
-        },
-
-        error: (err) => {
-          this.notify.showHttpError(err, 'Error de autenticación');
-        }
-      });
+    this.authService.login(this.formularioLogin.value).pipe(finalize(() => this.loading = false)).subscribe({
+      next: (res) => {
+        this.notify.showSuccess('Bienvenido al sistema');
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'];
+        const home = this.tokenService.getHomeByRole();
+        this.router.navigate([returnUrl || home], { replaceUrl: true });
+      },
+      error: (err) => {
+        this.notify.showHttpError(err, 'Error de autenticación');
+      }
+    });
   }
 }

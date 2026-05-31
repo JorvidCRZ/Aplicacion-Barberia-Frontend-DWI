@@ -1,7 +1,40 @@
 <div class="mt-5">
-	<app-header-barbero [title]="'Barberos'" [icon]="icono" [description]="'Gestión y administración de barberos'" [buttonLabel]="'Nuevo'" (create)="abrirCrear()" (search)="onSearch($event)"></app-header-barbero>
+  <app-header-barbero
+    (search)="onSearch($event)">
+  </app-header-barbero>
 </div>
 
 <div class="mt-5">
-	<app-resumen-general-barbero></app-resumen-general-barbero>
+  <app-resumen-general-barbero></app-resumen-general-barbero>
 </div>
+
+<section class="mt-1 section-shell section-shell--main">
+  <div class="section-header">
+    <div>
+      <div class="section-badge">
+        <span>Gestion de barberos</span>
+      </div>
+    </div>
+    <div class="section-mark">✦</div>
+  </div>
+
+  <div class="section-content">
+    <app-filtrar-barbero
+      (apply)="onApplyFilters($event)"
+      (clear)="onClearFilters()"
+      (inhabilitados)="onShowInhabilitados()">
+    </app-filtrar-barbero>
+    <app-table-barbero
+      [barberos]="barberos"
+      [totalElements]="totalElements"
+      [currentPage]="currentPage"
+      [totalPages]="totalPages"
+      [inhabilitadosMode]="inhabilitadosMode"
+      [isSearchMode]="searchTerm.trim().length > 0"
+      (delete)="onDisableBarbero($event)"
+      (reactivate)="onReactivateBarbero($event)"
+      (prev)="onPrev()"
+      (next)="onNext()">
+    </app-table-barbero>
+  </div>
+</section>

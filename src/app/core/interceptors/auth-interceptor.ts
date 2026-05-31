@@ -27,19 +27,36 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           return throwError(() => error);
         }
 
-        return authService.refreshToken().pipe(
-          switchMap(response => {
-            tokenService.saveAccessToken(response.data.accessToken);
-            const retryReq = req.clone({ setHeaders: { Authorization: `Bearer ${response.data.accessToken}` }});
-            return next(retryReq);
-          }),
-          catchError((refreshError: any) => {
-            tokenService.clearTokens();
-            return throwError(() => refreshError);
-          })
-        );
+  return authService.refreshToken().pipe(
+
+  switchMap((response: any) => {
+
+    console.log('RESPUESTA REFRESH TOKEN:', response);
+
+    tokenService.saveAccessToken(response.data.accessToken);
+
+    const retryReq = req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${response.data.accessToken}`
       }
+    });
+
+    return next(retryReq);
+  }),
+
+  catchError((refreshError: any) => {
+
+    console.error('ERROR REFRESH TOKEN:', refreshError);
+
+    tokenService.clearTokens();
+
+    return throwError(() => refreshError);
+  })
+
+);
+      }
+
       return throwError(() => error);
     })
   );
-};
+}

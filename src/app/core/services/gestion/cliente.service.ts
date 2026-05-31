@@ -32,6 +32,21 @@ export class ClienteService {
         );
     }
 
+     listarInhabilitados(
+        page: number = 0,
+        size: number = 5
+    ): Observable<ApiResponse<Page<Cliente>>> {
+
+        const params = new HttpParams()
+            .set('page', page)
+            .set('size', size);
+
+        return this.http.get<ApiResponse<Page<Cliente>>>(
+             `${this.apiUrl}/inhabilitados`,
+            { params }
+        );
+    }
+
     buscarPorNombre(
         nombre: string,
         page: number = 0,
@@ -107,4 +122,18 @@ export class ClienteService {
             `${this.apiUrl}/${id}/actividad`
         );
     }
+
+    deshabilitar(id: number): Observable<ApiResponse<string>> {
+    return this.http.patch<ApiResponse<string>>(
+        `${this.apiUrl}/${id}/deshabilitar`,
+        {}
+    );
+}
+
+reactivar(id: number): Observable<ApiResponse<string>> {
+    return this.http.patch<ApiResponse<string>>(
+        `${this.apiUrl}/${id}/reactivar`,
+        {}
+    );
+}
 }

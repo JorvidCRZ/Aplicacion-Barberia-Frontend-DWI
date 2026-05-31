@@ -4,3 +4,30 @@ export interface Usuario {
   qrToken: string;
   password?: string;
 }
+
+export interface UsuarioTablaResponse {
+
+    idUsuario: number;
+    usuario: string;
+    nombre: string;
+    apellido: string;
+    tieneQr: boolean;
+    roles: string[];
+}
+
+
+export interface AssignRolesRequest {
+    roles: number[];
+}
+
+
+export interface Rol {
+    idRol: number;
+    nombre: string;
+}
+
+export interface Permiso {
+    idPermiso: number;
+    nombre: string;
+    descripcion: string;
+}
