@@ -37,6 +37,11 @@ input[type=number] { -moz-appearance: textfield; }
 
 .calendar-icon { right: 8px; }
 
+.calendar-icon,
+.calendar-icon * {
+	pointer-events: none;
+}
+
 /* Small adjustments for responsive */
 @media (max-width: 768px) {
 	.input-with-icon .icon-btn { width: 30px; height: 30px; }

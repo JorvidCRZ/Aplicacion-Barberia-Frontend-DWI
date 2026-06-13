@@ -1,9 +1,8 @@
 /* =========================
    DASHBOARD RESUMEN ADMIN
-   Solo estilos que no cubre el sistema global
 ========================= */
 
-/* ── Header ─────────────────────────────────────────────────────────────── */
+/* ── Layout base ─────────────────────────────────────────────────────────── */
 .dashboard {
   padding: 1.5rem;
   min-height: 100vh;
@@ -11,6 +10,7 @@
   color: var(--color-text-primary);
 }
 
+/* ── Header ──────────────────────────────────────────────────────────────── */
 .dashboard__header {
   display: flex;
   align-items: flex-start;
@@ -27,7 +27,7 @@
 .dashboard__title {
   font-size: 1.4rem;
   font-weight: 700;
-  color: var(--color-brand-gold);
+  color: #ffffff;                         /* blanco, no dorado */
 }
 
 .dashboard__subtitle {
@@ -37,10 +37,11 @@
 }
 
 .dashboard__date {
-  font-size: 0.75rem;
-  color: var(--color-brand-gold);
+  font-size: 0.72rem;
+  color: var(--color-text-muted);         /* gris, no dorado */
   margin-top: 0.5rem;
   display: inline-block;
+  letter-spacing: 0.03em;
 }
 
 .dashboard__error {
@@ -70,12 +71,12 @@
   transition: all 0.2s;
   background: transparent;
   border: 1px solid var(--color-ui-border);
-  color: var(--color-text-secondary);
+  color: var(--color-text-secondary);     /* gris por defecto */
 }
 
 .period-btn:hover {
   background: var(--color-ui-elevated);
-  color: var(--color-text-primary);
+  color: #ffffff;
 }
 
 .period-btn--active {
@@ -99,11 +100,12 @@
   padding: 1rem 1.1rem;
   background: var(--color-ui-card);
   border: 1px solid var(--color-ui-borderSoft);
-  transition: transform 0.2s;
+  transition: transform 0.2s, border-color 0.2s;
 }
 
 .kpi-card:hover {
   transform: translateY(-2px);
+  border-color: rgba(212, 175, 55, 0.25); /* sutil dorado al hover */
 }
 
 .kpi-card--skeleton {
@@ -122,22 +124,25 @@
   position: absolute;
   top: 1rem;
   right: 1rem;
-  font-size: 1.2rem;
-  color: var(--color-brand-gold);
-  opacity: 0.6;
+  font-size: 1.1rem;
+  color: var(--color-brand-gold);         /* dorado solo en icono */
+  opacity: 0.5;
 }
 
 .kpi-card__label {
   font-size: 0.72rem;
-  color: var(--color-text-secondary);
-  margin-bottom: 0.4rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);         /* gris apagado */
+  margin-bottom: 0.5rem;
   padding-right: 1.8rem;
 }
 
 .kpi-card__value {
-  font-size: 1.6rem;
+  font-size: 1.65rem;
   font-weight: 700;
-  color: var(--color-brand-gold);
+  color: #ffffff;                         /* blanco para el número */
   line-height: 1.1;
 }
 
@@ -146,14 +151,22 @@
   align-items: center;
   gap: 3px;
   font-size: 0.7rem;
-  margin-top: 0.35rem;
+  margin-top: 0.4rem;
   color: var(--color-text-muted);
 }
 
-.kpi-card__delta--positive { color: #4caf50; }
-.kpi-card__delta--negative { color: var(--color-brand-red); }
+.kpi-card__delta--positive { color: #4ade80; }  /* verde más moderno */
+.kpi-card__delta--negative { color: #f87171; }  /* rojo suave */
 
 /* ── Citas Section ───────────────────────────────────────────────────────── */
+.citas-section {
+  background: var(--color-ui-card);
+  border: 1px solid var(--color-ui-borderSoft);
+  border-radius: 1rem;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
 .citas-section__header {
   display: flex;
   align-items: center;
@@ -164,7 +177,7 @@
 .citas-section__title {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--color-brand-gold);
+  color: #ffffff;                         /* blanco */
 }
 
 /* ── Tabla citas ─────────────────────────────────────────────────────────── */
@@ -172,7 +185,7 @@
   border-radius: 0.75rem;
   overflow: hidden;
   background: var(--color-ui-card);
-  border: 1px solid var(--color-brand-gold-soft);
+  border: 1px solid var(--color-ui-borderSoft);
 }
 
 .citas-table {
@@ -181,25 +194,26 @@
   font-size: 0.8rem;
 }
 
-/* thead reutiliza estilo de p-datatable del global */
 .citas-table thead tr {
   background: var(--color-brand-dark);
-  border-bottom: 2px solid var(--color-brand-gold-soft);
+  border-bottom: 1px solid var(--color-ui-borderSoft);
 }
 
 .citas-table th {
   padding: 0.75rem 1rem;
   text-align: left;
   font-weight: 600;
-  font-size: 0.75rem;
-  color: var(--color-text-table-sub);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);         /* gris en headers */
 }
 
 .citas-table td {
   padding: 0.75rem 1rem;
   vertical-align: middle;
   border-bottom: 1px solid var(--color-ui-borderSoft);
-  color: var(--color-text-table-sub);
+  color: #ffffff;                         /* blanco en celdas */
 }
 
 .citas-table tbody tr:last-child td {
@@ -220,7 +234,7 @@
 .cliente-nombre {
   font-weight: 600;
   font-size: 0.82rem;
-  color: var(--color-brand-gold);
+  color: #ffffff;                         /* blanco, no dorado */
 }
 
 .cliente-tel {
@@ -234,11 +248,84 @@
   font-size: 0.8rem;
 }
 
-/* servicio badge — extiende badge-base del global */
 .servicio-badge {
   background: var(--color-brand-gold-soft);
   color: var(--color-brand-gold);
-  border: 1px solid rgba(212, 175, 55, 0.3);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+/* ── Predicción ──────────────────────────────────────────────────────────── */
+.prediccion-section {
+  background: var(--color-ui-card);
+  border: 1px solid var(--color-ui-borderSoft);
+  border-radius: 1rem;
+  padding: 1.25rem 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.prediccion-section__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.prediccion-section__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;                         /* blanco */
+  margin: 0;
+}
+
+.prediccion-section__title i {
+  color: var(--color-brand-gold);         /* icono dorado, texto blanco */
+}
+
+.prediccion-badge {
+  background: var(--color-brand-gold-soft);
+  color: var(--color-brand-gold);
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 0.3rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+.prediccion-loading {
+  text-align: center;
+  padding: 2.5rem 0;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.prediccion-chart-wrap {
+  height: 220px;
+  margin-bottom: 1.25rem;
+}
+
+.prediccion-stats {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--color-ui-borderSoft);
+  padding-top: 1rem;
+}
+
+.prediccion-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.prediccion-stat__label {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);         /* gris */
+}
+
+.prediccion-stat__val {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;                         /* blanco, no dorado */
 }
 
 /* ── Animaciones ─────────────────────────────────────────────────────────── */
@@ -260,12 +347,10 @@
 /* ── Responsive ──────────────────────────────────────────────────────────── */
 @media (max-width: 640px) {
   .dashboard { padding: 0.75rem; }
-
   .dashboard__header { flex-direction: column; gap: 0.75rem; }
-
   .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-
-  /* ocultar columna Tipo en mobile */
   .citas-table th:nth-child(4),
   .citas-table td:nth-child(4) { display: none; }
+  .prediccion-stats { gap: 1rem; }
+  .prediccion-chart-wrap { height: 160px; }
 }

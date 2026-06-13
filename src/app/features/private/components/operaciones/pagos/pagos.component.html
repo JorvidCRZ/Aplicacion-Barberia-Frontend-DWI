@@ -1,0 +1,104 @@
+<div class="p-8 max-w-[1400px] mx-auto text-white font-sans bg-[#0c0c0c] min-h-screen">
+  
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-white text-2xl font-bold tracking-[0.1em] m-0">MÓDULO DE PAGOS</h1>
+    <button class="bg-[#C9A84C] hover:bg-[#E2B95A] text-black px-6 py-3 font-semibold text-sm tracking-[0.1em] rounded transition-colors flex items-center" (click)="abrirNuevoPago()">
+      <i class="pi pi-plus mr-2"></i> NUEVO PAGO
+    </button>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <div class="bg-[#121212] border border-white/10 p-6 rounded-lg">
+      <span class="block text-xs text-[#888] tracking-[0.1em] mb-2 uppercase">Pagos Registrados Hoy</span>
+      <span class="block text-3xl font-bold text-white">{{ resumen().totalHoy }}</span>
+    </div>
+    <div class="bg-[#121212] border border-white/10 p-6 rounded-lg">
+      <span class="block text-xs text-[#888] tracking-[0.1em] mb-2 uppercase">Recaudación Total</span>
+      <span class="block text-3xl font-bold text-[#C9A84C]">S/ {{ resumen().montoTotal | number:'1.2-2' }}</span>
+    </div>
+  </div>
+
+  <div class="bg-[#121212] border border-white/10 p-6 rounded-lg mb-8">
+    <span class="block text-xs text-[#C9A84C] tracking-[0.1em] font-semibold mb-4 uppercase">Filtros de Búsqueda</span>
+    <div class="flex flex-col md:flex-row gap-4 items-end">
+      <div class="w-full md:w-1/3">
+        <label class="block text-[11px] text-[#888] tracking-[0.1em] mb-2 uppercase">Cliente</label>
+        <input type="text" [(ngModel)]="filtros().cliente" (keyup.enter)="aplicarFiltros()" placeholder="Buscar por nombre..."
+          class="w-full bg-[#0c0c0c] border border-white/10 text-white focus:border-[#C9A84C] p-2.5 rounded outline-none transition-colors placeholder-[#555]">
+      </div>
+      <div class="flex gap-3 w-full md:w-auto">
+        <button class="bg-white/5 border border-white/10 text-white hover:bg-white/10 px-6 py-2.5 font-semibold text-sm tracking-[0.1em] rounded transition-colors" (click)="aplicarFiltros()">
+          BUSCAR
+        </button>
+        <button class="border border-[#C9A84C] text-[#C9A84C] hover:bg-[#C9A84C]/10 px-6 py-2.5 font-semibold text-sm tracking-[0.1em] rounded transition-colors" (click)="limpiarFiltros()">
+          LIMPIAR
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-[#121212] border border-white/10 rounded-lg overflow-hidden prime-table-override">
+    <p-table [value]="pagos()" [paginator]="true" [rows]="10" [loading]="loading()" responsiveLayout="scroll" [rowHover]="true">
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="bg-[#0c0c0c] text-[#888] text-xs tracking-[0.1em] font-semibold p-4 border-b border-white/10 uppercase">ID</th>
+          <th class="bg-[#0c0c0c] text-[#888] text-xs tracking-[0.1em] font-semibold p-4 border-b border-white/10 uppercase">Cliente</th>
+          <th class="bg-[#0c0c0c] text-[#888] text-xs tracking-[0.1em] font-semibold p-4 border-b border-white/10 uppercase">Barbero</th>
+          <th class="bg-[#0c0c0c] text-[#888] text-xs tracking-[0.1em] font-semibold p-4 border-b border-white/10 uppercase">Método</th>
+          <th class="bg-[#0c0c0c] text-[#888] text-xs tracking-[0.1em] font-semibold p-4 border-b border-white/10 uppercase">Tipo</th>
+          <th class="bg-[#0c0c0c] text-[#888] text-xs tracking-[0.1em] font-semibold p-4 border-b border-white/10 uppercase">Monto</th>
+          <th class="bg-[#0c0c0c] text-[#888] text-xs tracking-[0.1em] font-semibold p-4 border-b border-white/10 uppercase">Fecha</th>
+          <th class="bg-[#0c0c0c] text-[#888] text-xs tracking-[0.1em] font-semibold p-4 border-b border-white/10 uppercase text-center">Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-pago>
+        <tr class="bg-[#121212] hover:bg-[#1a1a1a] border-b border-white/5 text-sm transition-colors">
+          <td class="p-4 font-semibold text-[#888]">#{{ pago.id }}</td>
+          <td class="p-4 text-white font-medium">{{ pago.clienteNombre }}</td>
+          <td class="p-4 text-white">{{ pago.barberoNombre }}</td>
+          <td class="p-4">
+            <span class="bg-white/5 border border-white/10 text-white px-2 py-1 rounded text-xs">
+              {{ pago.metodo }}
+            </span>
+          </td>
+          <td class="p-4">
+            <span class="bg-white/5 border border-white/10 text-white px-2 py-1 rounded text-xs">
+              {{ pago.tipo }}
+            </span>
+          </td>
+          <td class="p-4 font-bold text-[#C9A84C]">S/ {{ pago.monto | number:'1.2-2' }}</td>
+          <td class="p-4 text-[#888] text-xs">{{ pago.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td class="p-4 text-center">
+            <button pButton icon="pi pi-eye" class="p-button-text p-button-rounded text-white hover:text-[#C9A84C] hover:bg-white/5 mr-2" (click)="verDetalle(pago.id)"></button>
+            <button pButton icon="pi pi-history" class="p-button-text p-button-rounded text-[#888] hover:text-[#C9A84C] hover:bg-white/5" (click)="verHistorial(pago.id)"></button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="empty">
+        <tr>
+          <td colspan="8" class="p-8 text-center text-[#888]">
+            No se encontraron pagos registrados en el sistema.
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<p-dialog [header]="'REGISTRAR TRANSACCIÓN'" [(visible)]="formVisible" [modal]="true" [resizable]="false" [draggable]="false" styleClass="bg-[#0c0c0c] border border-white/10 shadow-2xl" [contentStyle]="{'background-color': '#0c0c0c', 'color': 'white'}">
+  @if (formVisible()) { 
+    <app-pago-form (onGuardar)="onPagoGuardado($event)" (onCerrar)="formVisible.set(false)"></app-pago-form> 
+  }
+</p-dialog>
+
+<p-dialog [header]="'DETALLE DEL PAGO'" [(visible)]="detalleVisible" [modal]="true" [resizable]="false" [draggable]="false" styleClass="bg-[#0c0c0c] border border-white/10 shadow-2xl" [contentStyle]="{'background-color': '#0c0c0c', 'color': 'white'}">
+  @if (detalleVisible() && selectedPagoId()) { 
+    <app-pago-detalle [pagoId]="selectedPagoId()!" (onCerrar)="detalleVisible.set(false)" (onActualizado)="onPagoActualizado()"></app-pago-detalle> 
+  }
+</p-dialog>
+
+<p-dialog [header]="'AUDITORÍA E HISTORIAL'" [(visible)]="historialVisible" [modal]="true" [resizable]="false" [draggable]="false" styleClass="bg-[#0c0c0c] border border-white/10 shadow-2xl" [contentStyle]="{'background-color': '#0c0c0c', 'color': 'white'}">
+  @if (historialVisible() && selectedPagoId()) { 
+    <app-historial-pago [pagoId]="selectedPagoId()!" (onCerrar)="historialVisible.set(false)"></app-historial-pago> 
+  }
+</p-dialog>

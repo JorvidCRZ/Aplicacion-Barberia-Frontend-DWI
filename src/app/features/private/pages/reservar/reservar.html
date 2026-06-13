@@ -1,7 +1,5 @@
 <div class="min-h-screen bg-black py-8 px-4">
     <div class="max-w-6xl mx-auto">
-
-       
         <div class="text-center mb-8">
             <div class="inline-flex items-center justify-center w-16 h-16 bg-yellow-500 rounded-2xl mb-4">
                 <i class="pi pi-calendar-plus text-3xl text-black"></i>
@@ -15,13 +13,9 @@
         </div>
 
         <div class="grid lg:grid-cols-3 gap-6">
-
             <div class="lg:col-span-2">
                 <div class="bg-neutral-900/50 backdrop-blur-sm rounded-2xl border border-neutral-800 p-6">
-
                     <form [formGroup]="citaForm">
-
-                       
                         <div class="mb-6">
                             <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                                 <i class="pi pi-user text-yellow-500"></i>
@@ -50,12 +44,11 @@
                             </div>
                         </div>
 
-                       
                         <div class="mb-6">
                             <label class="block text-sm font-medium text-gray-300 mb-2">
                                 Elige tu barbero <span class="text-red-500">*</span>
                             </label>
-                            <p-select formControlName="barberoId" [options]="barberos$ | async"
+                            <p-select formControlName="barberoId" [options]="(barberos$ | async) || []"
                                 optionLabel="nombreCompleto" optionValue="barberoId" placeholder="Selecciona un barbero"
                                 class="w-full" [class.border-red-500]="barberoInvalido">
                                 <ng-template let-barbero pTemplate="item">
@@ -77,14 +70,13 @@
                             }
                         </div>
 
-                       
                         <div class="mb-6">
                             <label class="block text-sm font-medium text-gray-300 mb-2">
                                 Elige tu servicio <span class="text-red-500">*</span>
                             </label>
-                            <p-select formControlName="servicioId" [options]="servicios$ | async" optionLabel="nombre"
-                                optionValue="servicioId" placeholder="Selecciona un servicio" class="w-full"
-                                [class.border-red-500]="servicioInvalido">
+                            <p-select formControlName="servicioId" [options]="(servicios$ | async) || []"
+                                optionLabel="nombre" optionValue="servicioId" placeholder="Selecciona un servicio"
+                                class="w-full" [class.border-red-500]="servicioInvalido">
                                 <ng-template let-servicio pTemplate="item">
                                     <div class="flex justify-between items-center w-full">
                                         <div>
@@ -92,7 +84,7 @@
                                             <div class="text-xs text-gray-500">{{ servicio.duracion || 30 }} min</div>
                                         </div>
                                         <div class="text-yellow-500 font-semibold">
-                                            {{ servicio.precio | currency:'COP' }}
+                                            {{ servicio.precio | currency:'PEN ' }}
                                         </div>
                                     </div>
                                 </ng-template>
@@ -102,9 +94,7 @@
                             }
                         </div>
 
-                      
                         <div class="grid md:grid-cols-2 gap-4 mb-6">
-                           
                             <div class="mb-6">
                                 <label class="block text-sm font-medium text-gray-300 mb-2">
                                     Fecha <span class="text-red-500">*</span>
@@ -117,7 +107,6 @@
                                 }
                             </div>
 
-                           
                             <div>
                                 <label class="block text-sm font-medium text-gray-300 mb-2">
                                     Hora <span class="text-red-500">*</span>
@@ -146,7 +135,6 @@
                             </div>
                         </div>
 
-                      
                         <div class="mb-6">
                             <label class="block text-sm font-medium text-gray-300 mb-2">
                                 Notas adicionales (opcional)
@@ -160,11 +148,10 @@
                             </p>
                         </div>
 
-                  
                         <div class="mb-6">
                             <label class="flex items-center gap-3 cursor-pointer">
                                 <input type="checkbox" formControlName="aceptaTerminos"
-                                    class="w-4 h-4 rounded border-neutral-600 bg-black text-yellow-500 focus:ring-yellow-500 focus:ring-offset-black">
+                                    class="!w-4 !h-4 !min-w-4 !min-h-4 !max-w-4 !max-h-4 !p-0 !rounded !border-0 shrink-0 bg-black text-yellow-500 focus:ring-yellow-500 focus:ring-offset-black">
                                 <span class="text-gray-300 text-sm">
                                     Acepto los <a href="#" class="text-yellow-500 hover:text-yellow-400">términos y
                                         condiciones</a>
@@ -174,46 +161,37 @@
                             <p class="text-red-500 text-xs mt-1">Debes aceptar los términos para continuar</p>
                             }
                         </div>
-
                     </form>
-
                 </div>
             </div>
 
-           
             <div class="lg:col-span-1">
                 <div
                     class="bg-gradient-to-br from-yellow-500/10 to-transparent rounded-2xl border border-yellow-500/20 p-6 sticky top-6 bg-neutral-900/30 backdrop-blur-sm">
-
                     <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                         <i class="pi pi-shopping-cart text-yellow-500"></i>
                         Resumen de la cita
                     </h3>
 
                     <div class="space-y-4">
-
-                       
                         <div class="border-b border-neutral-800 pb-3">
                             <p class="text-gray-400 text-sm mb-1">Barbero</p>
                             <p class="text-white font-medium">{{ getBarberoNombre() }}</p>
                         </div>
 
-                       
                         <div class="border-b border-neutral-800 pb-3">
                             <p class="text-gray-400 text-sm mb-1">Servicio</p>
                             <p class="text-white font-medium">{{ getServicioNombre() }}</p>
                             <p class="text-gray-500 text-sm">Duración: {{ getServicioDuracion() }} min</p>
                         </div>
 
-                       
                         <div class="border-b border-neutral-800 pb-3">
                             <div class="flex justify-between text-white font-semibold text-lg mt-2 pt-2">
                                 <span>Total a pagar</span>
-                                <span class="text-yellow-500">{{ getServicioPrecio() | currency:'COP' }}</span>
+                                <span class="text-yellow-500">{{ getServicioPrecio() | currency:'PEN ' }}</span>
                             </div>
                         </div>
 
-                      
                         <div class="space-y-2">
                             <div class="flex items-start gap-2 text-sm">
                                 <i class="pi pi-check-circle text-green-500 mt-0.5"></i>
@@ -228,10 +206,8 @@
                                 <p class="text-gray-400">Cancelación con 2 horas de anticipación</p>
                             </div>
                         </div>
-
                     </div>
 
-                    
                     <div class="mt-6 space-y-3">
                         <button (click)="guardarCita()" [disabled]="citaForm.invalid"
                             class="w-full py-3 bg-yellow-500 hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed text-black font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2">
@@ -245,15 +221,11 @@
                             Cancelar
                         </button>
                     </div>
-
                 </div>
             </div>
-
         </div>
-
     </div>
 </div>
-
 
 <div *ngIf="showConfirmDialog" class="fixed inset-0 bg-black/90 flex items-center justify-center z-50"
     (click)="showConfirmDialog = false">
@@ -295,7 +267,7 @@
                 </div>
                 <div class="flex justify-between py-2">
                     <span class="font-medium text-gray-400">Total:</span>
-                    <span class="text-yellow-500 font-bold text-lg">{{ getServicioPrecio() | currency:'COP' }}</span>
+                    <span class="text-yellow-500 font-bold text-lg">{{ getServicioPrecio() | currency:'PEN ' }}</span>
                 </div>
             </div>
         </div>
@@ -315,7 +287,6 @@
                 Confirmar cita
             </button>
         </div>
-
     </div>
 </div>
 

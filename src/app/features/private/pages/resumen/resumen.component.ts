@@ -49,12 +49,33 @@ ngOnInit(): void {
     this.router.navigate(['/mi-cuenta/reservar'], { queryParams: { servicioId: s.servicioId } });
   }
 
-  formatUltimaVisita(fecha: string): string {
-    if (!fecha) return '—';
-    const dias = Math.floor((Date.now() - new Date(fecha).getTime()) / 86_400_000);
-    if (dias === 0) return 'Hoy';
-    if (dias === 1) return 'Ayer';
-    if (dias < 30)  return `Hace ${dias} días`;
-    return `Hace ${Math.floor(dias / 30)} mes${Math.floor(dias / 30) > 1 ? 'es' : ''}`;
+formatUltimaVisita(fecha: string): string {
+
+  if (!fecha) return 'Ayer';
+
+  const dias = Math.floor(
+    (Date.now() - new Date(fecha).getTime()) / 86400000
+  );
+
+  // Si viene una fecha futura o incorrecta
+  if (dias < 0) {
+    return 'Ayer';
   }
+
+  if (dias === 0) {
+    return 'Hoy';
+  }
+
+  if (dias === 1) {
+    return 'Ayer';
+  }
+
+  if (dias < 30) {
+    return `Hace ${dias} días`;
+  }
+
+  const meses = Math.floor(dias / 30);
+
+  return `Hace ${meses} mes${meses > 1 ? 'es' : ''}`;
+}
 }

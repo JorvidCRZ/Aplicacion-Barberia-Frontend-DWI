@@ -36,11 +36,18 @@
           <span class="text-text-secondary text-sm">Recordarme</span>                  
         </div>
         <button pButton type="submit" label="Iniciar Sesión" [loading]="loading" class="boton-primary w-full"></button>
-        <span class="text-text-muted text-sm mt-4 text-center">¿Olvidaste tu contraseña? <a href="#" class="text-brand-gold hover:underline">Recuperar</a></span>
+        
+        <div class="relative flex items-center py-2">
+          <div class="flex-grow border-t border-white/10"></div>
+          <span class="px-4 text-text-muted text-sm">O continúa con</span>
+          <div class="flex-grow border-t border-white/10"></div>
+        </div>
+
+        <div id="google-button" class="flex justify-center w-full min-h-[40px]"></div>
+        <span class="text-text-muted text-sm mt-4 text-center">¿Olvidaste tu contraseña? <a routerLink="/forgot-password" class="text-brand-gold hover:underline">Recuperar</a></span>
         <span class="text-text-muted text-sm mt-2 text-center">¿No tienes cuenta? <a href="/register" class="text-brand-gold hover:underline">Regístrate</a></span>
       </form>        
       
-      <!-- DEMO -->
       <div class="mt-8 pt-6 border-t border-white/10 text-sm">
         <p class="text-center text-text-muted mb-4">
           Credenciales de prueba:
@@ -62,34 +69,100 @@
       </div>
     </div>
 
-    <!-- RIGHT -->
     <div class="hidden lg:flex flex-col items-center justify-center bg-black p-10 border-l border-brand-gold/20">
-      <div class="mb-4">
-        <i class="pi pi-mobile text-brand-gold text-4xl"></i>
+  <div class="mb-4">
+    <i class="pi pi-qrcode text-brand-gold text-4xl"></i>
+  </div>
+  <h2 class="text-3xl font-bold text-white mb-2">Acceso con QR</h2>
+  <p class="text-text-muted text-sm text-center mb-8">Escanea tu código QR e ingresa tu PIN</p>
+
+  <!-- Estado: inactivo -->
+  @if (!scannerEnabled && !qrScanned) {
+    <div class="flex flex-col items-center gap-4">
+      <div class="bg-[#151515] border-2 border-dashed border-brand-gold/40 rounded-2xl p-10 flex flex-col items-center gap-3">
+        <i class="pi pi-camera text-brand-gold text-5xl"></i>
+        <p class="text-text-muted text-sm text-center">Activa la cámara para escanear</p>
       </div>
-      <h2 class="text-3xl font-bold text-white mb-2">Acceso Rápido</h2>
-      <p class="text-text-muted text-sm text-center mb-8">Escanea el código QR con tu dispositivo móvil</p>
-      <div class="bg-white rounded-2xl p-5 border-4 border-brand-gold shadow-[0_0_20px_rgba(212,175,55,0.3)]">
-        <!-- qr fake de simularion -->
-        <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https://fadex.com" alt="QR"
-          class="w-[220px] h-[220px]" />
+      <button pButton label="Activar escáner" icon="pi pi-camera"
+        class="boton-primary w-full"
+        (click)="activarEscaner()">
+      </button>
+    </div>
+  }
+
+  <!-- Estado: escaneando -->
+  @if (scannerEnabled && !qrScanned) {
+    <div class="flex flex-col items-center gap-4 w-full">
+      <div class="rounded-2xl overflow-hidden border-4 border-brand-gold shadow-[0_0_20px_rgba(212,175,55,0.3)] w-[260px] h-[260px]">
+        <video
+      #videoElement
+      autoplay
+      playsinline
+      muted
+      class="w-full h-full object-cover">
+    </video>
+      </div>
+      <p class="text-text-muted text-xs text-center">Apunta la cámara al código QR del usuario</p>
+      <button pButton label="Cancelar" icon="pi pi-times" severity="secondary"
+        class="w-full"
+        (click)="cancelarQr()">
+      </button>
+    </div>
+  }
+
+  <!-- Estado: QR leído, pedir PIN -->
+  @if (qrScanned) {
+    <div class="flex flex-col items-center gap-4 w-full max-w-[280px]">
+      <div class="bg-green-500/10 border border-green-500/30 rounded-xl p-4 flex items-center gap-3 w-full">
+        <i class="pi pi-check-circle text-green-400 text-xl"></i>
+        <p class="text-green-400 text-sm">QR leído correctamente</p>
       </div>
 
-      <div class="mt-8 text-center">
-        <p class="text-brand-gold font-semibold mb-2">● Login con QR</p>
-        <p class="text-text-muted text-sm">Accede instantáneamente sin contraseña desde tu teléfono</p>
+      <div class="w-full">
+        <label class="text-text-secondary text-sm mb-2 block">Ingresa tu PIN</label>
+        <input
+          pInputText
+          type="password"
+          [(ngModel)]="pin"
+          maxlength="6"
+          placeholder="● ● ● ●"
+          class="input-auth text-center text-2xl tracking-[0.5em] w-full"
+          (keyup.enter)="loginConQr()"
+        />
+        @if (pinError) {
+          <p class="text-red-400 text-xs mt-2">{{ pinError }}</p>
+        }
       </div>
 
-      <div class="grid grid-cols-2 gap-4 mt-8 w-full max-w-sm">
-        <div class="bg-[#151515] border border-brand-gold/20 rounded-xl p-4">
-          <p class="text-brand-gold text-sm font-semibold">✓ Seguro</p>
-          <p class="text-text-muted text-xs mt-1">Encriptación 256-bit</p>
-        </div>
-        <div class="bg-[#151515] border border-brand-gold/20 rounded-xl p-4">
-          <p class="text-brand-gold text-sm font-semibold">⚡ Rápido</p>
-          <p class="text-text-muted text-xs mt-1">Acceso en 2 segundos</p>
-        </div>
-      </div>
+      <button pButton label="Ingresar" icon="pi pi-sign-in"
+        [loading]="loadingQr"
+        class="boton-primary w-full"
+        (click)="loginConQr()">
+      </button>
+
+      <button pButton label="Volver a escanear" icon="pi pi-refresh" severity="secondary"
+        class="w-full"
+        (click)="cancelarQr()">
+      </button>
+    </div>
+  }
+
+  <div class="grid grid-cols-2 gap-4 mt-8 w-full max-w-sm">
+    <div class="bg-[#151515] border border-brand-gold/20 rounded-xl p-4">
+      <p class="text-brand-gold text-sm font-semibold">✓ Seguro</p>
+      <p class="text-text-muted text-xs mt-1">PIN encriptado</p>
+    </div>
+    <div class="bg-[#151515] border border-brand-gold/20 rounded-xl p-4">
+      <p class="text-brand-gold text-sm font-semibold">⚡ Rápido</p>
+      <p class="text-text-muted text-xs mt-1">Acceso en 2 segundos</p>
     </div>
   </div>
+</div>
+  </div>
 </section>
+
+
+
+
+
+

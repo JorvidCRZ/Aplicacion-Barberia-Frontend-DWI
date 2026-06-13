@@ -15,31 +15,31 @@ import { UpdateUsernameRequest } from '@/app/core/models/auth/usuario/update-use
 })
 export class CredencialesPerfilUsuario implements OnInit, OnChanges, OnDestroy {
 
-  private fb           = inject(FormBuilder);
+  private fb = inject(FormBuilder);
   private usuarioService = inject(UsuarioService);
   private notification = inject(NotificationService);
 
-  @Input() usuario:   string = 'No disponible';
+  @Input() usuario: string = 'No disponible';
   contrasena: string = 'No disponible';
   @Input() idUsuario: number = 0;
 
   /** URL de la imagen QR (base64 o URL). Si es null, el usuario no tiene QR. */
   @Input() qrImageUrl: string | null = null;
 
-  @Output() passwordReset   = new EventEmitter<void>();
-  @Output() usernameUpdate  = new EventEmitter<void>();
-  @Output() qrGenerated     = new EventEmitter<string>(); // emite la nueva URL del QR
+  @Output() passwordReset = new EventEmitter<void>();
+  @Output() usernameUpdate = new EventEmitter<void>();
+  @Output() qrGenerated = new EventEmitter<string>(); // emite la nueva URL del QR
 
   // ── Estado modales ────────────────────────────────────────────────────────
-  showResetModal        = false;
+  showResetModal = false;
   showEditUsernameModal = false;
-  showQrModal           = false;
+  showQrModal = false;
 
   // ── Estado general ────────────────────────────────────────────────────────
-  isSubmitting   = false;
+  isSubmitting = false;
   isGeneratingQr = false;
 
-  showNewPassword     = false;
+  showNewPassword = false;
   showConfirmPassword = false;
 
   loadingCredentials = false;
@@ -47,15 +47,22 @@ export class CredencialesPerfilUsuario implements OnInit, OnChanges, OnDestroy {
 
   // ── Formularios ───────────────────────────────────────────────────────────
   form = this.fb.group({
-    newPassword:     ['', [Validators.required, Validators.minLength(8)]],
+    newPassword: ['', [Validators.required, Validators.minLength(8)]],
     confirmPassword: ['', Validators.required],
   });
 
   usernameForm = this.fb.group({
-    username: ['', [Validators.required, Validators.minLength(3)]],
+    username: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(4),
+        Validators.maxLength(50)
+      ]
+    ],
   });
 
-  get f()  { return this.form.controls; }
+  get f() { return this.form.controls; }
   get uf() { return this.usernameForm.controls; }
 
   ngOnInit(): void {
@@ -126,8 +133,24 @@ export class CredencialesPerfilUsuario implements OnInit, OnChanges, OnDestroy {
           this.contrasena = this.maskPassword(String(rawPassword));
         }
 
-        const qrUrl = data?.qrImageUrl ?? data?.qrUrl ?? usuario?.qrToken ?? data?.qrToken ?? persona?.usuario?.qrToken ?? null;
-        this.qrImageUrl = qrUrl ? String(qrUrl) : null;
+        if (data?.tieneQr) {
+
+          this.usuarioService.generateQr(this.idUsuario)
+            .subscribe(blob => {
+
+              this.revokeQrObjectUrl();
+
+              this.qrObjectUrl =
+                URL.createObjectURL(blob);
+
+              this.qrImageUrl =
+                this.qrObjectUrl;
+            });
+
+        }
+        else {
+          this.qrImageUrl = null;
+        }
         this.loadingCredentials = false;
       },
       error: () => {
@@ -140,7 +163,7 @@ export class CredencialesPerfilUsuario implements OnInit, OnChanges, OnDestroy {
 
   openResetModal(): void {
     this.form.reset();
-    this.showNewPassword     = false;
+    this.showNewPassword = false;
     this.showConfirmPassword = false;
     this.form.setErrors(null);
     this.showResetModal = true;
@@ -148,18 +171,26 @@ export class CredencialesPerfilUsuario implements OnInit, OnChanges, OnDestroy {
 
   closeResetModal(): void {
     this.showResetModal = false;
-    this.isSubmitting   = false;
+    this.isSubmitting = false;
     this.form.reset();
   }
 
-  toggleNewPassword():     void { this.showNewPassword     = !this.showNewPassword; }
+  toggleNewPassword(): void { this.showNewPassword = !this.showNewPassword; }
   toggleConfirmPassword(): void { this.showConfirmPassword = !this.showConfirmPassword; }
 
   confirmResetPassword(): void {
     if (!this.idUsuario) { this.notification.showWarn('No se pudo identificar el usuario.'); return; }
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
 
-    const newPassword     = this.f.newPassword.value?.trim()     ?? '';
+    const newPassword = this.f.newPassword.value?.trim() ?? '';
+
+    if (newPassword.length < 8) {
+      this.notification.showWarn(
+        'La contraseña debe tener mínimo 8 caracteres.'
+      );
+      return;
+    }
+
     const confirmPassword = this.f.confirmPassword.value?.trim() ?? '';
 
     if (newPassword !== confirmPassword) {
@@ -194,7 +225,7 @@ export class CredencialesPerfilUsuario implements OnInit, OnChanges, OnDestroy {
 
   closeEditUsernameModal(): void {
     this.showEditUsernameModal = false;
-    this.isSubmitting          = false;
+    this.isSubmitting = false;
     this.usernameForm.reset();
   }
 
@@ -203,6 +234,20 @@ export class CredencialesPerfilUsuario implements OnInit, OnChanges, OnDestroy {
     if (this.usernameForm.invalid) { this.usernameForm.markAllAsTouched(); return; }
 
     const newUsername = this.uf.username.value?.trim() ?? '';
+
+    if (!newUsername) {
+      this.notification.showWarn(
+        'El nombre de usuario es obligatorio.'
+      );
+      return;
+    }
+
+    if (newUsername.length < 4 || newUsername.length > 50) {
+      this.notification.showWarn(
+        'El nombre de usuario debe tener entre 4 y 50 caracteres.'
+      );
+      return;
+    }
     if (newUsername === this.usuario) {
       this.notification.showWarn('El nuevo nombre de usuario es igual al actual.');
       return;
@@ -237,7 +282,7 @@ export class CredencialesPerfilUsuario implements OnInit, OnChanges, OnDestroy {
   }
 
   closeQrModal(): void {
-    this.showQrModal    = false;
+    this.showQrModal = false;
     this.isGeneratingQr = false;
   }
 
@@ -246,7 +291,7 @@ export class CredencialesPerfilUsuario implements OnInit, OnChanges, OnDestroy {
 
     this.isGeneratingQr = true;
 
-    this.usuarioService.generateQr(this.idUsuario).subscribe({
+    this.usuarioService.regenerarQr(this.idUsuario).subscribe({
       next: (blob) => {
         if (!(blob instanceof Blob)) {
           this.notification.showWarn('No se pudo generar el QR.');
@@ -255,6 +300,7 @@ export class CredencialesPerfilUsuario implements OnInit, OnChanges, OnDestroy {
         }
 
         this.revokeQrObjectUrl();
+
         this.qrObjectUrl = URL.createObjectURL(blob);
         this.qrImageUrl = this.qrObjectUrl;
         this.isGeneratingQr = false;
@@ -282,4 +328,50 @@ export class CredencialesPerfilUsuario implements OnInit, OnChanges, OnDestroy {
       this.qrObjectUrl = null;
     }
   }
+
+  // Propiedades nuevas
+showPinModal = false;
+isSubmittingPin = false;
+showPinValue = false;
+
+pinForm = this.fb.group({
+    pin: ['', [
+        Validators.required,
+        Validators.pattern(/^\d{4,6}$/)
+    ]]
+});
+
+get pf() { return this.pinForm.controls; }
+
+openPinModal(): void {
+    this.pinForm.reset();
+    this.showPinModal = true;
+}
+
+closePinModal(): void {
+    this.showPinModal = false;
+    this.isSubmittingPin = false;
+    this.pinForm.reset();
+}
+
+togglePinValue(): void { this.showPinValue = !this.showPinValue; }
+
+confirmAsignarPin(): void {
+    if (!this.idUsuario) { this.notification.showWarn('No se pudo identificar el usuario.'); return; }
+    if (this.pinForm.invalid) { this.pinForm.markAllAsTouched(); return; }
+
+    const pin = this.pf.pin.value?.trim() ?? '';
+    this.isSubmittingPin = true;
+
+    this.usuarioService.asignarPin(this.idUsuario, pin).subscribe({
+        next: () => {
+            this.notification.showSuccess('PIN asignado correctamente');
+            this.closePinModal();
+        },
+        error: (err) => {
+            this.isSubmittingPin = false;
+            this.notification.showHttpError(err, 'Asignar PIN');
+        }
+    });
+}
 }

@@ -9,9 +9,9 @@ import { ProductoService } from '@/app/core/services/catalogos/producto.service'
 import { SafeImageUrlPipe } from '@/app/shared/pipes/safe-image-url.pipe';
 import { StatusBadgeComponent } from '@/app/shared/components/status-badge/status-badge.component';
 import { INVENTARIO_CONFIG } from '@/app/core/config/valores.config';
-import { CarritoLocalService } from '@/app/core/services/venta/carrito-local.service';
 import { NotificationService } from '@/app/core/services/common/notification.service';
 import { ImageModule } from 'primeng/image';
+import { CarritoService } from '@/app/core/services/catalogos/carrito.service';
 
 @Component({
     standalone: true,
@@ -24,7 +24,7 @@ export class ProductoDetalleComponent implements OnInit {
     private readonly route = inject(ActivatedRoute);
     private readonly router = inject(Router);
     private readonly productoService = inject(ProductoService);
-    private readonly carritoService = inject(CarritoLocalService);
+    private readonly carritoService = inject(CarritoService);
     private readonly notificationService = inject(NotificationService);
 
     readonly moneda = INVENTARIO_CONFIG.MONEDA;

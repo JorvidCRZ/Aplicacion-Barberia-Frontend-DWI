@@ -1,0 +1,94 @@
+<div class="w-full max-w-3xl flex flex-col">
+  @if (pago()) {
+    <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
+      <span class="text-xl font-bold text-white tracking-[0.1em]">COMPROBANTE <span class="text-[#C9A84C]">#{{ pago()?.id }}</span></span>
+      <span class="bg-green-500/10 text-green-400 border border-green-500/30 px-4 py-1.5 rounded-full text-xs font-bold">REGISTRADO</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+      <div class="bg-[#121212] border border-white/10 p-5 rounded-md">
+        <span class="block text-[11px] text-[#888] tracking-[0.1em] font-bold mb-4 uppercase border-l-2 border-[#C9A84C] pl-2">
+          DATOS DE LA RESERVA
+        </span>
+        <div class="space-y-3">
+          <div>
+            <span class="block text-[10px] text-[#888] uppercase">ID cita:</span>
+            <span class="block text-sm text-white">#{{ pago()?.reservaId }}</span>
+          </div>
+          <div>
+            <span class="block text-[10px] text-[#888] uppercase">Cliente:</span>
+            <span class="block text-sm text-white">{{ pago()?.clienteNombre }}</span>
+          </div>
+          <div>
+            <span class="block text-[10px] text-[#888] uppercase">Barbero:</span>
+            <span class="block text-sm text-white">{{ pago()?.barberoNombre }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-[#121212] border border-white/10 p-5 rounded-md">
+        <span class="block text-[11px] text-[#888] tracking-[0.1em] font-bold mb-4 uppercase border-l-2 border-[#C9A84C] pl-2">
+          MÉTRICAS
+        </span>
+        <div class="space-y-3">
+          <div>
+            <span class="block text-[10px] text-[#888] uppercase">Método:</span>
+            <span class="block text-sm text-white font-semibold">{{ pago()?.metodo }}</span>
+          </div>
+          <div>
+            <span class="block text-[10px] text-[#888] uppercase">Tipo:</span>
+            <span class="block text-sm text-white font-semibold">{{ pago()?.tipo }}</span>
+          </div>
+          <div class="bg-[#0c0c0c] border border-white/10 p-3 rounded flex justify-between items-center mt-4">
+            <span class="text-[10px] text-[#888] uppercase">MONTO:</span>
+            <span class="text-lg text-[#C9A84C] font-bold">S/ {{ pago()?.monto | number:'1.2-2' }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="bg-[#121212] border border-white/10 p-5 rounded-md mb-8">
+      <span class="block text-[11px] text-[#888] tracking-[0.1em] font-bold mb-4 uppercase border-l-2 border-[#C9A84C] pl-2">
+        AUDITORÍA
+      </span>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <span class="block text-[10px] text-[#888] uppercase">Fecha:</span>
+          <span class="block text-sm text-white">{{ pago()?.fecha | date:'dd/MM/yyyy HH:mm:ss' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-between items-center pt-5 border-t border-white/10 gap-4">
+      <button class="border border-[#C9A84C] text-[#C9A84C] hover:bg-[#C9A84C]/10 px-5 py-2.5 text-xs font-semibold rounded transition-colors" (click)="abrirSubHistorial()">
+        <i class="pi pi-history mr-2"></i> AUDITAR
+      </button>
+      <div class="flex gap-3">
+        <button class="border border-red-500/50 text-red-400 hover:bg-red-500/10 px-5 py-2.5 text-xs font-semibold rounded disabled:opacity-50 transition-colors"
+          (click)="solicitarAnulacion()" [disabled]="loadingAction()">
+          ELIMINAR PAGO
+        </button>
+      </div>
+    </div>
+  }
+</div>
+
+<p-dialog [header]="'TRAZA DE AUDITORÍA'" [(visible)]="innerHistorialVisible" [modal]="true" appendTo="body"
+  styleClass="bg-[#0c0c0c] border border-white/10"
+  [contentStyle]="{'background-color': '#0c0c0c', 'color': 'white'}">
+  @if (innerHistorialVisible() && pago()) {
+    <app-historial-pago [pagoId]="pago()!.id" (onCerrar)="innerHistorialVisible.set(false)"></app-historial-pago>
+  }
+</p-dialog>
+
+<app-confirm-popover
+  [visible]="confirmVisible()"
+  titulo="ELIMINAR PAGO"
+  mensaje="¿Estás seguro de que deseas ELIMINAR este comprobante de pago de forma permanente? Esta acción no se puede deshacer."
+  icono="pi-exclamation-triangle"
+  mode="eliminar"
+  (confirm)="ejecutarEliminacion()"
+  (cancel)="confirmVisible.set(false)">
+</app-confirm-popover>

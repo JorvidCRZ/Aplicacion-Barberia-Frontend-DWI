@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
@@ -66,14 +66,19 @@ export class Usuario implements OnInit {
   };
 
   adminForm = this.fb.group({
-    nombre: ['', [Validators.required, Validators.minLength(2)]],
-    apellido: ['', [Validators.required, Validators.minLength(2)]],
-    telefono: [''],
+    nombre: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]],
+    apellido: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]],
+    telefono: ['', [Validators.pattern('^\\d{9}$')]],
     email: ['', [Validators.email]],
     username: ['', [Validators.required, Validators.minLength(4)]],
     password: ['', [Validators.required, Validators.minLength(8)]],
     passwordConfirm: ['', [Validators.required]],
   });
+
+  constructor() {
+    // attach cross-field validator for password match
+    this.adminForm.setValidators(this.passwordsMatchValidator);
+  }
 
   ngOnInit(): void {
     this.cargarUsuarios(0);
@@ -173,6 +178,43 @@ export class Usuario implements OnInit {
     return campoInvalido(this.adminForm, campo, this.adminSubmitted);
   }
 
+  passwordsMismatch(): boolean {
+    const p = this.adminForm.get('password')?.value ?? '';
+    const c = this.adminForm.get('passwordConfirm')?.value ?? '';
+    return !!(p || c) && p !== c;
+  }
+
+  private passwordsMatchValidator = (group: AbstractControl): ValidationErrors | null => {
+    const password = group.get('password')?.value ?? '';
+    const confirm = group.get('passwordConfirm')?.value ?? '';
+    const confirmControl = group.get('passwordConfirm');
+
+    if (password && confirm && password !== confirm) {
+      confirmControl?.setErrors({ ...(confirmControl?.errors || {}), passwordMismatch: true });
+      return { passwordMismatch: true };
+    }
+
+    // remove passwordMismatch if present and now matching
+    if (confirmControl?.errors && confirmControl.errors['passwordMismatch']) {
+      const errs = { ...confirmControl.errors } as any;
+      delete errs['passwordMismatch'];
+      const remaining = Object.keys(errs).length ? errs : null;
+      confirmControl.setErrors(remaining);
+    }
+
+    return null;
+  }
+
+  onPhoneInput(event: any): void {
+    const input = event.target as HTMLInputElement;
+    let val = (input.value || '').toString();
+    // remove non-digits and limit to 9 chars
+    val = val.replace(/\D/g, '').slice(0, 9);
+    // limit to 9 digits (no requirement about starting digit)
+    input.value = val;
+    this.adminForm.get('telefono')?.setValue(val, { emitEvent: true });
+  }
+
   onSubmitAdmin(): void {
     this.adminSubmitted = true;
     this.adminError = '';
@@ -184,6 +226,7 @@ export class Usuario implements OnInit {
     }
 
     if (this.adminForm.invalid) {
+      this.notificationService.showError('Por favor corrige los campos marcados antes de continuar.', 'Error de validación');
       return;
     }
 
@@ -193,6 +236,7 @@ export class Usuario implements OnInit {
     if (password !== passwordConfirm) {
       passwordConfirmControl?.setErrors({ passwordMismatch: true });
       this.adminError = 'Las contraseñas no coinciden.';
+      this.notificationService.showError('Las contraseñas no coinciden.', 'Error de validación');
       return;
     }
 
@@ -243,7 +287,8 @@ export class Usuario implements OnInit {
         apellido: usuario.apellido,
       },
       roles: usuario.roles ?? [],
-      qr: usuario.tieneQr,
+      tieneQr: usuario.tieneQr, 
+      tienePin: usuario.tienePin ?? false,
       activo: null,
       ultimoAcceso: '—',
     };

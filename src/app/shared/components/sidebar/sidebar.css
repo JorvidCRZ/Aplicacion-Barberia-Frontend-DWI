@@ -1,10 +1,12 @@
 /* PANEL */
 :host {
   display: block;
+  background: #0c0c0c;
 }
 
 .sidebar-shell {
   position: relative;
+  background: #0c0c0c;
 }
 
 .sidebar-menu {
@@ -31,6 +33,7 @@
   text-shadow: 0 0 0.5rem rgba(212, 175, 55, 0.22);
 }
 
+/* ── COLLAPSED ───────────────────────────────────────────── */
 :host(.sidebar-collapsed) .sidebar-shell {
   align-items: center;
 }
@@ -67,7 +70,7 @@
 }
 
 :host(.sidebar-collapsed) ::ng-deep .custom-panelmenu .p-panelmenu-panel {
-  margin-bottom: .6rem;
+  margin-bottom: .4rem;
   padding: 0;
   background: transparent;
 }
@@ -92,23 +95,22 @@
   padding: 0.75rem 0.5rem;
 }
 
+/* ── PANEL BASE ──────────────────────────────────────────── */
 :host ::ng-deep .custom-panelmenu .p-panelmenu-panel {
-  margin-bottom: .8rem;
-  background: var(--color-ui-black);
+  margin-bottom: .25rem;   /* antes .8rem — menos separación */
+  background: transparent;
   border: none;
 }
 
-/* PADRES E HIJOS */
-
+/* ── PADRES E HIJOS ──────────────────────────────────────── */
 :host ::ng-deep .custom-panelmenu .p-panelmenu-item-content {
   padding: inherit !important;
-  margin: .5rem 0 !important;
+  margin: .15rem 0 !important;   /* antes .5rem — más compacto */
   place-content: center;
+}
 
-  .p-panelmenu-item-icon {
-    margin-right: .5rem;
-  }
-
+:host ::ng-deep .custom-panelmenu .p-panelmenu-item-content .p-panelmenu-item-icon {
+  margin-right: .5rem;
 }
 
 :host ::ng-deep .custom-panelmenu .p-panelmenu-item-link {
@@ -122,30 +124,32 @@
 :host ::ng-deep .custom-panelmenu .p-menuitem-link {
   width: 100%;
   display: flex;
-  min-height: 3.2rem;
-  padding: .95rem 1rem;
-  border-radius: 1rem;
+  min-height: 2.8rem;           /* antes 3.2rem — más slim */
+  padding: .65rem .9rem;        /* antes .95rem 1rem */
+  border-radius: 8px;           /* antes 1rem — menos redondeado, más sofisticado */
   align-items: center;
-  gap: .85rem;
-  color: var(--color-brand-gold) !important;
-  background: var(--color-ui-black) !important;
-  border: 1px solid var(--color-brand-gold-soft) !important;
-  font-size: .95rem;
-  font-weight: 500;
+  gap: .75rem;
+  color: rgba(255,255,255,0.75) !important;   /* blanco con opacidad — más sutil */
+  background: transparent !important;          /* sin fondo por defecto */
+  border: 1px solid transparent !important;    /* borde invisible por defecto */
+  font-size: .875rem;
+  font-weight: 400;             /* antes 500 — más ligero */
+  letter-spacing: 0.01em;
   text-decoration: none;
   transition: all .2s ease;
-
-  svg {
-    margin-right: .5rem;
-  }
 }
 
+:host ::ng-deep .custom-panelmenu .p-panelmenu-item-content svg {
+  margin-right: .5rem;
+}
+
+/* ── ICONOS ──────────────────────────────────────────────── */
 :host ::ng-deep .custom-panelmenu .p-panelmenu-header-icon,
 :host ::ng-deep .custom-panelmenu .p-panelmenu-item-icon,
 :host ::ng-deep .custom-panelmenu .p-panelmenu-submenu-icon,
 :host ::ng-deep .custom-panelmenu .p-icon {
-  color: inherit !important;
-  font-size: .95rem;
+  color: var(--color-brand-gold) !important;
+  font-size: .875rem;
 }
 
 :host ::ng-deep .custom-panelmenu .p-panelmenu-item,
@@ -153,48 +157,47 @@
   width: 100%;
 }
 
+/* ── HOVER ───────────────────────────────────────────────── */
 :host ::ng-deep .custom-panelmenu .p-panelmenu-header-link:hover,
 :host ::ng-deep .custom-panelmenu .p-panelmenu-item-content:hover {
-  background: var(--color-brand-gold-soft) !important;
-  border-color: var(--color-brand-gold) !important;
-  color: var(--color-brand-gold) !important;
-  transform: translateX(2px);
+  background: rgba(212, 175, 55, 0.08) !important;
+  border-color: rgba(212, 175, 55, 0.2) !important;
+  color: #ffffff !important;
+  transform: translateX(3px);
 }
 
+/* ── ACTIVO ──────────────────────────────────────────────── */
 :host ::ng-deep .custom-panelmenu .p-menuitem-link-active,
 :host ::ng-deep .custom-panelmenu .p-menuitem-link.router-link-active,
 :host ::ng-deep .custom-panelmenu .p-menuitem-active>.p-panelmenu-header>.p-panelmenu-header-content {
-  background: var(--color-brand-gold-soft);
-  border-color: var(--color-brand-gold);
+  background: rgba(212, 175, 55, 0.1) !important;
+  border-color: rgba(212, 175, 55, 0.35) !important;
+  color: var(--color-brand-gold) !important;
 }
 
+/* ── CONTENEDOR HEADER/ITEM ──────────────────────────────── */
 :host ::ng-deep .custom-panelmenu .p-panelmenu-header-content,
 :host ::ng-deep .custom-panelmenu .p-menuitem-content {
-  border-radius: 1rem;
+  border-radius: 8px;
   overflow: hidden;
   transition: all .2s ease;
 }
 
-:host ::ng-deep .custom-panelmenu .p-panelmenu-header-icon,
-:host ::ng-deep .custom-panelmenu .p-panelmenu-item-icon,
-:host ::ng-deep .custom-panelmenu .p-panelmenu-submenu-icon,
-:host ::ng-deep .custom-panelmenu .p-icon {
-  color: var(--color-brand-gold);
-  font-size: .95rem;
-}
-
+/* ── TEXTO ───────────────────────────────────────────────── */
 :host ::ng-deep .custom-panelmenu .p-menuitem-text,
 :host ::ng-deep .custom-panelmenu .p-panelmenu-header-label,
 :host ::ng-deep .custom-panelmenu .p-menuitem-label {
-  font-size: .94rem;
-  font-weight: 500;
+  font-size: .875rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
 }
 
+/* ── PANEL / NG-STAR ─────────────────────────────────────── */
 :host ::ng-deep .custom-panelmenu .p-panelmenu-panel,
 :host ::ng-deep .custom-panelmenu :ng-star-inserted {
-  background: var(--color-brand-gold);
+  background: transparent;
   border: none;
-  padding: .45rem 0 .15rem;
+  padding: .2rem 0 .1rem;
 }
 
 :host(.sidebar-collapsed) ::ng-deep .custom-panelmenu .p-panelmenu-panel,
@@ -202,6 +205,7 @@
   background: transparent !important;
 }
 
+/* ── ANIMACIÓN EXPAND ────────────────────────────────────── */
 :host ::ng-deep .custom-panelmenu .p-panelmenu-expanded {
   animation: fadeInMenu .2s ease;
 }
@@ -211,7 +215,6 @@
     opacity: 0;
     transform: translateY(-4px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);

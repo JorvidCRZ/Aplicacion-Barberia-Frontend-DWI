@@ -6,8 +6,8 @@ import { CardModule } from 'primeng/card';
 import { CurrencyPipe } from '@angular/common';
 import { SafeImageUrlPipe } from '@/app/shared/pipes/safe-image-url.pipe';
 import { StatusBadgeComponent } from '@/app/shared/components/status-badge/status-badge.component';
-import { CarritoLocalService } from '@/app/core/services/venta/carrito-local.service';
 import { NotificationService } from '@/app/core/services/common/notification.service';
+import { CarritoService } from '@/app/core/services/catalogos/carrito.service';
 
 @Component({
   standalone: true,
@@ -18,7 +18,7 @@ import { NotificationService } from '@/app/core/services/common/notification.ser
 })
 export class ProductoCardComponent {
   private readonly router = inject(Router);
-  private readonly carritoService = inject(CarritoLocalService);
+  private readonly carritoService = inject(CarritoService);
   private readonly notificationService = inject(NotificationService);
 
   @Input() producto!: Producto;

@@ -47,29 +47,38 @@
 					<div class="grid gap-4 md:grid-cols-2">
 						<label class="grid gap-2">
 							<span class="text-sm font-semibold text-white/90">Nombre</span>
-							<input formControlName="nombre" type="text" placeholder="Juan" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none transition placeholder:text-white/30 focus:border-amber-300/70 focus:ring-4 focus:ring-amber-300/10" />
-							<div *ngIf="f['nombre'].touched && f['nombre'].invalid" class="mt-1 text-sm text-red-400">El nombre es requerido.</div>
+							<input formControlName="nombre" type="text" maxlength="150" placeholder="Juan" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none transition placeholder:text-white/30 focus:border-amber-300/70 focus:ring-4 focus:ring-amber-300/10" />
+							<div class="mt-1 h-4 text-sm text-red-400"><ng-container *ngIf="f['nombre'].touched && f['nombre'].invalid">
+								<div *ngIf="f['nombre'].errors?.['required']">El nombre es requerido.</div>
+								<div *ngIf="f['nombre'].errors?.['maxlength']">Máximo 150 caracteres.</div>
+							</ng-container></div>
 						</label>
 
 						<label class="grid gap-2">
 							<span class="text-sm font-semibold text-white/90">Apellido</span>
-							<input formControlName="apellido" type="text" placeholder="Pérez" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none transition placeholder:text-white/30 focus:border-amber-300/70 focus:ring-4 focus:ring-amber-300/10" />
-							<div *ngIf="f['apellido'].touched && f['apellido'].invalid" class="mt-1 text-sm text-red-400">El apellido es requerido.</div>
+							<input formControlName="apellido" type="text" maxlength="150" placeholder="Pérez" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none transition placeholder:text-white/30 focus:border-amber-300/70 focus:ring-4 focus:ring-amber-300/10" />
+							<div class="mt-1 h-4 text-sm text-red-400"><ng-container *ngIf="f['apellido'].touched && f['apellido'].invalid">
+								<div *ngIf="f['apellido'].errors?.['required']">El apellido es requerido.</div>
+								<div *ngIf="f['apellido'].errors?.['maxlength']">Máximo 150 caracteres.</div>
+							</ng-container></div>
 						</label>
 
 						<label class="grid gap-2">
 							<span class="text-sm font-semibold text-white/90">Teléfono</span>
-							<input formControlName="telefono" type="tel" placeholder="+51 999 888 777" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none transition placeholder:text-white/30 focus:border-amber-300/70 focus:ring-4 focus:ring-amber-300/10" />
-							<div *ngIf="f['telefono'].touched && f['telefono'].invalid" class="mt-1 text-sm text-red-400">El teléfono es requerido.</div>
+							<input formControlName="telefono" type="tel" placeholder="999999999" maxlength="9" inputmode="numeric" (input)="onPhoneInput($event)" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none transition placeholder:text-white/30 focus:border-amber-300/70 focus:ring-4 focus:ring-amber-300/10" />
+							<div class="mt-1 h-4 text-sm text-red-400"><ng-container *ngIf="f['telefono'].touched && f['telefono'].invalid">
+								<div *ngIf="f['telefono'].errors?.['required']">El teléfono es requerido.</div>
+								<div *ngIf="f['telefono'].errors?.['pattern']">El teléfono debe tener 9 dígitos.</div>
+							</ng-container></div>
 						</label>
 
 						<label class="grid gap-2">
 							<span class="text-sm font-semibold text-white/90">Email</span>
 							<input formControlName="email" type="email" placeholder="cliente@@mail.com" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none transition placeholder:text-white/30 focus:border-amber-300/70 focus:ring-4 focus:ring-amber-300/10" />
-							<div *ngIf="f['email'].touched && f['email'].errors" class="mt-1 text-sm text-red-400">
+							<div class="mt-1 h-4 text-sm text-red-400"><ng-container *ngIf="f['email'].touched && f['email'].errors">
 								<div *ngIf="f['email'].errors['required']">El email es requerido.</div>
 								<div *ngIf="f['email'].errors['email']">Formato de email inválido.</div>
-							</div>
+							</ng-container></div>
 						</label>
 					</div>
 				</div>
@@ -84,7 +93,7 @@
 						<label class="grid gap-2 md:col-span-2">
 							<span class="text-sm font-semibold text-white/90">Usuario</span>
 							<input formControlName="usuario" type="text" placeholder="usuario.cliente" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none transition placeholder:text-white/30 focus:border-amber-300/70 focus:ring-4 focus:ring-amber-300/10" />
-							<div *ngIf="f['usuario'].touched && f['usuario'].invalid" class="mt-1 text-sm text-red-400">El usuario es requerido.</div>
+							<div class="mt-1 h-4 text-sm text-red-400"><ng-container *ngIf="f['usuario'].touched && f['usuario'].invalid">El usuario es requerido.</ng-container></div>
 						</label>
 
 						<label class="grid gap-2">
@@ -95,10 +104,10 @@
 									<i [ngClass]="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
 								</button>
 							</div>
-							<div *ngIf="f['password'].touched && f['password'].errors" class="mt-1 text-sm text-red-400">
+							<div class="mt-1 h-4 text-sm text-red-400"><ng-container *ngIf="f['password'].touched && f['password'].errors">
 								<div *ngIf="f['password'].errors['required']">La contraseña es requerida.</div>
 								<div *ngIf="f['password'].errors['minlength']">La contraseña debe tener al menos 8 caracteres.</div>
-							</div>
+							</ng-container></div>
 						</label>
 
 						<label class="grid gap-2">
@@ -109,10 +118,10 @@
 									<i [ngClass]="showPasswordConfirm ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
 								</button>
 							</div>
-							<div *ngIf="f['passwordConfirm'].touched && f['passwordConfirm'].errors" class="mt-1 text-sm text-red-400">
+							<div class="mt-1 h-4 text-sm text-red-400"><ng-container *ngIf="f['passwordConfirm'].touched && f['passwordConfirm'].errors">
 								<div *ngIf="f['passwordConfirm'].errors['required']">La confirmación es requerida.</div>
 								<div *ngIf="f['passwordConfirm'].errors['mismatch']">Las contraseñas no coinciden.</div>
-							</div>
+							</ng-container></div>
 						</label>
 					</div>
 				</div>

@@ -29,127 +29,89 @@
 
                 <tr class="table-row transition-all duration-200">
 
+                    <!-- ID -->
                     <td class="px-4 py-3 whitespace-nowrap text-center">
-
-                        <span
-                            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200"
-                        >
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
+                            bg-white/5 text-[#888888] border border-white/10">
                             #{{ venta.ventaId }}
                         </span>
-
                     </td>
 
+                    <!-- CLIENTE -->
                     <td class="px-4 py-3 whitespace-nowrap text-center">
-
-                        <div class="flex flex-col">
-                            <span class="font-medium text-gray-800">
-                                {{ venta.clienteNombre }}
-                            </span>
-                        </div>
-
+                        <span class="font-semibold text-white text-sm">
+                            {{ venta.clienteNombre }}
+                        </span>
                     </td>
 
                     <!-- COMPROBANTE -->
                     <td class="px-4 py-3 whitespace-nowrap text-center">
 
-                        <!-- BOLETA -->
                         @if(venta.tipoComprobante === 'BOLETA'){
-
-                            <span
-                                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide
-                                bg-purple-100 text-purple-700 border border-purple-200"
-                            >
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide
+                                bg-purple-500/10 text-purple-400 border border-purple-500/30">
                                 {{ venta.tipoComprobante }}
                             </span>
-
                         }
 
-                        <!-- FACTURA -->
                         @if(venta.tipoComprobante === 'FACTURA'){
-
-                            <span
-                                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide
-                                bg-blue-100 text-blue-700 border border-blue-200"
-                            >
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide
+                                bg-blue-500/10 text-blue-400 border border-blue-500/30">
                                 {{ venta.tipoComprobante }}
                             </span>
-
                         }
 
                     </td>
 
                     <!-- PRODUCTOS -->
                     <td class="px-4 py-3 text-center">
-
                         <div class="flex flex-col items-center gap-1">
-
                             @for (detalle of venta.detalles; track detalle.detalleVentaId) {
-
-                                <div class="text-sm text-gray-700">
-
+                                <div class="text-sm text-white">
                                     <span class="font-medium">
                                         {{ detalle.productoNombre || ('#' + detalle.productoId) }}
                                     </span>
-
-                                    <span class="font-semibold text-primary ml-1">
+                                    <span class="font-semibold text-[#C9A84C] ml-1">
                                         x{{ detalle.cantidad }}
                                     </span>
-
                                 </div>
-
                             }
-
                         </div>
-
                     </td>
 
                     <!-- FECHA -->
                     <td class="px-4 py-3 whitespace-nowrap text-center">
-
                         <div class="flex flex-col items-center">
-
-                            <span class="font-medium text-gray-700">
+                            <span class="font-medium text-white text-sm">
                                 {{ venta.fecha | date:'dd/MM/yyyy' }}
                             </span>
-
-                            <span class="text-xs text-gray-400">
+                            <span class="text-xs text-[#888888]">
                                 {{ venta.fecha | date:'HH:mm' }}
                             </span>
-
                         </div>
-
                     </td>
 
                     <!-- TOTAL -->
                     <td class="px-4 py-3 whitespace-nowrap text-center">
-
-                        <span class="text-base font-semibold text-green-600">
-
+                        <span class="text-base font-bold text-[#C9A84C]">
                             S/ {{ calcularTotal(venta) | number:'1.2-2' }}
-
                         </span>
-
                     </td>
 
                     <!-- ACCIONES -->
                     <td class="px-4 py-3 whitespace-nowrap text-center">
-
                         <div class="table-actions flex justify-center gap-2">
-
                             <p-button
                                 icon="pi pi-pencil"
                                 class="boton-editar-tabla"
                                 (click)="editar.emit(venta)"
                             ></p-button>
-
                             <p-button
                                 icon="pi pi-trash"
                                 class="boton-eliminar-tabla"
                                 (click)="eliminar.emit(venta)"
                             ></p-button>
-
                         </div>
-
                     </td>
 
                 </tr>
@@ -158,25 +120,14 @@
 
             <!-- EMPTY -->
             <ng-template #empty>
-
                 <tr>
-
                     <td colspan="7" class="py-20 text-center">
-
-                        <div class="flex flex-col items-center text-gray-400">
-
+                        <div class="flex flex-col items-center text-[#888888]">
                             <i class="pi pi-inbox text-4xl mb-3 opacity-30"></i>
-
-                            <p class="text-sm">
-                                Sin ventas registradas
-                            </p>
-
+                            <p class="text-sm">Sin ventas registradas</p>
                         </div>
-
                     </td>
-
                 </tr>
-
             </ng-template>
 
         </p-table>

@@ -1,10 +1,12 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, HostListener } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { ButtonModule } from 'primeng/button';
 import { ClienteFilterCriteria, ClienteFilterMode } from '@/app/core/models/gestion/cliente/cliente-filter.model';
 
 @Component({
   selector: 'app-filtrar-clients',
   standalone: true,
-  imports: [],
+  imports: [NgClass, ButtonModule],
   templateUrl: './filtrar-clients.html',
   styleUrl: './filtrar-clients.css',
 })
@@ -18,28 +20,30 @@ export class FiltrarClients {
   @Output() filterChange = new EventEmitter<ClienteFilterCriteria>();
   @Output() customModeChange = new EventEmitter<boolean>();
 
-  readonly filters = [
-    { key: 'todos', label: 'Todos', subtitle: 'Clientes registrados' },
-    { key: 'recientes', label: 'Recientes', subtitle: 'Alta reciente' },
-    { key: 'mes', label: 'Este mes', subtitle: 'Actividad mensual' },
-    { key: 'anio', label: 'Este año', subtitle: 'Resumen anual' },
-    { key: 'personalizado', label: 'Personalizado', subtitle: 'Mes, año o rango' },
-    { key: 'deshabilitados', label: 'Deshabilitados', subtitle: 'Clientes inactivos' },
+  // ── Dropdown state ──
+  dropdownOpen = false;
+  selectedOrderLabel = 'Todos los clientes';
+
+  readonly orderOptions = [
+    { value: 'todos',     label: 'Todos los clientes' },
+    { value: 'recientes', label: 'Recientes'           },
+    { value: 'mes',       label: 'Este mes'            },
+    { value: 'anio',      label: 'Este año'            },
   ] as const;
 
   readonly months = [
-    { value: 1, label: 'Enero' },
-    { value: 2, label: 'Febrero' },
-    { value: 3, label: 'Marzo' },
-    { value: 4, label: 'Abril' },
-    { value: 5, label: 'Mayo' },
-    { value: 6, label: 'Junio' },
-    { value: 7, label: 'Julio' },
-    { value: 8, label: 'Agosto' },
-    { value: 9, label: 'Septiembre' },
-    { value: 10, label: 'Octubre' },
-    { value: 11, label: 'Noviembre' },
-    { value: 12, label: 'Diciembre' },
+    { value: 1,  label: 'Enero'      },
+    { value: 2,  label: 'Febrero'    },
+    { value: 3,  label: 'Marzo'      },
+    { value: 4,  label: 'Abril'      },
+    { value: 5,  label: 'Mayo'       },
+    { value: 6,  label: 'Junio'      },
+    { value: 7,  label: 'Julio'      },
+    { value: 8,  label: 'Agosto'     },
+    { value: 9,  label: 'Septiembre' },
+    { value: 10, label: 'Octubre'    },
+    { value: 11, label: 'Noviembre'  },
+    { value: 12, label: 'Diciembre'  },
   ] as const;
 
   readonly years = this.buildYears();
@@ -53,17 +57,41 @@ export class FiltrarClients {
     return this.activeFilter === 'personalizado';
   }
 
-  selectFilter(filter: ClienteFilterMode) {
+  // ── Dropdown ──
+  toggleDropdown(): void {
+    this.dropdownOpen = !this.dropdownOpen;
+  }
+
+  closeDropdown(): void {
+    this.dropdownOpen = false;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.custom-select-wrap')) {
+      this.dropdownOpen = false;
+    }
+  }
+
+  selectOrder(opt: { value: string; label: string }): void {
+    this.selectedOrderLabel = opt.label;
+    this.dropdownOpen = false;
+    this.selectFilter(opt.value as ClienteFilterMode);
+  }
+
+  // ── Filtros ──
+  selectFilter(filter: ClienteFilterMode): void {
     this.activeFilter = filter;
 
-    if (filter !== 'personalizado') {
-      this.customModeChange.emit(false);
-      this.emitFilter();
+    if (filter === 'personalizado') {
+      this.customModeChange.emit(true);
+      this.syncDraftFromApplied();
       return;
     }
 
-    this.customModeChange.emit(true);
-    this.syncDraftFromApplied();
+    this.customModeChange.emit(false);
+    this.emitFilter();
   }
 
   onYearChange(value: string): void {
@@ -84,7 +112,6 @@ export class FiltrarClients {
 
   buscarPersonalizado(): void {
     this.activeFilter = 'personalizado';
-    this.customModeChange.emit(true);
     this.selectedYear = this.draftYear;
     this.selectedMonth = this.draftMonth;
     this.fromDate = this.draftFromDate;
@@ -98,20 +125,12 @@ export class FiltrarClients {
     this.draftFromDate = this.fromDate = '';
     this.draftToDate = this.toDate = '';
     this.activeFilter = 'todos';
+    this.selectedOrderLabel = 'Todos los clientes';
     this.customModeChange.emit(false);
     this.emitFilter();
   }
 
-  canUseQuickFilters(): boolean {
-    return !this.isCustomMode;
-  }
-
-  isQuickFilterDisabled(filter: ClienteFilterMode): boolean {
-    return this.isCustomMode && filter !== 'personalizado';
-  }
-
   trackYear = (_index: number, year: number) => year;
-
   trackMonth = (_index: number, month: { value: number; label: string }) => month.value;
 
   private emitFilter(): void {
@@ -132,8 +151,7 @@ export class FiltrarClients {
   }
 
   private buildYears(): number[] {
-    const currentYear = new Date().getFullYear();
-    return Array.from({ length: 8 }, (_, index) => currentYear - index);
+    const current = new Date().getFullYear();
+    return Array.from({ length: 8 }, (_, i) => current - i);
   }
-
 }

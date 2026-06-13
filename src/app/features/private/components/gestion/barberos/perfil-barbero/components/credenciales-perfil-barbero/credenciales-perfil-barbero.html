@@ -10,7 +10,8 @@
   <div class="divide-y divide-brand-gold/10">
 
     <!-- Usuario -->
-    <div class="flex flex-col gap-2 px-4 py-4 transition-colors hover:bg-brand-gold/3 md:flex-row md:items-center md:gap-4 md:px-5">
+    <div
+      class="flex flex-col gap-2 px-4 py-4 transition-colors hover:bg-brand-gold/3 md:flex-row md:items-center md:gap-4 md:px-5">
       <div class="w-32 shrink-0 text-sm font-medium text-brand-gold">Usuario:</div>
       <div class="flex-1 md:border-l md:border-brand-gold/10 md:pl-4">
         <span class="text-base font-semibold text-gray-100">{{ usuario }}</span>
@@ -18,7 +19,8 @@
     </div>
 
     <!-- Contraseña -->
-    <div class="flex flex-col gap-2 px-4 py-4 transition-colors hover:bg-brand-gold/3 md:flex-row md:items-center md:gap-4 md:px-5">
+    <div
+      class="flex flex-col gap-2 px-4 py-4 transition-colors hover:bg-brand-gold/3 md:flex-row md:items-center md:gap-4 md:px-5">
       <div class="w-32 shrink-0 text-sm font-medium text-brand-gold">Contraseña:</div>
       <div class="flex-1 md:border-l md:border-brand-gold/10 md:pl-4">
         <span class="text-base font-semibold tracking-[0.25em] text-gray-100">{{ contrasena }}</span>
@@ -39,106 +41,127 @@
 
     <!-- Modal Reset Contraseña -->
     @if (showResetModal) {
-      <div class="fixed inset-0 z-50 flex items-center justify-center px-4">
-        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" (click)="closeResetModal()"></div>
-        <div class="relative z-10 w-full max-w-md overflow-hidden rounded-3xl border border-brand-gold/15 bg-[#0d0d0b] shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
+    <div class="fixed inset-0 z-50 flex items-center justify-center px-4">
+      <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" (click)="closeResetModal()"></div>
+      <div
+        class="relative z-10 w-full max-w-md overflow-hidden rounded-3xl border border-brand-gold/15 bg-[#0d0d0b] shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
 
-          <div class="border-b border-brand-gold/10 px-5 py-4">
-            <p class="text-[0.78rem] uppercase tracking-[0.18em] text-brand-gold">Reset de contraseña</p>
-            <h3 class="mt-1 text-xl font-semibold text-gray-100">Ingresar nueva contraseña</h3>
-            <p class="mt-1 text-sm text-gray-400">Escribe y confirma la nueva contraseña para este barbero.</p>
-          </div>
+        <div class="border-b border-brand-gold/10 px-5 py-4">
+          <p class="text-[0.78rem] uppercase tracking-[0.18em] text-brand-gold">Reset de contraseña</p>
+          <h3 class="mt-1 text-xl font-semibold text-gray-100">Ingresar nueva contraseña</h3>
+          <p class="mt-1 text-sm text-gray-400">Escribe y confirma la nueva contraseña para este barbero.</p>
+        </div>
 
-          <form [formGroup]="form" (ngSubmit)="confirmResetPassword()" class="space-y-4 px-5 py-5">
+        <form [formGroup]="form" (ngSubmit)="confirmResetPassword()" class="space-y-4 px-5 py-5">
 
-            <label class="grid gap-2">
-              <span class="text-sm font-medium text-gray-200">Nueva contraseña</span>
-              <div class="relative">
-                <input formControlName="newPassword" [type]="showNewPassword ? 'text' : 'password'"
-                  placeholder="Nueva contraseña"
-                  class="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 pr-12 text-white outline-none transition placeholder:text-white/25 focus:border-amber-300/70 focus:ring-4 focus:ring-amber-300/10" />
-                <button type="button" (click)="toggleNewPassword()"
-                  class="absolute right-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-amber-200 transition hover:bg-white/10">
-                  <i [ngClass]="showNewPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
-                </button>
-              </div>
-              <div *ngIf="f.newPassword.touched && f.newPassword.errors" class="text-sm text-red-400">
-                <div *ngIf="f.newPassword.errors['required']">La contraseña es requerida.</div>
-                <div *ngIf="f.newPassword.errors['minlength']">Debe tener al menos 8 caracteres.</div>
-              </div>
-            </label>
-
-            <label class="grid gap-2">
-              <span class="text-sm font-medium text-gray-200">Repetir contraseña</span>
-              <div class="relative">
-                <input formControlName="confirmPassword" [type]="showConfirmPassword ? 'text' : 'password'"
-                  placeholder="Repite la contraseña"
-                  class="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 pr-12 text-white outline-none transition placeholder:text-white/25 focus:border-amber-300/70 focus:ring-4 focus:ring-amber-300/10" />
-                <button type="button" (click)="toggleConfirmPassword()"
-                  class="absolute right-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-amber-200 transition hover:bg-white/10">
-                  <i [ngClass]="showConfirmPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
-                </button>
-              </div>
-              <div *ngIf="f.confirmPassword.touched && f.confirmPassword.errors" class="text-sm text-red-400">
-                <div *ngIf="f.confirmPassword.errors['required']">Debes repetir la contraseña.</div>
-                <div *ngIf="f.confirmPassword.errors['mismatch']">Las contraseñas no coinciden.</div>
-              </div>
-            </label>
-
-            <div class="flex items-center justify-end gap-3 pt-2">
-              <button type="button" (click)="closeResetModal()"
-                class="rounded-xl border border-white/10 bg-transparent px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/5">
-                Cancelar
-              </button>
-              <button type="submit" [disabled]="isSubmitting"
-                class="rounded-xl border border-amber-300/40 bg-amber-300/10 px-4 py-2 text-sm font-semibold text-amber-200 transition hover:-translate-y-0.5 hover:border-amber-200 hover:bg-amber-300/20 disabled:cursor-not-allowed disabled:opacity-60">
-                {{ isSubmitting ? 'Cambiando...' : 'Confirmar cambio' }}
+          <label class="grid gap-2">
+            <span class="text-sm font-medium text-gray-200">Nueva contraseña</span>
+            <div class="relative">
+              <input formControlName="newPassword" [type]="showNewPassword ? 'text' : 'password'" maxlength="100"
+                placeholder="Nueva contraseña"
+                class="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 pr-12 text-white outline-none transition placeholder:text-white/25 focus:border-amber-300/70 focus:ring-4 focus:ring-amber-300/10" />
+              <button type="button" (click)="toggleNewPassword()"
+                class="absolute right-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-amber-200 transition hover:bg-white/10">
+                <i [ngClass]="showNewPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
               </button>
             </div>
+            <div *ngIf="f.newPassword.touched && f.newPassword.errors" class="text-sm text-red-400">
 
-          </form>
-        </div>
+              <div *ngIf="f.newPassword.errors['required']">
+                La contraseña es requerida.
+              </div>
+
+              <div *ngIf="f.newPassword.errors['minlength']">
+                Debe tener al menos 8 caracteres.
+              </div>
+
+            </div>
+          </label>
+
+          <label class="grid gap-2">
+            <span class="text-sm font-medium text-gray-200">Repetir contraseña</span>
+            <div class="relative">
+              <input formControlName="confirmPassword" [type]="showConfirmPassword ? 'text' : 'password'"
+                placeholder="Repite la contraseña"
+                class="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 pr-12 text-white outline-none transition placeholder:text-white/25 focus:border-amber-300/70 focus:ring-4 focus:ring-amber-300/10" />
+              <button type="button" (click)="toggleConfirmPassword()"
+                class="absolute right-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-amber-200 transition hover:bg-white/10">
+                <i [ngClass]="showConfirmPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+              </button>
+            </div>
+            <div *ngIf="f.confirmPassword.touched && f.confirmPassword.errors" class="text-sm text-red-400">
+              <div *ngIf="f.confirmPassword.errors['required']">Debes repetir la contraseña.</div>
+              <div *ngIf="f.confirmPassword.errors['mismatch']">Las contraseñas no coinciden.</div>
+            </div>
+          </label>
+
+          <div class="flex items-center justify-end gap-3 pt-2">
+            <button type="button" (click)="closeResetModal()"
+              class="rounded-xl border border-white/10 bg-transparent px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/5">
+              Cancelar
+            </button>
+            <button type="submit" [disabled]="isSubmitting"
+              class="rounded-xl border border-amber-300/40 bg-amber-300/10 px-4 py-2 text-sm font-semibold text-amber-200 transition hover:-translate-y-0.5 hover:border-amber-200 hover:bg-amber-300/20 disabled:cursor-not-allowed disabled:opacity-60">
+              {{ isSubmitting ? 'Cambiando...' : 'Confirmar cambio' }}
+            </button>
+          </div>
+
+        </form>
       </div>
+    </div>
     }
 
     <!-- Modal Editar Usuario -->
     @if (showEditUsernameModal) {
-      <div class="fixed inset-0 z-50 flex items-center justify-center px-4">
-        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" (click)="closeEditUsernameModal()"></div>
-        <div class="relative z-10 w-full max-w-md overflow-hidden rounded-3xl border border-blue-500/15 bg-[#0d0d0b] shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
+    <div class="fixed inset-0 z-50 flex items-center justify-center px-4">
+      <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" (click)="closeEditUsernameModal()"></div>
+      <div
+        class="relative z-10 w-full max-w-md overflow-hidden rounded-3xl border border-blue-500/15 bg-[#0d0d0b] shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
 
-          <div class="border-b border-blue-500/10 px-5 py-4">
-            <p class="text-[0.78rem] uppercase tracking-[0.18em] text-blue-400">Editar usuario</p>
-            <h3 class="mt-1 text-xl font-semibold text-gray-100">Cambiar nombre de usuario</h3>
-            <p class="mt-1 text-sm text-gray-400">Ingresa el nuevo nombre de usuario para este barbero.</p>
+        <div class="border-b border-blue-500/10 px-5 py-4">
+          <p class="text-[0.78rem] uppercase tracking-[0.18em] text-blue-400">Editar usuario</p>
+          <h3 class="mt-1 text-xl font-semibold text-gray-100">Cambiar nombre de usuario</h3>
+          <p class="mt-1 text-sm text-gray-400">Ingresa el nuevo nombre de usuario para este barbero.</p>
+        </div>
+
+        <form [formGroup]="usernameForm" (ngSubmit)="confirmUpdateUsername()" class="space-y-4 px-5 py-5">
+
+          <label class="grid gap-2">
+            <span class="text-sm font-medium text-gray-200">Nuevo nombre de usuario</span>
+            <input formControlName="username" type="text" maxlength="50" placeholder="Nuevo usuario"
+              class="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-white/25 focus:border-blue-400/70 focus:ring-4 focus:ring-blue-400/10" />
+
+            <div *ngIf="uf.username.touched && uf.username.errors" class="text-sm text-red-400">
+
+              <div *ngIf="uf.username.errors['required']">
+                El nombre de usuario es requerido.
+              </div>
+
+              <div *ngIf="uf.username.errors['minlength']">
+                Debe tener al menos 4 caracteres.
+              </div>
+
+              <div *ngIf="uf.username.errors['maxlength']">
+                No puede superar los 50 caracteres.
+              </div>
+
+            </div>
+          </label>
+
+          <div class="flex items-center justify-end gap-3 pt-2">
+            <button type="button" (click)="closeEditUsernameModal()"
+              class="rounded-xl border border-white/10 bg-transparent px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/5">
+              Cancelar
+            </button>
+            <button type="submit" [disabled]="isSubmitting"
+              class="rounded-xl border border-blue-400/40 bg-blue-400/10 px-4 py-2 text-sm font-semibold text-blue-300 transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-400/20 disabled:cursor-not-allowed disabled:opacity-60">
+              {{ isSubmitting ? 'Actualizando...' : 'Confirmar cambio' }}
+            </button>
           </div>
 
-          <form [formGroup]="usernameForm" (ngSubmit)="confirmUpdateUsername()" class="space-y-4 px-5 py-5">
-
-            <label class="grid gap-2">
-              <span class="text-sm font-medium text-gray-200">Nuevo nombre de usuario</span>
-              <input formControlName="username" type="text" placeholder="Nuevo usuario"
-                class="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition placeholder:text-white/25 focus:border-blue-400/70 focus:ring-4 focus:ring-blue-400/10" />
-              <div *ngIf="uf.username.touched && uf.username.errors" class="text-sm text-red-400">
-                <div *ngIf="uf.username.errors['required']">El nombre de usuario es requerido.</div>
-                <div *ngIf="uf.username.errors['minlength']">Debe tener al menos 3 caracteres.</div>
-              </div>
-            </label>
-
-            <div class="flex items-center justify-end gap-3 pt-2">
-              <button type="button" (click)="closeEditUsernameModal()"
-                class="rounded-xl border border-white/10 bg-transparent px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/5">
-                Cancelar
-              </button>
-              <button type="submit" [disabled]="isSubmitting"
-                class="rounded-xl border border-blue-400/40 bg-blue-400/10 px-4 py-2 text-sm font-semibold text-blue-300 transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-400/20 disabled:cursor-not-allowed disabled:opacity-60">
-                {{ isSubmitting ? 'Actualizando...' : 'Confirmar cambio' }}
-              </button>
-            </div>
-
-          </form>
-        </div>
+        </form>
       </div>
+    </div>
     }
 
   </div>

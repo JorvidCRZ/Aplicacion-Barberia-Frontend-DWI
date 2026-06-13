@@ -333,7 +333,7 @@ fechaValida(control: AbstractControl): ValidationErrors | null {
           });
 
           setTimeout(() => {
-            this.router.navigate(['/dashboard/cliente/mis-citas']);
+            this.router.navigate(['/mi-cuenta/reservas/mis-reservas']);
           }, 2000);
         },
         error: (error) => {

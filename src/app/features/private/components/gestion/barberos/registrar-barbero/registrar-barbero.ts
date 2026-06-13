@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { NotificationService } from '@/app/core/services/common/notification.service';
 import { UsuarioService } from '@/app/core/services/auth/usuario.service';
 import { BarberoRegister } from '@/app/core/models/auth/usuario/barbero-register.model';
-
+import { DatePickerModule } from 'primeng/datepicker';
 @Component({
   selector: 'app-registrar-barbero',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule,DatePickerModule],
   templateUrl: './registrar-barbero.html',
   styleUrl: './registrar-barbero.css',
 })
@@ -27,12 +27,12 @@ export class RegistrarBarbero {
     private notification: NotificationService,
   ) {
     this.form = this.fb.group({
-      nombre: ['', Validators.required],
-      apellido: ['', Validators.required],
-      telefono: [''],
+      nombre: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]],
+      apellido: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]],
+      telefono: ['', [Validators.required, Validators.pattern('^\\d{9}$')]],
       email: ['', [Validators.required, Validators.email]],
 
-      usuario: ['', Validators.required],
+      usuario: ['', [Validators.required, Validators.minLength(3)]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       passwordConfirm: ['', Validators.required],
 
@@ -40,13 +40,32 @@ export class RegistrarBarbero {
       fechaIngreso: [new Date().toISOString().slice(0,10)],
       sueldo: [''],
       comision: ['']
-    });
+    }, { validators: this.passwordsMatchValidator });
   }
 
   get f() { return this.form.controls; }
 
   togglePassword() { this.showPassword = !this.showPassword; }
   togglePasswordConfirm() { this.showPasswordConfirm = !this.showPasswordConfirm; }
+
+  passwordsMatchValidator = (group: AbstractControl): ValidationErrors | null => {
+    const p = group.get('password')?.value;
+    const pc = group.get('passwordConfirm')?.value;
+    if (p && pc && p !== pc) {
+      return { passwordMismatch: true };
+    }
+    return null;
+  }
+
+  passwordMismatch(): boolean {
+    return !!(this.form.errors && (this.form.errors as any).passwordMismatch && (this.f['passwordConfirm'].touched || this.f['passwordConfirm'].dirty));
+  }
+
+  onPhoneInput(event: any): void {
+    const raw: string = (event.target.value || '').toString();
+    const digits = raw.replace(/\D/g, '').slice(0, 9);
+    this.form.get('telefono')?.setValue(digits, { emitEvent: false });
+  }
 
   submit(): void {
     if (this.form.invalid) return;

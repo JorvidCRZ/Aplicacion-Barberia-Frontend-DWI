@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { UsuarioService } from '@/app/core/services/auth/usuario.service';
 import { NotificationService } from '@/app/core/services/common/notification.service';
 
@@ -17,14 +17,17 @@ export class RegistrarClient {
 
   constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute, private usuarioService: UsuarioService, private notification: NotificationService) {
     this.form = this.fb.group({
-      nombre: ['', Validators.required],
-      apellido: ['', Validators.required],
-      telefono: ['', Validators.required],
+      nombre: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]],
+      apellido: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]],
+      telefono: ['', [Validators.required, Validators.pattern('^\\d{9}$')]],
       email: ['', [Validators.required, Validators.email]],
       usuario: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(8)]],
       passwordConfirm: ['', Validators.required]
     });
+
+    // cross-field validator for password match
+    this.form.setValidators(this.passwordsMatchValidator);
   }
 
   get f() {
@@ -34,6 +37,41 @@ export class RegistrarClient {
   isFieldInvalid(name: string): boolean {
     const ctrl = this.form.get(name);
     return !!(ctrl && ctrl.invalid && (ctrl.touched || ctrl.dirty));
+  }
+
+  passwordsMismatch(): boolean {
+    const p = this.form.get('password')?.value ?? '';
+    const c = this.form.get('passwordConfirm')?.value ?? '';
+    return !!(p || c) && p !== c;
+  }
+
+  private passwordsMatchValidator = (group: AbstractControl): ValidationErrors | null => {
+    const password = group.get('password')?.value ?? '';
+    const confirm = group.get('passwordConfirm')?.value ?? '';
+    const confirmControl = group.get('passwordConfirm');
+
+    if (password && confirm && password !== confirm) {
+      confirmControl?.setErrors({ ...(confirmControl?.errors || {}), mismatch: true });
+      return { mismatch: true };
+    }
+
+    // remove mismatch if present and now matching
+    if (confirmControl?.errors && confirmControl.errors['mismatch']) {
+      const errs = { ...confirmControl.errors } as any;
+      delete errs['mismatch'];
+      const remaining = Object.keys(errs).length ? errs : null;
+      confirmControl.setErrors(remaining);
+    }
+
+    return null;
+  }
+
+  onPhoneInput(event: any): void {
+    const input = event.target as HTMLInputElement;
+    let val = (input.value || '').toString();
+    val = val.replace(/\D/g, '').slice(0, 9);
+    input.value = val;
+    this.form.get('telefono')?.setValue(val, { emitEvent: true });
   }
 
   submit(): void {
@@ -50,23 +88,16 @@ export class RegistrarClient {
   openConfirm(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.notification.showError('Por favor corrige los campos marcados antes de continuar.', 'Error de validación');
       return;
     }
-    // validate password confirmation
-    const pwd = this.form.get('password')?.value;
-    const pwdConfirm = this.form.get('passwordConfirm')?.value;
-    if (pwd !== pwdConfirm) {
-      this.form.get('passwordConfirm')?.setErrors({ mismatch: true });
+
+    // passwords mismatch handled by validator, show notification if mismatch
+    if (this.passwordsMismatch()) {
+      this.notification.showError('Las contraseñas no coinciden.', 'Error de validación');
       return;
-    } else {
-      // clear previous mismatch error if any
-      const ctrl = this.form.get('passwordConfirm');
-      if (ctrl?.errors) {
-        const { mismatch, ...rest } = ctrl.errors;
-        const hasOther = Object.keys(rest).length > 0;
-        ctrl.setErrors(hasOther ? rest : null);
-      }
     }
+
     this.showConfirm = true;
   }
 

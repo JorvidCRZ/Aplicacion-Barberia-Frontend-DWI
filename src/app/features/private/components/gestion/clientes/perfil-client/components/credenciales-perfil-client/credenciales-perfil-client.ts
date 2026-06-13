@@ -36,7 +36,14 @@ export class CredencialesPerfilClient {
   });
 
   usernameForm = this.fb.group({
-    username: ['', [Validators.required, Validators.minLength(3)]],
+    username: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(4),
+        Validators.maxLength(50)
+      ]
+    ],
   });
 
   get f() {
@@ -135,6 +142,20 @@ export class CredencialesPerfilClient {
     }
 
     const newUsername = this.uf.username.value?.trim() ?? '';
+
+    if (!newUsername) {
+      this.notification.showWarn(
+        'El nombre de usuario es obligatorio.'
+      );
+      return;
+    }
+
+    if (newUsername.length < 4 || newUsername.length > 50) {
+      this.notification.showWarn(
+        'El nombre de usuario debe tener entre 4 y 50 caracteres.'
+      );
+      return;
+    }
 
     if (newUsername === this.usuario) {
       this.notification.showWarn('El nuevo nombre de usuario es igual al actual.');

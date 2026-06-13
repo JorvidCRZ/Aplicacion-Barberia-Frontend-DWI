@@ -6,36 +6,33 @@
 
 			<thead>
 				<tr class="table-header border-b border-gray-800 text-xs uppercase tracking-[0.2em] text-brand-gold/80">
-					<th class="py-3 px-3 text-left w-[19%]">Nombre</th>
-					<th class="py-3 px-3 text-left w-[13%]">Apellido</th>
-					<th class="py-3 px-3 text-left w-[18%]">Correo</th>
-					<th class="py-3 px-3 text-center w-[12%]">Ingreso</th>
-					<th class="py-3 px-3 text-left w-[12%]">Estado</th>
+					<th class="py-3 px-1 text-left w-[14%]">Nombre</th>
+					<th class="py-3 px-1 text-left w-[13%]">Apellido</th>
+					<th class="py-3 px-1 text-left w-[18%]">Correo</th>
+					<th class="py-3 px-1 text-left w-[12%]">Estado</th>
 
-					<th class="py-3 px-3 text-center w-[10%]">Comisión</th>
-					<th class="py-3 px-3 text-center w-[10%]">Sueldo</th>
+					<th class="py-3 px-1 text-center w-[10%]">Comisión</th>
+					<th class="py-3 px-1 text-center w-[10%]">Sueldo</th>
 
-					<th class="py-3 px-3 text-right w-[6%]">Acción</th>
+					<th class="py-3 px-1 text-center w-[6%]">Acción</th>
 				</tr>
 			</thead>
 
 			<tbody class="divide-y divide-gray-800">
 
 				<tr *ngFor="let b of barberos" class="table-row align-middle transition-colors duration-200 hover:bg-white/5">
-					<td class="py-4 px-3" data-label="Nombre">
+					<td class="py-3 px-1" data-label="Nombre">
 						<div class="font-semibold text-gray-100 leading-tight">{{ b.persona?.nombre || b.nombre || '—' }}</div>
 
 					</td>
 
-					<td class="py-4 px-3 font-semibold text-gray-100 leading-tight" data-label="Apellido">
+					<td class="py-3 px-1 font-semibold text-gray-100 leading-tight" data-label="Apellido">
 						{{ b.persona?.apellido || b.apellido || '—' }}
 					</td>
 
-					<td class="py-4 px-3 text-xs text-gray-400" data-label="Correo">{{ b.persona?.email || b.email || '—' }}</td>
+					<td class="py-3 px-1 text-xs text-gray-400" data-label="Correo">{{ b.persona?.email || b.email || '—' }}</td>
 
-					<td class="py-4 px-3 text-center text-gray-300" data-label="Ingreso">{{ b.fechaIngreso || '—' }}</td>
-
-					<td class="py-4 px-3" data-label="Estado">
+					<td class="py-3 px-1" data-label="Estado">
 						<span *ngIf="b.estado === 'Disponible'" class="inline-flex items-center gap-2 rounded-full border border-lime-400/20 bg-lime-400/10 px-3 py-1 text-xs font-medium text-lime-300">
 							<span class="h-2 w-2 rounded-full bg-lime-400"></span>Disponible
 						</span>
@@ -49,13 +46,14 @@
 
 
 
-					<td class="py-4 px-3 text-center text-gray-300" data-label="Comisión">{{ b.comision || '—' }}</td>
 
-					<td class="py-4 px-3 text-center text-gray-300" data-label="Sueldo">{{ b.sueldo || '—' }}</td>
+					<td class="py-3 px-1 text-center text-gray-300" data-label="Comisión">{{ b.comision || '—' }}</td>
+
+					<td class="py-3 px-1 text-center text-gray-300" data-label="Sueldo">{{ b.sueldo || '—' }}</td>
 
 
 
-					<td class="py-4 px-3 text-right w-[6%]" data-label="Acción">
+					<td class="py-3 px-1 text-center w-[6%]" data-label="Acción">
 
 						<div class="table-actions">
 							@if (isSearchMode) {
