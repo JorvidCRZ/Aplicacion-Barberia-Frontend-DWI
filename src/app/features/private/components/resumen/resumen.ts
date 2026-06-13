@@ -1,15 +1,14 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
+import { Chart, CategoryScale, LinearScale, BarElement, BarController, Tooltip } from 'chart.js';
 import { ResumenadminService } from '@/app/core/services/gestion/resumen-admin.service';
-import {
-  DashboardData,
-  KpiCard,
-  CitaBarberoResponseDTO,
-  EstadoReserva,
-} from '@/app/core/models/gestion/admin/resumen-admin';
+import { DashboardData, KpiCard, CitaBarberoResponseDTO, EstadoReserva,} from '@/app/core/models/gestion/admin/resumen-admin';
+import { PrediccionService, PrediccionResponse, PrediccionDia } from '@/app/core/services/analisis/prediccion.service';
 
-type Periodo = 'hoy' ;
+Chart.register(CategoryScale, LinearScale, BarElement, BarController, Tooltip);
+
+type Periodo = 'hoy';
 
 @Component({
   selector: 'app-resumen',
@@ -20,10 +19,12 @@ type Periodo = 'hoy' ;
 })
 export class Resumen implements OnInit, OnDestroy {
 
+  @ViewChild('barCanvas') barCanvas!: ElementRef<HTMLCanvasElement>;
+  private chartInstance: Chart | null = null;
   private destroy$ = new Subject<void>();
 
   periodos: { key: Periodo; label: string }[] = [
-    { key: 'hoy',   label: 'Hoy' },
+    { key: 'hoy', label: 'Hoy' },
   ];
   periodoActivo: Periodo = 'hoy';
 
@@ -34,13 +35,22 @@ export class Resumen implements OnInit, OnDestroy {
   loadingCitas                    = false;
   error: string | null            = null;
 
-  constructor(private resumenService: ResumenadminService) {}
+  loadingPrediccion = true;
+  diaPico           = '';
+  totalEstimado     = 0;
+
+  constructor(
+    private resumenService: ResumenadminService,
+    private prediccionService: PrediccionService
+  ) {}
 
   ngOnInit(): void {
     this.cargarDashboard();
+    this.cargarPrediccion();
   }
 
   ngOnDestroy(): void {
+    if (this.chartInstance) this.chartInstance.destroy();
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -55,7 +65,7 @@ export class Resumen implements OnInit, OnDestroy {
       .subscribe({
         next: (data: DashboardData) => {
           this.kpiCards = this.resumenService.buildKpiCards(data);
-          this.citas = data.citas || [];
+          this.citas    = data.citas || [];
           this.loading  = false;
         },
         error: (err) => {
@@ -66,6 +76,68 @@ export class Resumen implements OnInit, OnDestroy {
       });
   }
 
+  cargarPrediccion(): void {
+  this.loadingPrediccion = true;
+  this.prediccionService.getPredicciones()
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: (res: PrediccionResponse) => {
+        const preds: PrediccionDia[] = res.predicciones;
+        const vals: number[]         = preds.map((p: PrediccionDia) => p.clientes_predichos);
+        const max: number            = Math.max(...vals);
+        this.diaPico       = preds.find((p: PrediccionDia) => p.clientes_predichos === max)?.dia ?? '';
+        this.totalEstimado = vals.reduce((a: number, b: number) => a + b, 0);
+        this.loadingPrediccion = false;
+
+        setTimeout(() => {
+  if (this.chartInstance) this.chartInstance.destroy();
+  this.chartInstance = new Chart(this.barCanvas.nativeElement, {
+            type: 'bar',
+            data: {
+              labels: preds.map((p: PrediccionDia) => p.dia),
+              datasets: [{
+                data: vals,
+                backgroundColor: vals.map((v: number) => v === max ? '#B8860B' : '#2a2510'),
+                borderColor:     vals.map((v: number) => v === max ? '#d4a017' : '#3a3510'),
+                borderWidth: 1,
+                borderRadius: 6,
+                label: 'Clientes estimados'
+              }]
+            },
+            options: {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      backgroundColor: '#1a1a1a',
+      titleColor: '#D4AF37',
+      bodyColor: '#aaa',
+      callbacks: { label: (ctx: any) => ` ${ctx.raw} clientes estimados` }
+    }
+  },
+  scales: {
+    x: {
+      ticks: { color: '#888', font: { size: 11 } },
+      grid: { color: 'rgba(255,255,255,0.04)' },
+      border: { display: false }
+    },
+    y: {
+      beginAtZero: true,
+      ticks: { color: '#888', stepSize: 2, font: { size: 11 } },
+      grid: { color: 'rgba(255,255,255,0.04)' },
+      border: { display: false }
+    }
+  }
+}
+            
+          });
+        }, 100);
+      },
+      error: () => { this.loadingPrediccion = false; }
+    });
+}
+
   cambiarPeriodo(periodo: Periodo): void {
     this.periodoActivo = periodo;
     this.cargarDashboard();
@@ -73,7 +145,6 @@ export class Resumen implements OnInit, OnDestroy {
 
   refrescarCitas(): void {
     this.loadingCitas = true;
-
     this.resumenService
       .getCitasHoy()
       .pipe(takeUntil(this.destroy$))
@@ -82,9 +153,7 @@ export class Resumen implements OnInit, OnDestroy {
           this.citas        = citas;
           this.loadingCitas = false;
         },
-        error: () => {
-          this.loadingCitas = false;
-        },
+        error: () => { this.loadingCitas = false; }
       });
   }
 
@@ -94,9 +163,7 @@ export class Resumen implements OnInit, OnDestroy {
 
   getServicioResumen(cita: CitaBarberoResponseDTO): string {
     if (!cita.servicios?.length) return '—';
-    return cita.servicios
-  .map((s: any) => s.nombreCorte)
-  .join(', ');
+    return cita.servicios.map((s: any) => s.nombreCorte).join(', ');
   }
 
   getEstadoClass(estado: EstadoReserva): string {
@@ -121,6 +188,6 @@ export class Resumen implements OnInit, OnDestroy {
     return map[estado] ?? estado;
   }
 
-  trackByKpi(_: number, kpi: KpiCard): string                  { return kpi.label; }
-  trackByCita(_: number, cita: CitaBarberoResponseDTO): number { return cita.idReserva; }
+  trackByKpi(_: number, kpi: KpiCard): string                   { return kpi.label; }
+  trackByCita(_: number, cita: CitaBarberoResponseDTO): number  { return cita.idReserva; }
 }

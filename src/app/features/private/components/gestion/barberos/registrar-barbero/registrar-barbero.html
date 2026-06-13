@@ -3,13 +3,18 @@
 		<header class="rounded-3xl border border-amber-400/15 bg-[#0b0b0bcc] p-6 shadow sm:p-8">
 			<div class="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
 				<div class="max-w-3xl space-y-3">
-					<span class="inline-flex w-fit rounded-full bg-amber-400/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.22em] text-amber-300">Gestión de barberos</span>
+					<span
+						class="inline-flex w-fit rounded-full bg-amber-400/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.22em] text-amber-300">Gestión
+						de barberos</span>
 					<h1 class="text-3xl font-black tracking-tight text-white">Registrar barbero</h1>
-					<p class="max-w-2xl text-sm leading-7 text-white/65">Completa los datos para registrar un nuevo barbero.</p>
+					<p class="max-w-2xl text-sm leading-7 text-white/65">Completa los datos para registrar un nuevo
+						barbero.</p>
 				</div>
 
 				<div class="flex flex-col items-start gap-3 lg:items-end">
-					<a routerLink="/dashboard/admin/gestion/barberos" class="inline-flex items-center gap-2 rounded-full border border-amber-300/20 bg-black/30 px-4 py-3 text-sm font-semibold text-white">← Volver</a>
+					<a routerLink="/dashboard/admin/gestion/barberos"
+						class="inline-flex items-center gap-2 rounded-full border border-amber-300/20 bg-black/30 px-4 py-3 text-sm font-semibold text-white">←
+						Volver</a>
 				</div>
 			</div>
 		</header>
@@ -24,7 +29,8 @@
 				</ul>
 			</aside>
 
-			<form [formGroup]="form" (ngSubmit)="submit()" class="grid gap-6 rounded-3xl border border-white/8 bg-[#0a0a0ae6] p-6 sm:p-8">
+			<form [formGroup]="form" (ngSubmit)="submit()"
+				class="grid gap-6 rounded-3xl border border-white/8 bg-[#0a0a0ae6] p-6 sm:p-8">
 
 				<!-- PERSONA -->
 				<div class="space-y-4 border-b border-white/6 pb-6">
@@ -36,27 +42,45 @@
 					<div class="grid gap-4 md:grid-cols-2">
 						<label class="grid gap-2">
 							<span class="text-sm font-semibold text-white/90">Nombre</span>
-							<input formControlName="nombre" type="text" placeholder="Juan" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none" />
-							<div *ngIf="f['nombre'].touched && f['nombre'].invalid" class="mt-1 text-sm text-red-400">El nombre es requerido.</div>
+							<input formControlName="nombre" type="text" placeholder="Juan"
+								class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none" />
+							<div class="mt-1 h-4 text-sm text-red-400"><ng-container
+									*ngIf="f['nombre'].touched && f['nombre'].invalid">El nombre es
+									requerido.</ng-container></div>
 						</label>
 
 						<label class="grid gap-2">
 							<span class="text-sm font-semibold text-white/90">Apellido</span>
-							<input formControlName="apellido" type="text" placeholder="Pérez" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none" />
-							<div *ngIf="f['apellido'].touched && f['apellido'].invalid" class="mt-1 text-sm text-red-400">El apellido es requerido.</div>
+							<input formControlName="apellido" type="text" placeholder="Pérez"
+								class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none" />
+							<div class="mt-1 h-4 text-sm text-red-400"><ng-container
+									*ngIf="f['apellido'].touched && f['apellido'].invalid">El apellido es
+									requerido.</ng-container></div>
 						</label>
 
 						<label class="grid gap-2">
 							<span class="text-sm font-semibold text-white/90">Teléfono</span>
-							<input formControlName="telefono" type="tel" placeholder="+51 999 888 777" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none" />
+							<input formControlName="telefono" (input)="onPhoneInput($event)" type="tel"
+								placeholder="999999999"
+								class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none" />
+							<div class="mt-1 h-4 text-sm text-red-400">
+								<ng-container *ngIf="f['telefono'].touched && f['telefono'].errors">
+									<div *ngIf="f['telefono'].errors['required']">El teléfono es requerido.</div>
+									<div *ngIf="f['telefono'].errors['pattern']">Debe contener 9 dígitos numéricos.
+									</div>
+								</ng-container>
+							</div>
 						</label>
 
 						<label class="grid gap-2">
 							<span class="text-sm font-semibold text-white/90">Email</span>
-							<input formControlName="email" type="email" placeholder="barbero@mail.com" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none" />
-							<div *ngIf="f['email'].touched && f['email'].errors" class="mt-1 text-sm text-red-400">
-								<div *ngIf="f['email'].errors['required']">El email es requerido.</div>
-								<div *ngIf="f['email'].errors['email']">Formato de email inválido.</div>
+							<input formControlName="email" type="email" placeholder="barbero@mail.com"
+								class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none" />
+							<div class="mt-1 h-4 text-sm text-red-400">
+								<ng-container *ngIf="f['email'].touched && f['email'].errors">
+									<div *ngIf="f['email'].errors['required']">El email es requerido.</div>
+									<div *ngIf="f['email'].errors['email']">Formato de email inválido.</div>
+								</ng-container>
 							</div>
 						</label>
 					</div>
@@ -73,41 +97,43 @@
 						<label class="grid gap-2">
 							<span class="text-sm font-semibold text-white/90">Años experiencia</span>
 							<div class="input-with-icon">
-								<input formControlName="experiencia" type="number" min="0" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none" />
-								<div class="spinner-controls" aria-hidden="true">
-									<button type="button" class="icon-btn spin-up"><i class="pi pi-chevron-up"></i></button>
-									<button type="button" class="icon-btn spin-down"><i class="pi pi-chevron-down"></i></button>
-								</div>
+								<input formControlName="experiencia" type="number" min="0"
+									class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none" />
+
 							</div>
 						</label>
 
 						<label class="grid gap-2">
-							<span class="text-sm font-semibold text-white/90">Fecha ingreso</span>
-							<div class="input-with-icon">
-								<input formControlName="fechaIngreso" type="date" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none" />
-								<button type="button" class="icon-btn calendar-icon" aria-hidden="true"><i class="pi pi-calendar"></i></button>
-							</div>
+							<span class="text-sm font-semibold text-white/90">
+								Fecha ingreso
+							</span>
+
+							<p-datepicker formControlName="fechaIngreso" [showIcon]="true" iconDisplay="input"
+								[readonlyInput]="true" appendTo="body"
+								inputStyleClass="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none"
+								styleClass="w-full">
+								appendTo="body"
+								inputStyleClass="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3
+								text-white outline-none"
+								styleClass="w-full">
+							</p-datepicker>
 						</label>
 
 						<label class="grid gap-2">
 							<span class="text-sm font-semibold text-white/90">Sueldo</span>
 							<div class="input-with-icon">
-								<input formControlName="sueldo" type="number" step="0.01" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none" />
-								<div class="spinner-controls" aria-hidden="true">
-									<button type="button" class="icon-btn spin-up"><i class="pi pi-chevron-up"></i></button>
-									<button type="button" class="icon-btn spin-down"><i class="pi pi-chevron-down"></i></button>
-								</div>
+								<input formControlName="sueldo" type="number" step="0.01"
+									class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none" />
+
 							</div>
 						</label>
 
 						<label class="grid gap-2">
 							<span class="text-sm font-semibold text-white/90">Comisión (%)</span>
 							<div class="input-with-icon">
-								<input formControlName="comision" type="number" step="0.01" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none" />
-								<div class="spinner-controls" aria-hidden="true">
-									<button type="button" class="icon-btn spin-up"><i class="pi pi-chevron-up"></i></button>
-									<button type="button" class="icon-btn spin-down"><i class="pi pi-chevron-down"></i></button>
-								</div>
+								<input formControlName="comision" type="number" step="0.01"
+									class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none" />
+
 							</div>
 						</label>
 					</div>
@@ -123,29 +149,54 @@
 					<div class="grid gap-4 md:grid-cols-2">
 						<label class="grid gap-2 md:col-span-2">
 							<span class="text-sm font-semibold text-white/90">Usuario</span>
-							<input formControlName="usuario" type="text" placeholder="usuario.barbero" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none" />
+							<input formControlName="usuario" type="text" placeholder="usuario.barbero"
+								class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 text-white outline-none" />
+							<div class="mt-1 h-4 text-sm text-red-400"><ng-container
+									*ngIf="f['usuario'].touched && f['usuario'].invalid">El usuario es requerido (mín. 3
+									caracteres).</ng-container></div>
 						</label>
 
 						<label class="grid gap-2">
 							<span class="text-sm font-semibold text-white/90">Password</span>
 							<div class="relative">
-								<input formControlName="password" [type]="showPassword ? 'text' : 'password'" placeholder="Mínimo 8 caracteres" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 pr-12 text-white outline-none" />
-								<button type="button" (click)="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-amber-200"> <i [ngClass]="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i> </button>
+								<input formControlName="password" [type]="showPassword ? 'text' : 'password'"
+									placeholder="Mínimo 8 caracteres"
+									class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 pr-12 text-white outline-none" />
+								<button type="button" (click)="togglePassword()"
+									class="absolute right-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-amber-200">
+									<i [ngClass]="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i> </button>
 							</div>
+							<div class="mt-1 h-4 text-sm text-red-400"><ng-container
+									*ngIf="f['password'].touched && f['password'].errors">La contraseña debe tener al
+									menos 8 caracteres.</ng-container></div>
 						</label>
 
 						<label class="grid gap-2">
 							<span class="text-sm font-semibold text-white/90">Confirmar password</span>
 							<div class="relative">
-								<input formControlName="passwordConfirm" [type]="showPasswordConfirm ? 'text' : 'password'" placeholder="Repite la contraseña" class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 pr-12 text-white outline-none" />
-								<button type="button" (click)="togglePasswordConfirm()" class="absolute right-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-amber-200"> <i [ngClass]="showPasswordConfirm ? 'pi pi-eye-slash' : 'pi pi-eye'"></i> </button>
+								<input formControlName="passwordConfirm"
+									[type]="showPasswordConfirm ? 'text' : 'password'"
+									placeholder="Repite la contraseña"
+									class="w-full rounded-2xl border border-white/8 bg-black/50 px-4 py-3 pr-12 text-white outline-none" />
+								<button type="button" (click)="togglePasswordConfirm()"
+									class="absolute right-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-amber-200">
+									<i [ngClass]="showPasswordConfirm ? 'pi pi-eye-slash' : 'pi pi-eye'"></i> </button>
+							</div>
+							<div class="mt-1 h-4 text-sm text-red-400">
+								<ng-container>
+									<span *ngIf="f['passwordConfirm'].touched && f['passwordConfirm'].errors">Confirma
+										la contraseña.</span>
+									<span *ngIf="passwordMismatch()">Las contraseñas no coinciden.</span>
+								</ng-container>
 							</div>
 						</label>
 					</div>
 				</div>
 
 				<div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-					<button type="button" (click)="openConfirm()" [disabled]="isSubmitting" class="inline-flex items-center justify-center rounded-full bg-amber-300 px-6 py-3 text-sm font-black text-black">Guardar barbero</button>
+					<button type="button" (click)="openConfirm()" [disabled]="isSubmitting"
+						class="inline-flex items-center justify-center rounded-full bg-amber-300 px-6 py-3 text-sm font-black text-black">Guardar
+						barbero</button>
 				</div>
 
 				<!-- Confirm Modal -->
@@ -155,8 +206,10 @@
 						<h3 class="text-lg font-bold text-white">¿Estás seguro?</h3>
 						<p class="mt-2 text-sm text-white/70">¿Deseas guardar este barbero en el sistema?</p>
 						<div class="mt-6 flex justify-end gap-3">
-							<button type="button" (click)="closeConfirm()" class="rounded-full px-4 py-2 text-sm font-semibold bg-transparent border border-white/10 text-white">Cancelar</button>
-							<button type="button" (click)="submitConfirmed()" [disabled]="isSubmitting" class="rounded-full px-4 py-2 text-sm font-black text-black bg-amber-300">
+							<button type="button" (click)="closeConfirm()"
+								class="rounded-full px-4 py-2 text-sm font-semibold bg-transparent border border-white/10 text-white">Cancelar</button>
+							<button type="button" (click)="submitConfirmed()" [disabled]="isSubmitting"
+								class="rounded-full px-4 py-2 text-sm font-black text-black bg-amber-300">
 								<span *ngIf="!isSubmitting">Sí, guardar</span>
 								<span *ngIf="isSubmitting">Guardando...</span>
 							</button>

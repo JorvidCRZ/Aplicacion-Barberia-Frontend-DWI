@@ -1,7 +1,7 @@
 import { environment } from '@/environments/environment.development';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { ClienteRegister } from '../../models/auth/usuario/cliente-register.model';
 import { ResetPasswordRequest } from '../../models/auth/usuario/reset-password-request.model';
@@ -34,13 +34,13 @@ export class UsuarioService {
         );
     }
 
-   registrarAdmin(data: AdminRegister): Observable<any> {
-    const payload = { ...data, idRol: 1 } as AdminRegister; // igual que haces con cliente (idRol: 3)
-    return this.http.post<any>(
-        `${this.apiUrl}/admin`,
-        payload
-    );
-}
+    registrarAdmin(data: AdminRegister): Observable<any> {
+        const payload = { ...data, idRol: 1 } as AdminRegister; // igual que haces con cliente (idRol: 3)
+        return this.http.post<any>(
+            `${this.apiUrl}/admin`,
+            payload
+        );
+    }
 
     resetPassword(idUsuario: number, data: ResetPasswordRequest): Observable<any> {
         return this.http.put<any>(
@@ -61,142 +61,144 @@ export class UsuarioService {
             `${this.apiUrl}/${idUsuario}`
         );
     }
-    // Método stub para generar QR - placeholder sin implementación de backend
-    
-    generateQr(idUsuario: number): Observable<Blob> {
 
-    return this.http.get(
-        `${this.apiUrl}/${idUsuario}/qr`,
-        {
-            responseType: 'blob'
-        }
+    generateQr(idUsuario: number): Observable<Blob> {
+        return this.http.get(`${this.apiUrl}/${idUsuario}/qr`, { responseType: 'blob' });
+    }
+
+    getQrUrl(idUsuario: number): string {
+        return `${this.apiUrl}/${idUsuario}/qr`;
+    }
+
+    regenerarQr(idUsuario: number): Observable<Blob> {
+        return this.http.post(
+            `${this.apiUrl}/${idUsuario}/qr/regenerar`,
+            {},
+            { responseType: 'blob' }
+        );
+    }
+
+    asignarPin(idUsuario: number, pin: string): Observable<any> {
+    return this.http.patch<any>(
+        `${this.apiUrl}/${idUsuario}/pin`,
+        { pin }
     );
 }
 
-    listar(
+    listar(page: number = 0, size: number = 10): Observable<ApiResponse<Page<UsuarioTablaResponse>>> {
+        const params = new HttpParams().set('page', page).set('size', size);
+        return this.http.get<ApiResponse<Page<UsuarioTablaResponse>>>(`${this.apiUrl}/tabla`, { params });
+    }
+
+    filtrar(
+        filtros: {
+            rol?: string;
+            tieneQr?: boolean;
+            multiplesRoles?: boolean;
+        },
+        page: number = 0,
+        size: number = 10
+    ): Observable<ApiResponse<Page<UsuarioTablaResponse>>> {
+
+        let params = new HttpParams()
+            .set('page', page)
+            .set('size', size);
+
+        if (filtros.rol) {
+            params = params.set('rol', filtros.rol);
+        }
+
+        if (filtros.tieneQr !== undefined) {
+            params = params.set(
+                'tieneQr',
+                filtros.tieneQr
+            );
+        }
+
+        if (filtros.multiplesRoles !== undefined) {
+            params = params.set(
+                'multiplesRoles',
+                filtros.multiplesRoles
+            );
+        }
+
+        return this.http.get<ApiResponse<Page<UsuarioTablaResponse>>>(
+            `${this.apiUrl}/filtrar`,
+            { params }
+        );
+    }
+
+    buscar(
+        texto: string,
         page: number = 0,
         size: number = 10
     ): Observable<ApiResponse<Page<UsuarioTablaResponse>>> {
 
         const params = new HttpParams()
+            .set('texto', texto)
             .set('page', page)
             .set('size', size);
 
         return this.http.get<ApiResponse<Page<UsuarioTablaResponse>>>(
-            `${this.apiUrl}/tabla`,
+            `${this.apiUrl}/buscar`,
             { params }
         );
     }
 
-    filtrar(
-    filtros: {
-        rol?: string;
-        tieneQr?: boolean;
-        multiplesRoles?: boolean;
-    },
-    page: number = 0,
-    size: number = 10
-): Observable<ApiResponse<Page<UsuarioTablaResponse>>> {
 
-    let params = new HttpParams()
-        .set('page', page)
-        .set('size', size);
+    asignarRoles(
+        idUsuario: number,
+        data: AssignRolesRequest
+    ): Observable<any> {
 
-    if (filtros.rol) {
-        params = params.set('rol', filtros.rol);
-    }
-
-    if (filtros.tieneQr !== undefined) {
-        params = params.set(
-            'tieneQr',
-            filtros.tieneQr
+        return this.http.patch<any>(
+            `${this.apiUrl}/${idUsuario}/roles`,
+            data
         );
     }
 
-    if (filtros.multiplesRoles !== undefined) {
-        params = params.set(
-            'multiplesRoles',
-            filtros.multiplesRoles
+    quitarRol(
+        idUsuario: number,
+        idRol: number
+    ): Observable<any> {
+
+        return this.http.delete<any>(
+            `${this.apiUrl}/${idUsuario}/roles/${idRol}`
         );
     }
 
-    return this.http.get<ApiResponse<Page<UsuarioTablaResponse>>>(
-        `${this.apiUrl}/filtrar`,
-        { params }
-    );
-}
 
-buscar(
-    texto: string,
-    page: number = 0,
-    size: number = 10
-): Observable<ApiResponse<Page<UsuarioTablaResponse>>> {
+    listarRoles(): Observable<ApiResponse<Rol[]>> {
+        return this.http.get<ApiResponse<Rol[]>>(
+            `${this.apiUrl}/roles`
+        );
+    }
 
-    const params = new HttpParams()
-        .set('texto', texto)
-        .set('page', page)
-        .set('size', size);
+    obtenerRolesUsuario(
+        idUsuario: number
+    ): Observable<ApiResponse<Rol[]>> {
 
-    return this.http.get<ApiResponse<Page<UsuarioTablaResponse>>>(
-        `${this.apiUrl}/buscar`,
-        { params }
-    );
-}
+        return this.http.get<ApiResponse<Rol[]>>(
+            `${this.apiUrl}/${idUsuario}/roles`
+        );
+    }
 
+    obtenerPermisosUsuario(
+        idUsuario: number,
+        page: number = 0,
+        size: number = 10
+    ): Observable<ApiResponse<Page<Permiso>>> {
 
-asignarRoles(
-    idUsuario: number,
-    data: AssignRolesRequest
-): Observable<any> {
+        const params = new HttpParams()
+            .set('page', page)
+            .set('size', size);
 
-    return this.http.patch<any>(
-        `${this.apiUrl}/${idUsuario}/roles`,
-        data
-    );
-}
-
-quitarRol(
-    idUsuario: number,
-    idRol: number
-): Observable<any> {
-
-    return this.http.delete<any>(
-        `${this.apiUrl}/${idUsuario}/roles/${idRol}`
-    );
-}
+        return this.http.get<ApiResponse<Page<Permiso>>>(
+            `${this.apiUrl}/${idUsuario}/permisos`,
+            { params }
+        );
+    }
 
 
-listarRoles(): Observable<ApiResponse<Rol[]>> {
-    return this.http.get<ApiResponse<Rol[]>>(
-        `${this.apiUrl}/roles` 
-    );
-}
 
-obtenerRolesUsuario(
-    idUsuario: number
-): Observable<ApiResponse<Rol[]>> {
-
-    return this.http.get<ApiResponse<Rol[]>>(
-        `${this.apiUrl}/${idUsuario}/roles`
-    );
-}
-
-obtenerPermisosUsuario(
-    idUsuario: number,
-    page: number = 0,
-    size: number = 10
-): Observable<ApiResponse<Page<Permiso>>> {
-
-    const params = new HttpParams()
-        .set('page', page)
-        .set('size', size);
-
-    return this.http.get<ApiResponse<Page<Permiso>>>(
-        `${this.apiUrl}/${idUsuario}/permisos`,
-        { params }
-    );
-}
-
-
-    
 }

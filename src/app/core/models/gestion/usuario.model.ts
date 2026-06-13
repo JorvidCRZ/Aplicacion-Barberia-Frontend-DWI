@@ -13,6 +13,7 @@ export interface UsuarioTablaResponse {
     apellido: string;
     tieneQr: boolean;
     roles: string[];
+    tienePin: boolean;
 }
 
 

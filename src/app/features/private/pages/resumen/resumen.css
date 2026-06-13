@@ -1,0 +1,231 @@
+/* ==================================
+   DASHBOARD RESUMEN PREMIUM
+================================== */
+
+:host {
+  display: block;
+}
+
+/* Fondo decorativo */
+.max-w-4xl {
+  position: relative;
+}
+
+.max-w-4xl::before {
+  content: '';
+
+  position: fixed;
+
+  top: -300px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  width: 900px;
+  height: 900px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(212, 175, 55, 0.08),
+      transparent 70%
+    );
+
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ==================================
+   HEADER
+================================== */
+
+header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+header h1::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 3px;
+  margin-top: 10px;
+  border-radius: 999px;
+  background: var(--color-brand-gold);
+}
+
+header p {
+  color: var(--color-text-secondary) !important;
+  margin-top: 8px;
+}
+
+/* ==================================
+   BOTÓN NOTIFICACIÓN
+================================== */
+
+header button {
+  background: linear-gradient(
+    145deg,
+    #121212,
+    #1a1a1a
+  ) !important;
+
+  border: 1px solid rgba(255,255,255,.08) !important;
+
+  transition: all .25s ease;
+}
+
+header button:hover {
+  border-color: var(--color-brand-gold) !important;
+
+  color: var(--color-brand-gold) !important;
+
+  box-shadow:
+    0 0 20px rgba(212,175,55,.15);
+
+  transform: translateY(-2px);
+}
+
+/* ==================================
+   KPI CARDS
+================================== */
+
+.grid.grid-cols-2.gap-3.mt-5 > div {
+  position: relative;
+
+  overflow: hidden;
+
+  border-radius: 18px !important;
+
+  border: 1px solid rgba(255,255,255,.08) !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      #121212,
+      #181818
+    ) !important;
+
+  transition: all .3s ease;
+}
+
+.grid.grid-cols-2.gap-3.mt-5 > div::before {
+  content: '';
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 2px;
+
+  background: var(--color-brand-gold);
+}
+
+.grid.grid-cols-2.gap-3.mt-5 > div:hover {
+  transform: translateY(-5px);
+
+  border-color: rgba(212,175,55,.35) !important;
+
+  box-shadow:
+    0 10px 25px rgba(0,0,0,.45),
+    0 0 20px rgba(212,175,55,.08);
+}
+
+/* ==================================
+   KPI ICONOS
+================================== */
+
+.grid.grid-cols-2.gap-3.mt-5 > div span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+
+  border-radius: 12px;
+
+  background: rgba(212,175,55,.08);
+
+  border: 1px solid rgba(212,175,55,.15);
+}
+
+/* ==================================
+   KPI LABELS
+================================== */
+
+.grid.grid-cols-2.gap-3.mt-5 > div p:first-of-type {
+  color: var(--color-text-secondary) !important;
+
+  letter-spacing: 2px;
+
+  font-size: 11px !important;
+
+  margin-top: 12px !important;
+}
+
+/* ==================================
+   KPI VALORES
+================================== */
+
+.grid.grid-cols-2.gap-3.mt-5 > div p:last-of-type {
+  color: white;
+
+  font-weight: 800;
+
+  margin-top: 8px !important;
+}
+
+/* ==================================
+   SKELETON
+================================== */
+
+.kpi-card--skeleton {
+  background:
+    linear-gradient(
+      90deg,
+      #121212,
+      #1a1a1a,
+      #121212
+    );
+
+  background-size: 200% 100%;
+
+  animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* ==================================
+   ERROR
+================================== */
+
+.bg-red-500\/8 {
+  background: rgba(220,38,38,.08) !important;
+}
+
+/* ==================================
+   RESPONSIVE
+================================== */
+
+@media (max-width: 768px) {
+
+  header h1 {
+    font-size: 1.6rem;
+  }
+
+  .grid.grid-cols-2.gap-3.mt-5 {
+    grid-template-columns: 1fr !important;
+  }
+}

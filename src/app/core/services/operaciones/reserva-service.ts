@@ -26,9 +26,34 @@ export class ReservaService {
     return this.http.get<ApiResponse<Page<Reserva>>>(this.API, { params });
   }
 
- guardarReserva(reserva: ReservaRequest): Observable<ApiResponse<Reserva>> {
-  return this.http.post<ApiResponse<Reserva>>(this.API2, reserva);
-}
+  guardarReserva(reserva: ReservaRequest): Observable<ApiResponse<Reserva>> {
+    return this.http.post<ApiResponse<Reserva>>(this.API2, reserva);
+  }
+ getMisReservas(
+    page: number = 0,
+    size: number = 10
+  ): Observable<ApiResponse<Page<Reserva>>> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    return this.http.get<ApiResponse<Page<Reserva>>>(`${this.API2}/mis-reservas`, { params });
+  }
+
+  // Obtener todas las reservas del cliente (sin paginación)
+  getAllMisReservas(): Observable<ApiResponse<Reserva[]>> {
+    return this.http.get<ApiResponse<Reserva[]>>(`${this.API2}/mis-reservas/todas`);
+  }
 
   
+
+  cancelarReserva(id: number): Observable<ApiResponse<string>> {
+    return this.http.patch<ApiResponse<string>>(`${this.API2}/${id}/cancelar`, {});
+  }
+
+  obtenerReservaPorId(id: number): Observable<ApiResponse<Reserva>> {
+    return this.http.get<ApiResponse<Reserva>>(`${this.API2}/${id}`);
+  }
+
+
 }

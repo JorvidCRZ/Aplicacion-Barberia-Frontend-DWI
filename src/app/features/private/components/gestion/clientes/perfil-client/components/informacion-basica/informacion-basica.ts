@@ -56,17 +56,49 @@ export class InformacionBasica {
 
   form = this.fb.group({
 
-    nombre: ['', Validators.required],
+  nombre: [
+    '',
+    [
+      Validators.required,
+      Validators.maxLength(100)
+    ]
+  ],
 
-    apellido: ['', Validators.required],
+  apellido: [
+    '',
+    [
+      Validators.required,
+      Validators.maxLength(100)
+    ]
+  ],
 
-    telefono: ['', Validators.required],
+  telefono: [
+    '',
+    [
+      Validators.required,
+      Validators.pattern('^[0-9]{9}$')
+    ]
+  ],
 
-    email: ['', [
+  email: [
+    '',
+    [
       Validators.required,
       Validators.email
-    ]]
-  });
+    ]
+  ]
+});
+
+  get f() {
+    return this.form.controls;
+  }
+
+  onPhoneInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const onlyDigits = input.value.replace(/\D+/g, '').slice(0, 9);
+    input.value = onlyDigits;
+    this.form.get('telefono')?.setValue(onlyDigits);
+  }
 
   ngOnInit(): void {
     this.cargarFormulario();

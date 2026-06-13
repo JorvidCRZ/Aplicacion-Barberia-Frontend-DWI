@@ -1,30 +1,123 @@
 <section *ngIf="servicios.length" class="mt-8">
-  <h3 class="text-base font-bold mb-4">Recomendado para ti</h3>
+
+  <h3 class="text-base font-bold mb-4 text-[--color-brand-gold]">
+    Cortes destacados
+  </h3>
 
   <div class="grid grid-cols-3 gap-4 max-[900px]:grid-cols-2 max-[600px]:grid-cols-1">
-    <div *ngFor="let s of servicios"
+
+    <div
+      *ngFor="let s of servicios; let i = index"
       class="producto-card-shell overflow-hidden transition-transform hover:-translate-y-1">
 
+      <!-- IMAGEN -->
       <div class="aspect-[4/3] overflow-hidden">
+
         <img
-          [alt]="s.nombre"
-          (error)="onImgError($event)"
-          class="w-full h-full object-cover transition-transform hover:scale-105"
+          *ngIf="i === 0"
+          src="assets/corteclasico.webp"
+          alt="Corte Clásico"
+          class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
         />
+
+        <img
+          *ngIf="i === 1"
+          src="assets/trazo.webp"
+          alt="Diseño de Líneas"
+          class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+        />
+
+        <img
+          *ngIf="i === 2"
+          src="assets/degradado.webp"
+          alt="Degradado / Fade"
+          class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+        />
+
       </div>
 
+      <!-- CONTENIDO -->
       <div class="p-4">
-        <p class="font-bold text-base">{{ s.nombre }}</p>
-        <p class="text-xs text-gray-400 mb-3">{{ s.categoriaNombre }}</p>
-        <div class="flex items-center justify-between">
-          <span class="font-bold">S/ {{ s.precio | number:'1.0-0' }}</span>
-          <button class="boton-base bg-[--color-gold] text-black text-xs font-bold px-4 py-2"
-            (click)="reservar.emit(s)">
-            Reservar
-          </button>
-        </div>
+
+        <!-- Corte Clásico -->
+        <ng-container *ngIf="i === 0">
+
+          <p class="font-bold text-base">
+            Corte Clásico
+          </p>
+
+          <p class="text-xs text-gray-400 mb-3">
+            Corte tradicional limpio y elegante para cualquier ocasión.
+          </p>
+
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-[--color-brand-gold]">
+              S/ 25
+            </span>
+
+            <button
+              class="boton-base bg-[--color-brand-gold] text-black text-xs font-bold px-4 py-2"
+              (click)="reservar.emit(s)">
+              Reservar
+            </button>
+          </div>
+
+        </ng-container>
+
+        <!-- Diseño de Líneas -->
+        <ng-container *ngIf="i === 1">
+
+          <p class="font-bold text-base">
+            Diseño de Líneas
+          </p>
+
+          <p class="text-xs text-gray-400 mb-3">
+            Trazos y diseños personalizados en cabello o barba.
+          </p>
+
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-[--color-brand-gold]">
+              S/ 15
+            </span>
+
+            <button
+              class="boton-base bg-[--color-brand-gold] text-black text-xs font-bold px-4 py-2"
+              (click)="reservar.emit(s)">
+              Reservar
+            </button>
+          </div>
+
+        </ng-container>
+
+        <!-- Degradado / Fade -->
+        <ng-container *ngIf="i === 2">
+
+          <p class="font-bold text-base">
+            Degradado / Fade
+          </p>
+
+          <p class="text-xs text-gray-400 mb-3">
+            Skin fade, bajo, medio o alto. Precisión milimétrica.
+          </p>
+
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-[--color-brand-gold]">
+              S/ 35
+            </span>
+
+            <button
+              class="boton-base bg-[--color-brand-gold] text-black text-xs font-bold px-4 py-2"
+              (click)="reservar.emit(s)">
+              Reservar
+            </button>
+          </div>
+
+        </ng-container>
+
       </div>
 
     </div>
+
   </div>
+
 </section>

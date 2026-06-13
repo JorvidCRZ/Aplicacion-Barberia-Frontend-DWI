@@ -3,8 +3,8 @@
 }
 
 .cliente-avatar {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2rem;
+  height: 2rem;
   border-radius: 9999px;
   display: flex;
   align-items: center;
@@ -12,7 +12,7 @@
   background: rgba(217, 158, 34, 0.28);
   color: #f5c84c;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   border: 1px solid rgba(245, 200, 76, 0.18);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
@@ -26,10 +26,10 @@
 .boton-paginacion-cliente.p-button {
   border-color: rgba(245, 200, 76, 0.28);
   color: #f5c84c;
-  min-width: 3.5rem;
-  min-height: 2.5rem;
-  padding: 0.55rem 0.95rem;
-  font-size: 0.9rem;
+  min-width: 3rem;
+  min-height: 2rem;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.86rem;
   box-shadow: none;
 }
 
@@ -48,10 +48,10 @@
 .boton-eliminar-cliente.p-button {
   border-color: rgba(244, 63, 94, 0.28);
   color: #fb7185;
-  min-width: 3.5rem;
-  min-height: 2.5rem;
-  padding: 0.55rem 0.95rem;
-  font-size: 0.9rem;
+  min-width: 3rem;
+  min-height: 2rem;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.86rem;
   box-shadow: none;
 }
 
@@ -62,8 +62,8 @@
 
 .boton-editar-tabla.p-button,
 .boton-eliminar-tabla.p-button {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.25rem;
+  height: 2.25rem;
   padding: 0;
   box-shadow: none;
   border-radius: 0.5rem;
@@ -74,8 +74,28 @@
 
 .table-actions {
   display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-  align-items: flex-end;
-  justify-content: flex-end;
+  flex-direction: row;
+  gap: 0.4rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+}
+
+/* Compact row: reduce vertical padding for table cells */
+.table-base td,
+.table-base th {
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
+}
+
+/* Slightly smaller text for compactness */
+.table-base td {
+  font-size: 0.95rem;
+}
+
+/* Ensure the action cell doesn't collapse and buttons stay aligned */
+.table-row td:last-child, .table-header th:last-child {
+  vertical-align: middle;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
 }

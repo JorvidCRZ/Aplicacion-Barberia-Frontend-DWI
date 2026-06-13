@@ -20,7 +20,6 @@ import { TreeNode } from 'primeng/api';
 import { FileUpload, FileUploadModule } from 'primeng/fileupload';
 import { ImageModule } from 'primeng/image';
 import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
 import { MessageModule } from 'primeng/message';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
@@ -37,16 +36,8 @@ import { campoInvalido, marcarFormulario } from '@/app/shared/utils/form-utils.c
 @Component({
   selector: 'app-servicio-form',
   imports: [
-    ReactiveFormsModule,
-    InputTextModule,
-    CheckboxModule,
-    TreeSelectModule,
-    ButtonModule,
-    MessageModule,
-    ImageModule,
-    FileUploadModule,
-    InputNumberModule,
-    SafeImageUrlPipe
+    ReactiveFormsModule, InputTextModule,CheckboxModule, TreeSelectModule, ButtonModule, 
+    MessageModule, ImageModule, FileUploadModule, InputNumberModule, SafeImageUrlPipe
   ],
   templateUrl: './servicio-form.html',
   styleUrl: './servicio-form.css',
@@ -102,16 +93,14 @@ export class ServicioFormComponent implements OnInit, OnChanges {
     }
   }
 
-  // ========================
-  // FORM INIT
-  // ========================
   private initForm(): void {
     this.servicioForm = this.fb.group({
       nombre: ['', Validators.required],
       descripcion: [''],
       precio: [0, [Validators.required, Validators.min(0)]],
       duracion: [0, [Validators.required, Validators.min(1)]],
-      idCategoria: [null, Validators.required]
+      idCategoria: [null, Validators.required],
+      estado: [true]
     });
   }
 
@@ -127,6 +116,7 @@ export class ServicioFormComponent implements OnInit, OnChanges {
         nombre: this.servicio.nombre,
         precio: this.servicio.precio,
         duracion: this.servicio.duracion,
+        estado: this.servicio.estado
       });
 
       if (this.servicio.categoriaId) {

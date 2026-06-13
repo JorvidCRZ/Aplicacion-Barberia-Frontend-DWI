@@ -1,133 +1,184 @@
-
-<!-- Register -->
 <section class="min-h-screen bg-black flex items-center justify-center px-4 py-12">
   <div class="w-full max-w-3xl flex flex-col items-center gap-8">
-
-    <!-- Logo -->
     <div class="flex flex-col items-center gap-3">
       <app-logo />
-      <h1 class="text-white text-2xl font-bold tracking-widest uppercase">Fadex <span class="text-yellow-500">Barber</span></h1>
+      <h1 class="text-white text-2xl font-bold tracking-widest uppercase">
+        Fadex <span class="text-yellow-500">Barber</span>
+      </h1>
       <p class="text-gray-500 text-sm">Crea tu cuenta y empieza a reservar</p>
     </div>
 
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()"
+      class="w-full bg-[#0c0c0c] border border-white/10 rounded-2xl p-6 sm:p-8 flex flex-col gap-5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="part-form">
+          <label for="nombre">Nombre</label>
+          <input pInputText type="text" id="nombre" formControlName="nombre" placeholder="Juan"
+            class="w-full inputs-text" [class.border-red-500]="isInvalid('nombre')" />
+          @if (isInvalid('nombre')) {
+          @if (registerForm.get('nombre')?.errors?.['required']) {
+          <p-message severity="error" variant="simple" size="small">El nombre es obligatorio</p-message>
+          } @else if (registerForm.get('nombre')?.errors?.['minlength']) {
+          <p-message severity="error" variant="simple" size="small">Mínimo 2 caracteres</p-message>
+          } @else if (registerForm.get('nombre')?.errors?.['soloLetras']) {
+          <p-message severity="error" variant="simple" size="small">El nombre solo puede contener letras</p-message>
+          }
+          }
+        </div>
 
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="w-full bg-[#0c0c0c] border border-white/10 rounded-2xl p-6 sm:p-8 flex flex-col gap-5">
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">  
-      <!-- Nombre -->
-      <div class="part-form">
-        <label for="nombre">Nombre</label>
-        <input pInputText type="text" id="nombre" formControlName="nombre" placeholder="Juan" class="w-full inputs-text" [class.border-red-500]="isInvalid('nombre')" />
-        @if (isInvalid('nombre')) {
-            <p-message severity="error" variant="simple" size="small">El nombre es obligatorio</p-message>
-        }
-      </div>
+        <div class="part-form">
+          <label for="apellido">Apellido</label>
+          <input pInputText type="text" id="apellido" formControlName="apellido" placeholder="Pérez"
+            class="w-full inputs-text" [class.border-red-500]="isInvalid('apellido')" />
+          @if (isInvalid('apellido')) {
+          @if (registerForm.get('apellido')?.errors?.['required']) {
+          <p-message severity="error" variant="simple" size="small">El apellido es obligatorio</p-message>
+          } @else if (registerForm.get('apellido')?.errors?.['minlength']) {
+          <p-message severity="error" variant="simple" size="small">Mínimo 2 caracteres</p-message>
+          } @else if (registerForm.get('apellido')?.errors?.['soloLetras']) {
+          <p-message severity="error" variant="simple" size="small">El apellido solo puede contener letras</p-message>
+          }
+          }
+        </div>
 
-      <!-- Apellido -->
-      <div class="part-form">
-        <label for="apellido">Apellido</label>
-        <input pInputText type="text" id="apellido" formControlName="apellido" placeholder="Pérez" class="w-full inputs-text" [class.border-red-500]="isInvalid('apellido')" />
-        @if (isInvalid('apellido')) {
-            <p-message severity="error" variant="simple" size="small">El apellido es obligatorio</p-message>
-        }
-      </div>
-
-      <!-- Teléfono -->
-      <div class="part-form">
-        <label for="telefono">Teléfono</label>
-        <input pInputText type="tel" id="telefono" formControlName="telefono" placeholder="+51 999 888 777" class="w-full inputs-text" [class.border-red-500]="isInvalid('telefono')" />
-        @if (isInvalid('telefono')) {
+        <div class="part-form">
+          <label for="telefono">Teléfono</label>
+          <input pInputText type="tel" id="telefono" formControlName="telefono" placeholder="999 888 777"
+            class="w-full inputs-text" [class.border-red-500]="isInvalid('telefono')" />
+          @if (isInvalid('telefono')) {
+          @if (registerForm.get('telefono')?.errors?.['required']) {
           <p-message severity="error" variant="simple" size="small">El teléfono es obligatorio</p-message>
-        }
-      </div>
+          } @else if (registerForm.get('telefono')?.errors?.['telefonoInvalido']) {
+          <p-message severity="error" variant="simple" size="small">Ingresa un número peruano válido (9 dígitos, empieza
+            en 9)</p-message>
+          }
+          }
+        </div>
 
-      <!-- Email -->
-      <div class="part-form">
-        <label for="email">Correo electrónico</label>
-        <input pInputText id="email" type="email" formControlName="email" placeholder="tucorreo@email.com" class="w-full inputs-text" [class.border-red-500]="isInvalid('email')" />
-        @if (isInvalid('email')) {
-          <p-message severity="error" variant="simple" size="small">Ingrese un correo válido</p-message>
-        }
-      </div>
-
+        <div class="part-form">
+          <label for="email">Correo electrónico</label>
+          <input pInputText id="email" type="email" formControlName="email" placeholder="tucorreo@email.com"
+            class="w-full inputs-text" [class.border-red-500]="isInvalid('email')" />
+          @if (isInvalid('email')) {
+          @if (registerForm.get('email')?.errors?.['required']) {
+          <p-message severity="error" variant="simple" size="small">El correo es obligatorio</p-message>
+          } @else if (registerForm.get('email')?.errors?.['gmailInvalido']) {
+          <p-message severity="error" variant="simple" size="small">
+            Solo se permiten correos Gmail (@gmail.com)
+          </p-message>
+          } @else if (registerForm.get('email')?.errors?.['emailDuplicado']) {
+          <p-message severity="error" variant="simple" size="small">Este correo ya está registrado</p-message>
+          }
+          }
+        </div>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <!-- Username -->
-      <div class="part-form">
-        <label for="username">Username</label>
-        <input pInputText id="username" type="text" formControlName="username" placeholder="tuusername" class="w-full inputs-text" [class.border-red-500]="isInvalid('username')" />
-        @if (isInvalid('username')) {
+        <div class="part-form">
+          <label for="username">Username</label>
+          <input pInputText id="username" type="text" formControlName="username" placeholder="tuusername"
+            class="w-full inputs-text" [class.border-red-500]="isInvalid('username')" />
+          @if (isInvalid('username')) {
+          @if (registerForm.get('username')?.errors?.['required']) {
           <p-message severity="error" variant="simple" size="small">El username es obligatorio</p-message>
-        }
-      </div>
-
-      <!-- Contraseña -->
-      <div class="part-form">
-        <label for="password">Contraseña</label>
-        <p-password id="password" formControlName="password" autocomplete="off" class="w-full"  [feedback]="false" />
-        @if (isInvalid('password')) {
-          <p-message severity="error" variant="simple" size="small">La contraseña debe tener al menos 8 caracteres</p-message>
-        }
-      </div>
-
-      <!-- Confirmar Contraseña -->
-      <div class="part-form">
-        <label for="passwordConfirm">Confirmar contraseña</label>
-        <p-password id="passwordConfirm" formControlName="passwordConfirm" autocomplete="off" class="w-full" [feedback]="false" />
-        @if (isInvalid('passwordConfirm')) {
-          <p-message severity="error" variant="simple" size="small">Confirma tu contraseña</p-message>
-        }
-      </div>
-
-      <!-- Términos -->
-      <label class="flex items-start gap-3 cursor-pointer group">
-        <div class="relative mt-0.5 shrink-0">
-          <p-checkbox formControlName="terminos" [binary]="true" />
+          } @else if (registerForm.get('username')?.errors?.['minlength']) {
+          <p-message severity="error" variant="simple" size="small">Mínimo 4 caracteres</p-message>
+          } @else if (registerForm.get('username')?.errors?.['sinEspacios']) {
+          <p-message severity="error" variant="simple" size="small">El username no puede contener espacios</p-message>
+          } @else if (registerForm.get('username')?.errors?.['usernameInvalido']) {
+          <p-message severity="error" variant="simple" size="small">Solo letras, números, puntos y guion bajo (sin
+            espacios ni símbolos)</p-message>
+          }
+          }
         </div>
-        <span class="text-gray-400 text-sm leading-relaxed group-hover:text-white transition-colors">
-          Acepto los
-          <a href="#" class="text-yellow-500 hover:text-yellow-400 transition-colors">términos y condiciones</a>
-          y la
-          <a href="#" class="text-yellow-500 hover:text-yellow-400 transition-colors">política de privacidad</a>
-        </span>
-      </label>
-      @if (isInvalid('terminos')) {
-        <p-message severity="error" variant="simple" size="small">Debes aceptar los términos y condiciones</p-message>
-      }
 
-      <!-- Error del servidor -->
-      @if (errorMsg) {
-        <p-message severity="error" variant="simple" size="small">{{ errorMsg }}  </p-message>
-      }
-
-      <!-- Botón submit -->
-      <div class="col-span-full flex flex-col gap-3 pt-4 text-center">
-        <button pButton type="submit" [disabled]="loading" class="w-full boton-primary">{{ loading ? 'Creando cuenta...' : 'Crear cuenta' }}</button>
-  
-        <!-- Divider -->
-        <div class="flex items-center gap-3">
-          <div class="flex-1 h-px bg-white/10"></div>
-          <span class="text-gray-600 text-xs text-center">o regístrate con</span>
-          <div class="flex-1 h-px bg-white/10"></div>
+        <div class="part-form">
+          <label for="password">Contraseña</label>
+          <p-password 
+          [toggleMask]="true" 
+          id="password" formControlName="password" autocomplete="off" class="w-full" [feedback]="false"
+            [class.border-red-500]="isInvalid('password')" />
+          @if (isInvalid('password')) {
+          <p-message severity="error" variant="simple" size="small">{{
+            passwordError
+            }}</p-message>
+          }
+          @if (passwordCtrl?.dirty && !passwordCtrl?.valid) {
+          <ul class="mt-1 text-xs text-gray-400 space-y-0.5 pl-1">
+            <li [class.text-green-400]="!passwordCtrl?.errors?.['minLength']">
+              ✓ Mínimo 8 caracteres
+            </li>
+            <li [class.text-green-400]="!passwordCtrl?.errors?.['sinMayuscula']">
+              ✓ Al menos una mayúscula
+            </li>
+            <li [class.text-green-400]="!passwordCtrl?.errors?.['sinNumero']">
+              ✓ Al menos un número
+            </li>
+            <li [class.text-green-400]="!passwordCtrl?.errors?.['sinSimbolo']">
+              ✓ Al menos un símbolo (@, #, !...)
+            </li>
+          </ul>
+          }
         </div>
-  
-        <!-- Google -->
-        <button pButton type="button" class="w-full boton-google">
-          <svg class="w-4 h-4" viewBox="0 0 24 24">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-          </svg>Continuar con Google
-        </button>
+
+        <div class="part-form">
+          <label for="passwordConfirm">Confirmar contraseña</label>
+          <p-password 
+          [toggleMask]="true" 
+          id="passwordConfirm" formControlName="passwordConfirm" autocomplete="off" class="w-full"
+            [feedback]="false" [class.border-red-500]="
+              isInvalid('passwordConfirm') ||
+              (submitted && registerForm.errors?.['passwordsNoCoinciden'])
+            " />
+          @if (confirmError) {
+          <p-message severity="error" variant="simple" size="small">{{ confirmError }}</p-message>
+          }
+        </div>
+
+        <div class="col-span-full">
+          <label class="flex items-start gap-3 cursor-pointer group">
+            <div class="relative mt-0.5 shrink-0">
+              <p-checkbox formControlName="terminos" [binary]="true" />
+            </div>
+            <span class="text-gray-400 text-sm leading-relaxed group-hover:text-white transition-colors">
+              Acepto los
+              <a href="#" class="text-yellow-500 hover:text-yellow-400 transition-colors">términos y condiciones</a>
+              y la
+              <a href="#" class="text-yellow-500 hover:text-yellow-400 transition-colors">política de privacidad</a>
+            </span>
+          </label>
+          @if (isInvalid('terminos')) {
+          <p-message severity="error" variant="simple" size="small">Debes aceptar los términos y condiciones</p-message>
+          }
+        </div>
+
+        @if (errorMsg) {
+        <div class="col-span-full">
+          <p-message severity="error" variant="simple" size="small">{{ errorMsg }}</p-message>
+        </div>
+        }
+
+        <div class="col-span-full flex flex-col gap-3 pt-4 text-center">
+          <button pButton type="submit" [disabled]="loading" class="w-full boton-primary">
+            {{ loading ? 'Creando cuenta...' : 'Crear cuenta' }}
+          </button>
+
+          <div class="flex items-center gap-3">
+            <div class="flex-1 h-px bg-white/10"></div>
+            <span class="text-gray-600 text-xs text-center">o regístrate con</span>
+            <div class="flex-1 h-px bg-white/10"></div>
+          </div>
+
+          <div id="google-register-button" class="flex justify-center w-full min-h-[40px]"></div>
         </div>
       </div>
     </form>
 
-    <!-- Login -->
-    <p class="text-gray-500 text-sm text-center">¿Ya tienes cuenta?
-      <a routerLink="/login" class="text-brand-gold hover:text-brand-gold-hover transition-colors cursor-pointer">Inicia sesión</a>
+    <p class="text-gray-500 text-sm text-center">
+      ¿Ya tienes cuenta?
+      <a routerLink="/login" class="text-brand-gold hover:text-brand-gold-hover transition-colors cursor-pointer">
+        Inicia sesión
+      </a>
     </p>
-
   </div>
 </section>

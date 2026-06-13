@@ -62,14 +62,57 @@
 
 .table-actions {
 	display: flex;
-	flex-direction: column;
-	gap: 0.45rem;
-	align-items: flex-end;
-	justify-content: flex-end;
+	flex-direction: row;
+	gap: 0.5rem;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: nowrap;
 }
 
 td[data-label="Acción"] {
 	min-width: 64px;
 	padding-right: 0.5rem;
+	text-align: center;
+}
+
+/* Compactar filas: reducir padding, tamaño de avatar y botones para una apariencia más densa */
+:host .table-base th,
+:host .table-base td {
+	padding-top: 0.45rem;
+	padding-bottom: 0.45rem;
+}
+
+:host .font-semibold {
+	line-height: 1.05;
+}
+
+:host .cliente-avatar,
+:host .barbero-avatar {
+	width: 2rem;
+	height: 2rem;
+}
+
+/* Botones de acción más pequeños */
+:host .table-actions .p-button {
+	min-width: 2.25rem;
+	height: 2.25rem;
+	padding: 0.35rem;
+	border-radius: 0.375rem;
+}
+
+/* Separación entre acciones más reducida */
+:host .table-actions {
+	gap: 0.4rem;
+}
+
+/* Ligeramente reducir tamaño de texto en celdas para compactar visualmente */
+:host .table-base td {
+	font-size: 0.92rem;
+}
+
+/* Transición suave al hover con padding estable */
+:host .table-row:hover td {
+	padding-top: 0.45rem;
+	padding-bottom: 0.45rem;
 }
 

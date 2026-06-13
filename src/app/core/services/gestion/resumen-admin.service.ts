@@ -142,13 +142,7 @@ const cortes   = this.calcularCortesRealizados(data.citas || []);
         icon:          'currency-dollar',
       },
   
-{
-  label:         'Citas del día',
-  value:         (data.citas || []).length.toString(),
-  delta:         `${citasComp} completadas`,
-  deltaPositive: true,
-  icon:          'calendar-event',
-}
+
     ];
   }
 }

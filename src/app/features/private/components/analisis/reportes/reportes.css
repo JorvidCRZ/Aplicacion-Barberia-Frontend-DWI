@@ -1,0 +1,4 @@
+select option {
+  background-color: var(--color-ui-elevated, #1e1e1e);
+  color: var(--color-text-primary, #ffffff);
+}

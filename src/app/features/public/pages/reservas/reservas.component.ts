@@ -80,6 +80,7 @@ export class ReservasComponent implements OnInit {
   
   ngOnInit(): void {
     this.verificarAutenticacion();
+    
   }
   
   verificarAutenticacion(): void {

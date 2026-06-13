@@ -1,6 +1,7 @@
 <div class="table-base p-4 md:p-6 lg:p-8">
 
-  <div class="relative w-full overflow-x-auto rounded-xl border border-ui-border bg-brand-black shadow-lg shadow-black/20">
+  <div
+    class="relative w-full overflow-x-auto rounded-xl border border-ui-border bg-brand-black shadow-lg shadow-black/20">
 
     <table class="w-full min-w-240 table-fixed border-collapse">
 
@@ -10,14 +11,14 @@
           <th class="py-3 px-3 text-left w-[18%]">Nombre</th>
           <th class="py-3 px-3 text-left w-[16%]">Roles</th>
           <th class="py-3 px-3 text-center w-[8%]">QR</th>
-          <th class="py-3 px-3 text-right w-[10%]">Acción</th>
+          <th class="py-3 px-3 text-center w-[8%]">PIN</th>
+          <th class="py-3 px-3 text-center w-[10%]">Acción</th>
         </tr>
       </thead>
 
       <tbody class="divide-y divide-gray-800">
 
-        <tr *ngFor="let u of usuarios"
-          class="table-row align-middle transition-colors duration-200 hover:bg-white/5">
+        <tr *ngFor="let u of usuarios" class="table-row align-middle transition-colors duration-200 hover:bg-white/5">
 
           <!-- Usuario -->
           <td class="py-4 px-3" data-label="Usuario">
@@ -60,7 +61,7 @@
 
           <!-- QR -->
           <td class="py-4 px-3 text-center" data-label="QR">
-            <ng-container *ngIf="u.qr; else sinQr">
+            <ng-container *ngIf="u.tieneQr; else sinQr">
               <span
                 class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-lime-400/10 border border-lime-400/20 text-lime-400"
                 title="QR disponible">
@@ -75,18 +76,35 @@
               </span>
             </ng-template>
           </td>
+          <td class="py-4 px-3 text-center" data-label="PIN">
 
+            <ng-container *ngIf="u.tienePin; else sinPin">
+              <span
+                class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-purple-400/10 border border-purple-400/20 text-purple-400"
+                title="Tiene PIN">
+                <i class="pi pi-lock text-sm"></i>
+              </span>
+            </ng-container>
+
+            <ng-template #sinPin>
+              <span
+                class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-white/5 border border-gray-700 text-gray-600"
+                title="Sin PIN">
+                <i class="pi pi-lock text-sm"></i>
+              </span>
+            </ng-template>
+
+          </td>
           <!-- Acción -->
-          <td class="py-4 px-3 text-right w-[10%]" data-label="Acción">
+          <td class="py-4 px-3 text-center w-[10%]" data-label="Acción">
             <div class="table-actions">
               <p-button icon="pi pi-eye" class="boton-editar-tabla"
                 [routerLink]="['/dashboard/admin/gestion/usuarios', u.usuarioId || u.id]">
               </p-button>
 
               @if (inhabilitadosMode) {
-                <p-button icon="pi pi-user-plus" class="boton-editar-tabla"
-                  (click)="onReactivate(u.usuarioId || u.id)">
-                </p-button>
+              <p-button icon="pi pi-user-plus" class="boton-editar-tabla" (click)="onReactivate(u.usuarioId || u.id)">
+              </p-button>
               }
             </div>
           </td>
@@ -97,8 +115,7 @@
     </table>
 
     <!-- Paginación -->
-    <div
-      class="flex items-center justify-between gap-3 px-4 py-3 text-sm text-gray-400 border-t border-gray-800">
+    <div class="flex items-center justify-between gap-3 px-4 py-3 text-sm text-gray-400 border-t border-gray-800">
 
       <div>
         Mostrando {{ usuarios.length }} de {{ totalElements }}
@@ -106,26 +123,21 @@
 
       <div class="flex items-center gap-2">
 
-        <button pButton type="button" class="boton-paginacion-cliente" label="|Ant"
-          (click)="onPrev()" [disabled]="!canGoPrev">
+        <button pButton type="button" class="boton-paginacion-cliente" label="|Ant" (click)="onPrev()"
+          [disabled]="!canGoPrev">
         </button>
 
-        <button pButton type="button" class="boton-paginacion-cliente activo"
-          [label]="(currentPage + 1).toString()">
+        <button pButton type="button" class="boton-paginacion-cliente activo" [label]="(currentPage + 1).toString()">
         </button>
 
-        <button pButton type="button" class="boton-paginacion-cliente" label="Sig|"
-          (click)="onNext()" [disabled]="!canGoNext">
+        <button pButton type="button" class="boton-paginacion-cliente" label="Sig|" (click)="onNext()"
+          [disabled]="!canGoNext">
         </button>
 
       </div>
 
     </div>
 
-    <div class="flex justify-end px-4 pb-4">
-      <button pButton type="button" label="Crear administrador" class="boton-primary" (click)="onCreateAdmin()">
-      </button>
-    </div>
-
   </div>
 
+</div>

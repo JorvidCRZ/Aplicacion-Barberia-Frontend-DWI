@@ -6,29 +6,39 @@
 	<app-resumen-general-client></app-resumen-general-client>
 </div>
 
-<div class="mt-3">
-	<app-filtrar-clients
-		[activeFilter]="activeFilter"
-		[selectedYear]="filterCriteria.year"
-		[selectedMonth]="filterCriteria.month"
-		[fromDate]="filterCriteria.fromDate"
-		[toDate]="filterCriteria.toDate"
-		(filterChange)="onFilterChange($event)"
-		(customModeChange)="onCustomModeChange($event)">
-	</app-filtrar-clients>
-</div>
+<section class="mt-1 section-shell section-shell--main">
+	<div class="section-header">
+		<div>
+			<div class="section-badge">
+				<span>Gestión de clientes</span>
+			</div>
+			<p class="section-copy">Organiza y administra el listado de clientes.</p>
+		</div>
+		<div class="section-mark">✦</div>
+	</div>
 
-<div class="mt-1 border-t border-gray-800/70 pt-1">
-	<app-table-client
-		[clients]="visibleClients"
-		[totalElements]="totalElements"
-		[currentPage]="currentPage"
-		[totalPages]="totalPages"
-		[activeFilter]="activeFilter"
-		[isSearchMode]="isSearchActive"
-		(prev)="onPrevPage()"
-		(next)="onNextPage()"
-		(delete)="onDisableCliente($event)"
-		(reactivate)="onReactivateCliente($event)">
-	</app-table-client>
-</div>
+	<div class="section-content">
+		<app-filtrar-clients
+			[activeFilter]="activeFilter"
+			[selectedYear]="filterCriteria.year"
+			[selectedMonth]="filterCriteria.month"
+			[fromDate]="filterCriteria.fromDate"
+			[toDate]="filterCriteria.toDate"
+			(filterChange)="onFilterChange($event)"
+			(customModeChange)="onCustomModeChange($event)">
+		</app-filtrar-clients>
+
+		<app-table-client
+			[clients]="visibleClients"
+			[totalElements]="totalElements"
+			[currentPage]="currentPage"
+			[totalPages]="totalPages"
+			[activeFilter]="activeFilter"
+			[isSearchMode]="isSearchActive"
+			(prev)="onPrevPage()"
+			(next)="onNextPage()"
+			(delete)="onDisableCliente($event)"
+			(reactivate)="onReactivateCliente($event)">
+		</app-table-client>
+	</div>
+</section>

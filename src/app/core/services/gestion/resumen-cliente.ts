@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';  // ← inject faltaba
 import { HttpClient } from '@angular/common/http';
-import { forkJoin, map, Observable } from 'rxjs';
+import { forkJoin, map, Observable, catchError, of } from 'rxjs';
 import { TokenService } from '../auth/token.service';
 import { ApiResponse, ReservaDTO, ClienteDetalleResumenDTO, ServicioResponseDTO, } from '../../models/gestion/cliente/ClienteResumen.model'; 
 import { environment } from '@/environments/environment.development';
@@ -24,23 +24,31 @@ export class ResumenCliente {
 
 getProximaCita(): Observable<ReservaDTO | null> {
   return this.http
-    .get<any>(`${BASE}/reservas/mis-reservas`)
+    .get<any>(`${BASE}/reservas/mis-reservas?page=0&size=10`)
     .pipe(
-      map((res) => {
-        const data: ReservaDTO[] = Array.isArray(res) ? res : (res.data ?? []);
+      map((response) => {
+        // Extraer reservas de la respuesta paginada
+        const reservas: ReservaDTO[] = response?.data?.content || [];
+        
+        if (reservas.length === 0) return null;
+
         const hoy = new Date();
         hoy.setHours(0, 0, 0, 0);
-        const activas = data
-          .filter(r => {
-  const fechaReserva = new Date(r.fecha + 'T00:00:00');
-  console.log(r.fecha, fechaReserva.toDateString(), hoy.toDateString(), fechaReserva >= hoy);
-  return fechaReserva >= hoy;
-})
-          .sort((a, b) =>
-            new Date(a.fecha + 'T' + a.horaInicio).getTime() -
-            new Date(b.fecha + 'T' + b.horaInicio).getTime()
-          );
-        return activas[0] ?? null;
+
+        // Filtrar reservas futuras y ordenar por fecha más cercana
+        const proximaCita = reservas
+          .filter(r => new Date(r.fecha) >= hoy)
+          .sort((a, b) => 
+            new Date(`${a.fecha}T${a.horaInicio}`).getTime() - 
+            new Date(`${b.fecha}T${b.horaInicio}`).getTime()
+          )[0] || null;
+
+        console.log('Próxima cita:', proximaCita);
+        return proximaCita;
+      }),
+      catchError((error) => {
+        console.error('Error al obtener próxima cita:', error);
+        return of(null);
       })
     );
 }

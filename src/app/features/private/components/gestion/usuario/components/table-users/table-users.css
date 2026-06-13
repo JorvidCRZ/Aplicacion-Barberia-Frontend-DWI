@@ -22,3 +22,49 @@
   border-color: rgba(255, 255, 255, 0.1);
   color: #9ca3af;
 }
+
+/* Pagination and compact row styles (project design) */
+.boton-paginacion-cliente,
+.boton-ver-cliente {
+  background: transparent;
+}
+
+.boton-paginacion-cliente.p-button,
+.boton-ver-cliente.p-button {
+  border-color: rgba(245, 200, 76, 0.28);
+  color: #f5c84c;
+  min-width: 3rem;
+  min-height: 2rem;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.86rem;
+  box-shadow: none;
+}
+
+.boton-paginacion-cliente.p-button:not(:disabled):hover {
+  background: rgba(245, 200, 76, 0.12);
+  border-color: rgba(245, 200, 76, 0.4);
+}
+
+.boton-paginacion-cliente.activo.p-button {
+  background: rgba(245, 200, 76, 0.18);
+  border-color: rgba(245, 200, 76, 0.6);
+  color: #f9dc7a;
+}
+
+/* Compact rows */
+.table-base td,
+.table-base th {
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
+}
+
+.table-base td {
+  font-size: 0.95rem;
+}
+
+.table-actions {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  justify-content: center;
+}

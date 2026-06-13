@@ -71,11 +71,10 @@
             type="text"
             formControlName="nombre"
             placeholder="Juan"
+            maxlength="150"
             class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-gray-500 focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/30"
             [class.border-red-500]="isAdminInvalid('nombre')">
-          @if (isAdminInvalid('nombre')) {
-            <p-message severity="error" variant="simple" size="small">El nombre es obligatorio.</p-message>
-          }
+          <div class="mt-1 h-4 text-sm text-red-400"><ng-container *ngIf="isAdminInvalid('nombre')">El nombre es obligatorio.</ng-container></div>
         </div>
 
         <div class="space-y-2">
@@ -86,11 +85,10 @@
             type="text"
             formControlName="apellido"
             placeholder="Pérez"
+            maxlength="150"
             class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-gray-500 focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/30"
             [class.border-red-500]="isAdminInvalid('apellido')">
-          @if (isAdminInvalid('apellido')) {
-            <p-message severity="error" variant="simple" size="small">El apellido es obligatorio.</p-message>
-          }
+          <div class="mt-1 h-4 text-sm text-red-400"><ng-container *ngIf="isAdminInvalid('apellido')">El apellido es obligatorio.</ng-container></div>
         </div>
 
         <div class="space-y-2">
@@ -100,8 +98,12 @@
             id="adminTelefono"
             type="tel"
             formControlName="telefono"
-            placeholder="+51 999 888 777"
+            placeholder="999999999"
+            maxlength="9"
+            inputmode="numeric"
+            (input)="onPhoneInput($event)"
             class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-gray-500 focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/30">
+          <div class="mt-1 h-4 text-sm text-red-400"><ng-container *ngIf="adminForm.get('telefono')?.value && adminForm.get('telefono')?.invalid">El teléfono debe tener 9 dígitos.</ng-container></div>
         </div>
 
         <div class="space-y-2">
@@ -114,9 +116,7 @@
             placeholder="admin@correo.com"
             class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-gray-500 focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/30"
             [class.border-red-500]="isAdminInvalid('email')">
-          @if (isAdminInvalid('email')) {
-            <p-message severity="error" variant="simple" size="small">Ingresa un correo válido.</p-message>
-          }
+          <div class="mt-1 h-4 text-sm text-red-400"><ng-container *ngIf="isAdminInvalid('email')">Ingresa un correo válido.</ng-container></div>
         </div>
 
         <div class="space-y-2">
@@ -129,9 +129,7 @@
             placeholder="admin.barberia"
             class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-gray-500 focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/30"
             [class.border-red-500]="isAdminInvalid('username')">
-          @if (isAdminInvalid('username')) {
-            <p-message severity="error" variant="simple" size="small">El username es obligatorio.</p-message>
-          }
+          <div class="mt-1 h-4 text-sm text-red-400"><ng-container *ngIf="isAdminInvalid('username')">El username es obligatorio.</ng-container></div>
         </div>
 
         <div class="space-y-2">
@@ -146,9 +144,7 @@
             [ngClass]="{ 'p-invalid': isAdminInvalid('password') }"
             placeholder="••••••••">
           </p-password>
-          @if (isAdminInvalid('password')) {
-            <p-message severity="error" variant="simple" size="small">La contraseña debe tener al menos 8 caracteres.</p-message>
-          }
+          <div class="mt-1 h-4 text-sm text-red-400"><ng-container *ngIf="isAdminInvalid('password')">La contraseña debe tener al menos 8 caracteres.</ng-container></div>
         </div>
 
         <div class="space-y-2 sm:col-span-2">
@@ -163,17 +159,16 @@
             [ngClass]="{ 'p-invalid': isAdminInvalid('passwordConfirm') }"
             placeholder="••••••••">
           </p-password>
-          @if (isAdminInvalid('passwordConfirm')) {
-            <p-message severity="error" variant="simple" size="small">Confirma la contraseña.</p-message>
-          }
+          <div class="mt-1 h-4 text-sm text-red-400">
+            <ng-container *ngIf="passwordsMismatch()">Las contraseñas no son iguales.</ng-container>
+            <ng-container *ngIf="!passwordsMismatch() && isAdminInvalid('passwordConfirm')">Confirma la contraseña.</ng-container>
+          </div>
         </div>
       </div>
 
-      @if (adminError) {
-        <div class="mt-4 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-          {{ adminError }}
-        </div>
-      }
+      <div *ngIf="adminError" class="mt-4 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+        {{ adminError }}
+      </div>
 
       <div class="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
         <button

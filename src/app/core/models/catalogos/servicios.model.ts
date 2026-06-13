@@ -16,6 +16,8 @@ export interface ServicioRequest {
     precio: number;
     categoriaId: number;
     duracion: number;
+    descripcion?: string;
+    publicado?: boolean;
 }
 
 export interface ServicioFiltro {

@@ -1,0 +1,87 @@
+<form [formGroup]="pagoForm" (ngSubmit)="registrarPago()" class="w-full max-w-3xl flex flex-col gap-6">
+
+  <div class="w-full">
+    <label class="block text-[11px] text-[#888] tracking-[0.1em] mb-2 uppercase font-semibold">
+      SELECCIONAR RESERVA CONFIRMADA *
+    </label>
+    <p-select
+      [options]="reservasDisponibles()"
+      formControlName="reservaId"
+      placeholder="Seleccione una cita pendiente"
+      (onChange)="onReservaChange($event)"
+      [filter]="true"
+      filterBy="label"
+      styleClass="w-full bg-[#0c0c0c] border-white/10 text-white">
+    </p-select>
+  </div>
+
+  @if (reservaSeleccionada()) {
+    <div class="bg-[#121212] border border-white/10 p-5 rounded-md">
+      <span class="block text-[11px] text-[#888] tracking-[0.1em] font-bold mb-4 uppercase">DETALLES DE LA CITA</span>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <span class="block text-[10px] text-[#888] tracking-[0.1em] uppercase">Cliente</span>
+          <span class="block text-sm text-white mt-1">{{ reservaSeleccionada().clienteNombre }} {{ reservaSeleccionada().clienteApellido }}</span>
+        </div>
+        <div>
+          <span class="block text-[10px] text-[#888] tracking-[0.1em] uppercase">Barbero</span>
+          <span class="block text-sm text-white mt-1">{{ reservaSeleccionada().barberoNombre }}</span>
+        </div>
+        <div class="col-span-2">
+          <span class="block text-[10px] text-[#888] tracking-[0.1em] uppercase">Servicios</span>
+          <span class="block text-sm text-[#C9A84C] mt-1">{{ reservaSeleccionada().servicios.join(', ') }}</span>
+        </div>
+        <div class="col-span-2 bg-[#0c0c0c] border-l-4 border-[#C9A84C] p-3 rounded mt-2 flex justify-between items-center">
+          <span class="text-[11px] text-[#888] tracking-[0.1em] uppercase">MONTO TOTAL</span>
+          <span class="text-lg text-[#C9A84C] font-bold">S/ {{ reservaSeleccionada().montoTotal | number:'1.2-2' }}</span>
+        </div>
+      </div>
+    </div>
+  }
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div>
+      <label class="block text-[11px] text-[#888] tracking-[0.1em] mb-2 uppercase font-semibold">MÉTODO PAGO *</label>
+      <p-select [options]="metodosOpciones" formControlName="metodoPago" styleClass="w-full bg-[#0c0c0c] border-white/10 text-white"></p-select>
+    </div>
+    <div>
+      <label class="block text-[11px] text-[#888] tracking-[0.1em] mb-2 uppercase font-semibold">TIPO COBRO *</label>
+      <p-select [options]="tiposOpciones" formControlName="tipoPago" styleClass="w-full bg-[#0c0c0c] border-white/10 text-white"></p-select>
+    </div>
+    <div>
+      <label class="block text-[11px] text-[#888] tracking-[0.1em] mb-2 uppercase font-semibold">MONTO (S/) *</label>
+      <p-inputNumber
+        formControlName="monto"
+        mode="decimal"
+        [minFractionDigits]="2"
+        [maxFractionDigits]="2"
+        [min]="0.01"
+        styleClass="w-full"
+        inputStyleClass="w-full bg-[#0c0c0c] border border-white/10 text-white focus:border-[#C9A84C] p-2.5 rounded">
+      </p-inputNumber>
+    </div>
+  </div>
+
+  <div class="w-full">
+    <label class="block text-[11px] text-[#888] tracking-[0.1em] mb-2 uppercase font-semibold">OBSERVACIONES</label>
+    <textarea pInputTextarea formControlName="observacion" rows="3"
+      class="w-full bg-[#0c0c0c] border border-white/10 text-white p-3 rounded resize-none focus:border-[#C9A84C] outline-none transition-colors">
+    </textarea>
+  </div>
+
+  <div class="flex justify-end gap-3 mt-4 pt-6 border-t border-white/10">
+    <button type="button"
+      class="border border-white/10 text-[#888] hover:border-[#C9A84C] hover:text-[#C9A84C] px-6 py-2.5 font-semibold text-sm tracking-[0.1em] rounded-md transition-colors"
+      (click)="cancelar()" [disabled]="loadingSubmit()">
+      CANCELAR
+    </button>
+    <button type="submit"
+      class="bg-[#C9A84C] hover:bg-[#E2B95A] text-black disabled:bg-white/10 disabled:text-[#888] px-6 py-2.5 font-semibold text-sm tracking-[0.1em] rounded-md flex items-center transition-colors"
+      [disabled]="pagoForm.invalid || loadingSubmit()">
+      <i class="pi pi-check mr-2" *ngIf="!loadingSubmit()"></i>
+      <i class="pi pi-spin pi-spinner mr-2" *ngIf="loadingSubmit()"></i>
+      REGISTRAR
+    </button>
+  </div>
+
+</form>
