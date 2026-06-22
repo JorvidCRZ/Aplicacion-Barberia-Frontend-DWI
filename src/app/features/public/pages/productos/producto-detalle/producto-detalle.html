@@ -24,10 +24,10 @@
             </div>
 
             <div class="producto-detail-info">
-                <app-status-badge type="text" [value]="producto.nombreCategoria"></app-status-badge>
+                <app-status-badge type="text" [value]="producto.nombreCategoria" customClass="badge-text estado-producto"/>
                 <h1 class="producto-detail-name py-2">{{ producto.nombre }}</h1>
                 <div class="producto-detail-price-row py-2">
-                    <div class="producto-detail-price">{{ producto.precio | currency: moneda:'symbol':'1.2-2':'es-PE'}}</div>
+                    <div class="producto-detail-price">{{ producto.precio | soles}}</div>
                 </div>
                 <div class="producto-detail-desc py-2">{{ producto.descripcion }}</div>
                 <div class="producto-detail-specs">
@@ -39,13 +39,13 @@
 
             <aside class="producto-detail-actions">
                 <div class="producto-page-panel producto-detail-buy">
-                    <div class="producto-detail-price">{{ producto.precio | currency: moneda:'symbol':'1.2-2':'es-PE'}}</div>
+                    <div class="producto-detail-price">{{ producto.precio | soles}}</div>
                     <div class="producto-detail-stock" [class.out]="!producto.stock">{{ producto.stock }} unidades disponibles</div>
                     <label class="producto-detail-quantity">Cantidad</label>
                     <p-inputNumber [(ngModel)]="cantidad" [min]="1" [max]="cantidadMaxima" [showButtons]="true" buttonLayout="horizontal" class="py-3"></p-inputNumber>
                     <button pButton type="button" class="boton-comprar my-3" icon="pi pi-shopping-cart" label="Agregar al carrito" [disabled]="!producto.stock" (click)="agregarAlCarrito()"></button>
                     <button pButton type="button" class="boton-ver my-3" icon="pi pi-shopping-bag" label="Ir al carrito" (click)="irCarrito()"></button>
-                    <div class="producto-detail-note my-3">Subtotal: {{ subtotal | currency: moneda:'symbol':'1.2-2':'es-PE' }}</div>
+                    <div class="producto-detail-note my-3">Subtotal:   {{ subtotal | soles }}</div>
                 </div>
             </aside>
         </div>

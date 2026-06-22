@@ -1,10 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ApiResponse, Page } from '../../models/common/index.model';
-
 import { of, tap } from 'rxjs';
 import { environment } from '@/environments/environment.development';
-import { Categoria, CategoriaFilter, CategoriaRequest, CategoriaTipo, } from '../../models/catalogos/categorias.model';
+import { Categoria, CategoriaFiltro, CategoriaRequest, CategoriaTipo, } from '../../models/catalogos/categorias.model';
 import { buildHttpParamsComponent } from '@/app/shared/utils/build-http-params.component';
 
 @Injectable({
@@ -23,8 +22,12 @@ export class CategoriaService {
         return this.http.get<ApiResponse<Page<Categoria>>>(this.apiUrl, { params: buildHttpParamsComponent({ page, size }) });
     }
 
-    obtenerCategoriasConFiltro(filter?: CategoriaFilter) {
+    obtenerCategoriasConFiltro(filter?: CategoriaFiltro) {
         return this.http.get<ApiResponse<Page<Categoria>>>(this.apiUrl, { params: buildHttpParamsComponent(filter) });
+    }
+
+    obtenerCategoriasPadre() {
+        return this.http.get<ApiResponse<Categoria[]>>(`${this.apiUrl}/padres`);
     }
 
     obtenerCategoriasActivas() {
@@ -33,7 +36,7 @@ export class CategoriaService {
     }
 
     obtenerCategoriasPorTipo(tipo: CategoriaTipo) {
-        return this.http.get<ApiResponse<Page<Categoria>>>(this.apiUrl, {params: buildHttpParamsComponent({estado: true,tipo,size: 1000})});
+        return this.http.get<ApiResponse<Page<Categoria>>>(this.apiUrl, { params: buildHttpParamsComponent({ estado: true, tipo, size: 1000 }) });
     }
 
     buscarCategoriaPorId(id: number) {
@@ -51,7 +54,7 @@ export class CategoriaService {
     cambiarEstado(id: number, estado: boolean) {
         return this.http.patch<ApiResponse<Categoria>>(`${this.apiUrl}/${id}/estado`, {}, { params: buildHttpParamsComponent({ estado }) });
     }
-        
+
     eliminarCategoria(id: number) {
         return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${id}`);
     }

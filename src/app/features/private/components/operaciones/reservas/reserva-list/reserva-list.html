@@ -1,249 +1,295 @@
-<div class="space-y-6">
+<div class="space-y-5">
 
-    <section class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
-
-        <div class="space-y-2">
-            <h1 class="text-3xl font-bold text-white tracking-tight">
-                Todas las Reservas
-            </h1>
-
-            <p class="text-gray-400 text-sm md:text-base">
-                Gestiona todas las reservas y citas del sistema.
-            </p>
+    <section class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-white tracking-tight">Reservas</h1>
+            <p class="text-[#666666] text-sm mt-0.5">Gestiona todas las citas del sistema</p>
         </div>
-
-        <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-
-            <p-floatlabel>
-                <p-iconfield class="w-full">
-                    <p-inputicon class="pi pi-search" />
-
-                    <input 
-                        pInputText 
-                        id="buscarCliente" 
-                        [(ngModel)]="clienteBusqueda" 
-                        
-                        autocomplete="off"
-                        class="w-full lg:w-80 rounded-2xl" />
-                </p-iconfield>
-
-                <label for="buscarCliente">
-                    Buscar por cliente
-                </label>
-            </p-floatlabel>
-            
-            <p-button 
-                label="Nueva reserva" 
-                icon="pi pi-plus" 
-                (onClick)="irNuevaReserva()"
-                styleClass="bg-yellow-500 hover:bg-yellow-600 border-none">
-            </p-button>
-
-        </div>
-
+        <button (click)="irNuevaReserva()"
+            class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#C9A84C] hover:bg-[#E2B95A] text-black text-sm font-semibold transition-colors cursor-pointer self-start lg:self-auto">
+            <i class="pi pi-plus text-xs"></i>
+            Nueva reserva
+        </button>
     </section>
 
-    <section class="bg-[#0f0f0f] border border-yellow-500/10 rounded-3xl overflow-hidden shadow-2xl">
+    <section class="bg-[#121212] border border-[#222222] rounded-xl p-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
 
-        <div class="p-5 border-b border-white/5">
-
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-
-                <div>
-                    <h2 class="text-xl font-semibold text-white">
-                        Lista de Reservas
-                    </h2>
-
-                    <p class="text-sm text-gray-400 mt-1">
-                        Visualiza y administra todas las reservas activas.
-                    </p>
+            <div class="flex flex-col gap-1.5">
+                <label class="text-[#666666] text-[10px] font-semibold uppercase tracking-wider">Cliente</label>
+                <div class="relative">
+                    <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-[#555555] text-xs"></i>
+                    <input [(ngModel)]="filtros.cliente" (ngModelChange)="aplicarFiltros()"
+                        placeholder="Nombre del cliente"
+                        class="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-white text-sm pl-9 pr-3 py-2 placeholder-[#444444] focus:outline-none focus:border-[#C9A84C] transition-colors" />
                 </div>
-
-                <div class="flex items-center gap-2 text-sm text-gray-400">
-
-                    <i class="pi pi-database"></i>
-
-                    <span>
-                        {{ totalRecords }} reservas registradas
-                    </span>
-
-                </div>
-
             </div>
 
+            <div class="flex flex-col gap-1.5">
+                <label class="text-[#666666] text-[10px] font-semibold uppercase tracking-wider">Barbero</label>
+                <div class="relative">
+                    <i
+                        class="pi pi-user absolute left-3 top-1/2 -translate-y-1/2 text-[#555555] text-xs pointer-events-none"></i>
+                    <select [(ngModel)]="filtros.barbero" (ngModelChange)="aplicarFiltros()"
+                        class="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-white text-sm pl-8 pr-3 py-2 focus:outline-none focus:border-[#C9A84C] transition-colors cursor-pointer appearance-none">
+                        <option value="">Todos los barberos</option>
+                        <option *ngFor="let barbero of barberosList" [value]="barbero">{{ barbero }}</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="flex flex-col gap-1.5">
+                <label class="text-[#666666] text-[10px] font-semibold uppercase tracking-wider">Estado</label>
+                <select [(ngModel)]="filtros.estado" (ngModelChange)="aplicarFiltros()"
+                    class="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-white text-sm px-3 py-2 focus:outline-none focus:border-[#C9A84C] transition-colors cursor-pointer appearance-none">
+                    <option value="">Todos los estados</option>
+                    <option value="PENDIENTE">Pendiente</option>
+                    <option value="CONFIRMADA">Confirmada</option>
+                    <option value="COMPLETADA">Completada</option>
+                    <option value="CANCELADA">Cancelada</option>
+                </select>
+            </div>
+
+            
+            <div class="flex flex-col gap-1.5">
+                <label class="text-[#666666] text-[10px] font-semibold uppercase tracking-wider">Fecha</label>
+                <div class="relative">
+                    <i class="pi pi-calendar absolute left-3 top-1/2 -translate-y-1/2 text-[#555555] text-xs"></i>
+                    <input type="date" [(ngModel)]="filtros.fecha" (ngModelChange)="aplicarFiltros()"
+                        class="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-white text-sm pl-9 pr-3 py-6 focus:outline-none focus:border-[#C9A84C] transition-colors [color-scheme:dark]" />
+                </div>
+            </div>
+        </div>
+
+        
+        <div *ngIf="hayFiltrosActivos" class="flex items-center gap-2 mt-3 flex-wrap">
+            <span class="text-[#555555] text-xs">Filtros activos:</span>
+
+            <span *ngIf="filtros.cliente"
+                class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#C9A84C]/10 border border-[#C9A84C]/30 text-[#C9A84C] text-xs">
+                Cliente: {{ filtros.cliente }}
+                <button (click)="limpiarFiltro('cliente')" class="hover:text-white cursor-pointer">
+                    <i class="pi pi-times text-[9px]"></i>
+                </button>
+            </span>
+
+            <span *ngIf="filtros.barbero"
+                class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#C9A84C]/10 border border-[#C9A84C]/30 text-[#C9A84C] text-xs">
+                Barbero: {{ filtros.barbero }}
+                <button (click)="limpiarFiltro('barbero')" class="hover:text-white cursor-pointer">
+                    <i class="pi pi-times text-[9px]"></i>
+                </button>
+            </span>
+
+            <span *ngIf="filtros.estado"
+                class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#C9A84C]/10 border border-[#C9A84C]/30 text-[#C9A84C] text-xs">
+                Estado: {{ filtros.estado }}
+                <button (click)="limpiarFiltro('estado')" class="hover:text-white cursor-pointer">
+                    <i class="pi pi-times text-[9px]"></i>
+                </button>
+            </span>
+
+            <span *ngIf="filtros.fecha"
+                class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#C9A84C]/10 border border-[#C9A84C]/30 text-[#C9A84C] text-xs">
+                Fecha: {{ filtros.fecha }}
+                <button (click)="limpiarFiltro('fecha')" class="hover:text-white cursor-pointer">
+                    <i class="pi pi-times text-[9px]"></i>
+                </button>
+            </span>
+
+            <button (click)="limpiarTodosFiltros()"
+                class="text-[#555555] hover:text-white text-xs underline cursor-pointer ml-1 transition-colors">
+                Limpiar todo
+            </button>
+        </div>
+    </section>
+
+    
+    <section class="bg-[#121212] border border-[#222222] rounded-xl overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-3.5 border-b border-[#1e1e1e]">
+            <span class="text-[#666666] text-xs">
+                <span class="text-white font-semibold">{{ reservasFiltradas.length }}</span>
+                de {{ reservas.length }} reservas
+            </span>
+            <div *ngIf="loading" class="flex items-center gap-2 text-[#C9A84C] text-xs">
+                <i class="pi pi-spin pi-spinner text-xs"></i>
+                Cargando...
+            </div>
         </div>
 
         <div class="overflow-x-auto">
-
-            <p-table 
-                #dt
-                [value]="reservas" 
-                [lazy]="true"
-                (onLazyLoad)="onLazyLoad($event)"
-                [paginator]="true" 
-                [rows]="rows" 
-                [totalRecords]="totalRecords"
-                [loading]="loading"
-                dataKey="id" 
-                [showCurrentPageReport]="true"
-                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} reservas"
-                [tableStyle]="{ 'min-width': '1100px' }">
+            <p-table [value]="reservasFiltradas" [paginator]="true" [rows]="rows" [loading]="loading"
+                dataKey="reservaId" [showCurrentPageReport]="true"
+                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+                [tableStyle]="{ 'min-width': '900px' }">
 
                 <ng-template pTemplate="header">
-
-                    <tr class="bg-[#151515]">
-
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-yellow-500 uppercase tracking-wider">
-                            Cliente
-                        </th>
-
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-yellow-500 uppercase tracking-wider">
-                            Barbero
-                        </th>
-
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-yellow-500 uppercase tracking-wider">
-                            Servicio
-                        </th>
-
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-yellow-500 uppercase tracking-wider">
-                            Fecha / Hora
-                        </th>
-
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-yellow-500 uppercase tracking-wider">
-                            Tipo
-                        </th>
-
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-yellow-500 uppercase tracking-wider">
-                            Estado
-                        </th>
-
-                        <th class="px-6 py-4 text-center text-xs font-semibold text-yellow-500 uppercase tracking-wider">
-                            Acciones
-                        </th>
-
+                    <tr class="bg-[#0e0e0e]">
+                        <th
+                            class="px-5 py-3.5 text-left text-[10px] font-semibold text-[#555555] uppercase tracking-wider">
+                            Cliente</th>
+                        <th
+                            class="px-5 py-3.5 text-left text-[10px] font-semibold text-[#555555] uppercase tracking-wider">
+                            Barbero</th>
+                        <th
+                            class="px-5 py-3.5 text-left text-[10px] font-semibold text-[#555555] uppercase tracking-wider">
+                            Servicio</th>
+                        <th
+                            class="px-5 py-3.5 text-left text-[10px] font-semibold text-[#555555] uppercase tracking-wider">
+                            Fecha / Hora</th>
+                        <th
+                            class="px-5 py-3.5 text-left text-[10px] font-semibold text-[#555555] uppercase tracking-wider">
+                            Tipo</th>
+                        <th
+                            class="px-5 py-3.5 text-left text-[10px] font-semibold text-[#555555] uppercase tracking-wider">
+                            Estado</th>
+                        <th
+                            class="px-5 py-3.5 text-center text-[10px] font-semibold text-[#555555] uppercase tracking-wider">
+                            Acciones</th>
                     </tr>
-
                 </ng-template>
 
                 <ng-template pTemplate="body" let-reserva>
+                    <tr class="border-b border-[#1a1a1a] hover:bg-white/[0.02] transition-colors">
 
-                    <tr class="border-b border-white/5 hover:bg-white/[0.03] transition-all duration-200">
-
-                        <td class="px-6 py-4">
-
-                            <div class="flex items-center gap-3">
-
-                                <div class="w-10 h-10 rounded-2xl bg-yellow-500/10 flex items-center justify-center">
-
-                                    <i class="pi pi-user text-yellow-500"></i>
-
+                        
+                        <td class="px-5 py-3.5">
+                            <div class="flex items-center gap-2.5">
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-[#C9A84C]/10 flex items-center justify-center shrink-0">
+                                    <i class="pi pi-user text-[#C9A84C] text-xs"></i>
                                 </div>
-
-                                <div>
-
-                                    <p class="font-medium text-white">
-                                        {{ reserva.clienteNombre || reserva.cliente?.nombre || 'N/A' }}
-                                    </p>
-
-                                    <p class="text-xs text-gray-400">
-                                        Cliente
-                                    </p>
-
-                                </div>
-
+                                <span class="text-white text-sm font-medium">{{ reserva.clienteNombre || 'N/A' }}</span>
                             </div>
-
+                        </td>
+                        
+                        <td class="px-5 py-3.5 text-[#aaaaaa] text-sm">{{ reserva.barberoNombre || 'N/A' }}</td>
+                        <td class="px-5 py-3.5 text-[#aaaaaa] text-sm">{{ reserva.servicio || 'N/A' }}</td>
+                        
+                        <td class="px-5 py-3.5">
+                            <div class="flex flex-col">
+                                <span class="text-white text-sm">{{ reserva.fecha | date:'dd/MM/yyyy' }}</span>
+                                <span class="text-[#555555] text-xs">{{ reserva.horaInicio?.substring(0,5) }}</span>
+                            </div>
                         </td>
 
-                        <td class="px-6 py-4 text-gray-300">
-                            {{ reserva.barberoNombre || reserva.barbero?.nombre || 'N/A' }}
-                        </td>
-
-                        <td class="px-6 py-4 text-gray-300">
-                            {{ reserva.servicioNombre || reserva.servicio?.nombre || 'N/A' }}
-                        </td>
-
-                        <td class="px-6 py-4 text-gray-300">
-                            {{ obtenerFechaHora(reserva) | date:'dd/MM/yyyy HH:mm' }}
-                        </td>
-
-                        <td class="px-6 py-4">
-
-                            <span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400">
-
-                                {{ reserva.tipoReserva || 'Presencial' }}
-
+                        <td class="px-5 py-3.5">
+                            <span
+                                class="px-2 py-0.5 rounded-md text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                                {{ reserva.tipoReserva === 'RESERVA_VIRTUAL' ? 'Virtual' : 'Presencial' }}
                             </span>
-
                         </td>
-
-                        <td class="px-6 py-4">
-                            <app-status-badge 
-                                type="text" 
-                                [value]="reserva.estado || reserva.estadoReserva">
-                            </app-status-badge>
+                        
+                        <td class="px-5 py-3.5">
+                            <span class="px-2 py-0.5 rounded-md text-xs font-semibold border"
+                                [ngClass]="getEstadoClass(reserva.estadoReserva)">
+                                {{ reserva.estadoReserva || 'Sin estado' }}
+                            </span>
                         </td>
-
-                        <td class="px-6 py-4">
-
-                            <div class="flex items-center justify-center gap-2">
-
-                                <button 
-                                    pButton 
-                                    icon="pi pi-eye" 
-                                    class="p-button-text p-button-rounded text-blue-400 hover:text-blue-300"
-                                    (click)="verDetalle(reserva)">
+                        
+                        <td class="px-5 py-3.5">
+                            <div class="flex items-center justify-center gap-1">
+                                <button (click)="verDetalle(reserva)" title="Ver detalle"
+                                    class="w-8 h-8 flex items-center justify-center rounded-lg text-[#555555] hover:text-blue-400 hover:bg-blue-400/10 transition-colors cursor-pointer border-0 bg-transparent">
+                                    <i class="pi pi-eye text-xs"></i>
                                 </button>
-
-                                <button 
-                                    pButton 
-                                    icon="pi pi-pencil" 
-                                    class="p-button-text p-button-rounded text-green-400 hover:text-green-300"
-                                    (click)="editarReserva(reserva)">
+                                <button (click)="editarReserva(reserva)" title="Editar"
+                                    class="w-8 h-8 flex items-center justify-center rounded-lg text-[#555555] hover:text-[#C9A84C] hover:bg-[#C9A84C]/10 transition-colors cursor-pointer border-0 bg-transparent">
+                                    <i class="pi pi-pencil text-xs"></i>
                                 </button>
-
-                            
-
                             </div>
-
                         </td>
 
                     </tr>
-
                 </ng-template>
 
                 <ng-template pTemplate="emptymessage">
                     <tr>
-                        <td colspan="7" class="text-center py-8">
-                            <div class="flex flex-col items-center gap-2 text-gray-400">
+                        <td colspan="7" class="text-center py-16">
+                            <div class="flex flex-col items-center gap-3 text-[#444444]">
                                 <i class="pi pi-calendar-times text-4xl"></i>
-                                <p class="text-sm">No hay reservas registradas</p>
-                                <p-button 
-                                    label="Crear primera reserva" 
-                                    icon="pi pi-plus" 
-                                    (onClick)="irNuevaReserva()"
-                                    styleClass="p-button-text text-yellow-500">
-                                </p-button>
-                            </div>
-                        </td>
-                    </tr>
-                </ng-template>
-
-                <ng-template pTemplate="loadingbody">
-                    <tr>
-                        <td colspan="7" class="text-center py-8">
-                            <div class="flex flex-col items-center gap-2">
-                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500"></div>
-                                <p class="text-gray-400 text-sm">Cargando reservas...</p>
+                                <p class="text-sm font-medium text-[#666666]">No hay reservas que coincidan</p>
+                                <button *ngIf="hayFiltrosActivos" (click)="limpiarTodosFiltros()"
+                                    class="text-[#C9A84C] text-xs underline cursor-pointer bg-transparent border-0">
+                                    Limpiar filtros
+                                </button>
                             </div>
                         </td>
                     </tr>
                 </ng-template>
 
             </p-table>
+        </div>
+    </section>
+
+
+</div>
+
+<p-dialog [(visible)]="showDetalle" [modal]="true" [closable]="true" [draggable]="false" header="Detalle de Reserva"
+    styleClass="w-full max-w-md">
+
+    <div *ngIf="reservaSeleccionada" class="flex flex-col gap-3 py-2">
+
+        <!-- Cliente -->
+        <div class="flex items-center gap-3 pb-3 border-b border-[#1e1e1e]">
+            <div class="w-10 h-10 rounded-lg bg-[#C9A84C]/10 flex items-center justify-center shrink-0">
+                <i class="pi pi-user text-[#C9A84C]"></i>
+            </div>
+            <div>
+                <p class="text-white font-semibold text-sm">{{ reservaSeleccionada.clienteNombre }}</p>
+                <p class="text-[#555555] text-xs">Cliente</p>
+            </div>
+        </div>
+
+        
+        <div class="grid grid-cols-2 gap-3">
+
+            <div class="bg-[#1a1a1a] rounded-lg p-3">
+                <p class="text-[#555555] text-[10px] uppercase tracking-wider mb-1">Barbero</p>
+                <p class="text-white text-sm font-medium">{{ reservaSeleccionada.barberoNombre || 'N/A' }}</p>
+            </div>
+
+            <div class="bg-[#1a1a1a] rounded-lg p-3">
+                <p class="text-[#555555] text-[10px] uppercase tracking-wider mb-1">Servicio</p>
+                <p class="text-white text-sm font-medium">{{ reservaSeleccionada.servicio || 'N/A' }}</p>
+            </div>
+
+            <div class="bg-[#1a1a1a] rounded-lg p-3">
+                <p class="text-[#555555] text-[10px] uppercase tracking-wider mb-1">Fecha</p>
+                <p class="text-white text-sm font-medium">{{ reservaSeleccionada.fecha | date:'dd/MM/yyyy' }}</p>
+            </div>
+
+            <div class="bg-[#1a1a1a] rounded-lg p-3">
+                <p class="text-[#555555] text-[10px] uppercase tracking-wider mb-1">Hora</p>
+                <p class="text-white text-sm font-medium">
+                    {{ reservaSeleccionada.horaInicio | date:'HH:mm' }} - {{ reservaSeleccionada.horaFin | date:'HH:mm'
+                    }}
+                </p>
+            </div>
+
+            <div class="bg-[#1a1a1a] rounded-lg p-3">
+                <p class="text-[#555555] text-[10px] uppercase tracking-wider mb-1">Tipo</p>
+                <p class="text-white text-sm font-medium">
+                    {{ reservaSeleccionada.tipoReserva === 'RESERVA_VIRTUAL' ? 'Virtual' : 'Presencial' }}
+                </p>
+            </div>
+
+            <div class="bg-[#1a1a1a] rounded-lg p-3">
+                <p class="text-[#555555] text-[10px] uppercase tracking-wider mb-1">Total</p>
+                <p class="text-[#C9A84C] text-sm font-bold">S/. {{ reservaSeleccionada.total }}</p>
+            </div>
 
         </div>
 
-    </section>
+        
+        <div class="flex items-center justify-between bg-[#1a1a1a] rounded-lg p-3 mt-1">
+            <p class="text-[#555555] text-[10px] uppercase tracking-wider">Estado</p>
+            <span class="px-2.5 py-1 rounded-md text-xs font-semibold border"
+                [ngClass]="getEstadoClass(reservaSeleccionada.estadoReserva)">
+                {{ reservaSeleccionada.estadoReserva || 'Sin estado' }}
+            </span>
+        </div>
 
-</div>
+    </div>
+
+</p-dialog>

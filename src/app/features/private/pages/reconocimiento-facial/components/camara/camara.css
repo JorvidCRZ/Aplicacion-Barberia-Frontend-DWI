@@ -1,0 +1,190 @@
+/* =============================================
+   camara.css — FadEx theme (dark + gold)
+   ============================================= */
+
+.camara-card {
+  max-width: 420px;
+  width: 100%;
+  margin: 1.5rem auto;
+  background: #1a1a1a;
+  border: 1px solid rgba(180, 140, 40, 0.25);
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Header ── */
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 1.125rem 1.5rem;
+  border-bottom: 1px solid rgba(180, 140, 40, 0.15);
+}
+
+.step-number {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid #c9a227;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #c9a227;
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+
+.step-header h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: #f0ece0;
+  letter-spacing: 0.02em;
+}
+
+/* ── Visor de cámara ── */
+.camara-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: #0d0d0d;
+  overflow: hidden;
+}
+
+.camara-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Overlay (cámara inactiva) ── */
+.camara-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0d0d0d;
+}
+
+/* Marco decorativo interior */
+.camara-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 20px;
+  border: 1px solid rgba(201, 162, 39, 0.18);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.overlay-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.camera-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(201, 162, 39, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  color: rgba(201, 162, 39, 0.6);
+}
+
+.overlay-content span {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(201, 162, 39, 0.45);
+}
+
+/* ── Acciones ── */
+.acciones {
+  padding: 1rem 1.5rem 1.25rem;
+  border-top: 1px solid rgba(180, 140, 40, 0.15);
+}
+
+/* Botón base */
+.btn-principal {
+  width: 100%;
+  padding: 11px 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+/* Estado: activar cámara — relleno dorado */
+.btn-principal.activar {
+  background: #c9a227;
+  color: #0d0d0d;
+  border: 1.5px solid #c9a227;
+}
+.btn-principal.activar:hover {
+  background: #b08c1e;
+  border-color: #b08c1e;
+}
+
+/* Estado: tomar foto — contorno dorado */
+.btn-principal.tomar {
+  background: transparent;
+  color: #c9a227;
+  border: 1.5px solid #c9a227;
+}
+.btn-principal.tomar:hover {
+  background: rgba(201, 162, 39, 0.08);
+}
+
+/* ── Responsivo ── */
+@media (max-width: 480px) {
+  .camara-card {
+    margin: 1rem 0.75rem;
+    width: calc(100% - 1.5rem);
+  }
+
+  .step-header {
+    padding: 1rem 1.25rem;
+  }
+
+  .acciones {
+    padding: 0.875rem 1.25rem 1rem;
+  }
+}
+
+.mensaje-exito {
+  margin-top: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 700;
+  background: linear-gradient(135deg, #facc15, #eab308);
+  color: #000;
+  border: 2px solid #000;
+  box-shadow: 0 4px 12px rgba(250, 204, 21, 0.35);
+}
+.foto-capturada {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}

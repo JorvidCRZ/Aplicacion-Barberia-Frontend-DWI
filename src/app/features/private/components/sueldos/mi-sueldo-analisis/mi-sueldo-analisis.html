@@ -1,0 +1,27 @@
+<div class="analisis-wrap">
+
+  @if (cargando) {
+    <div class="skeleton-header"></div>
+    <div class="skeleton-kpis">
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+    </div>
+  } @else if (resumen) {
+    <app-barbero-header [resumen]="resumen" />
+    <app-barbero-kpis   [resumen]="resumen" />
+  }
+
+  <app-barbero-ventas-tabla
+  [ventas]="ventas"
+  [resumen]="resumen"
+  [page]="page"
+  [size]="size"
+  [totalElements]="totalElements"
+  [totalPages]="totalPages"
+  (paginaCambiada)="cambiarPagina($event)"
+  (filtroAplicado)="aplicarFiltro($event)"
+/>
+
+</div>

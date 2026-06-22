@@ -1,3 +1,4 @@
+<p-toast position="top-right" [baseZIndex]="9999"></p-toast>
 <div class="min-h-screen bg-[#0c0c0c] p-6">
 
   <!-- Page Header -->
@@ -138,6 +139,59 @@
       </div>
 
     </form>
+    <p-dialog
+  [(visible)]="showConfirmDialog"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  header="Confirmar Reserva"
+  styleClass="w-full max-w-md">
+
+  <div class="flex flex-col gap-3 py-2 text-sm text-white">
+    <div class="flex justify-between border-b border-[#333333] pb-2">
+      <span class="text-[#888888]">Cliente</span>
+      <span>{{ getClienteNombre() }}</span>
+    </div>
+    <div class="flex justify-between border-b border-[#333333] pb-2">
+      <span class="text-[#888888]">Barbero</span>
+      <span>{{ getBarberoNombre() }}</span>
+    </div>
+    <div class="flex justify-between border-b border-[#333333] pb-2">
+      <span class="text-[#888888]">Servicio</span>
+      <span>{{ getServicioNombre() }}</span>
+    </div>
+    <div class="flex justify-between border-b border-[#333333] pb-2">
+      <span class="text-[#888888]">Fecha</span>
+      <span>{{ reservaPreview?.fechaFormateada }}</span>
+    </div>
+    <div class="flex justify-between">
+      <span class="text-[#888888]">Hora</span>
+      <span>{{ reservaPreview?.hora }}</span>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-3 pt-2">
+      <button
+        type="button"
+        (click)="showConfirmDialog = false"
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold text-[#888888] border border-[#333333] bg-transparent hover:border-[#C9A84C] hover:text-[#C9A84C] transition-colors cursor-pointer">
+        <i class="pi pi-times text-xs"></i>
+        Cancelar
+      </button>
+      <button
+        type="button"
+        (click)="confirmarGuardar()"
+        [disabled]="isLoading"
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold text-black bg-[#C9A84C] hover:bg-[#E2B95A] disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer">
+        <i class="pi pi-check text-xs"></i>
+        <span *ngIf="!isLoading">Confirmar</span>
+        <span *ngIf="isLoading">Guardando...</span>
+      </button>
+    </div>
+  </ng-template>
+
+</p-dialog>
   </div>
 
 </div>

@@ -35,8 +35,8 @@
                             </div>
                         </td>
                         <td class="whitespace-nowrap text-center">{{producto.nombre}}</td>
-                        <td class="whitespace-nowrap text-center"> <app-status-badge type="text" [value]="producto.nombreCategoria" /></td>
-                        <td class="whitespace-nowrap text-center">{{producto.precio ? (producto.precio | currency:moneda:'symbol':'1.2-2':'es-PE') : 'No asignado'}}</td>
+                        <td class="whitespace-nowrap text-center"><app-status-badge type="text" [value]="producto.nombreCategoria" customClass="badge-text estado-producto"/></td>
+                        <td class="whitespace-nowrap text-center">{{producto.precio ? (producto.precio | soles) : 'No asignado'}}</td>
                         <td class="whitespace-nowrap text-center"><app-status-badge type="range" [value]="producto.stock" [warningLimit]="stockMinimo" /></td>
                         <td class="whitespace-nowrap text-center">
                             <div class="flex items-center justify-center gap-2">

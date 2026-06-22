@@ -12,11 +12,12 @@ import { INVENTARIO_CONFIG } from '@/app/core/config/valores.config';
 import { NotificationService } from '@/app/core/services/common/notification.service';
 import { ImageModule } from 'primeng/image';
 import { CarritoService } from '@/app/core/services/catalogos/carrito.service';
+import { SolesPipe } from '@/app/shared/pipes/moneda.pipe';
 
 @Component({
     standalone: true,
     selector: 'app-producto-detalle',
-    imports: [CommonModule, FormsModule, ButtonModule, InputNumberModule, SafeImageUrlPipe, StatusBadgeComponent, ImageModule],
+    imports: [CommonModule, FormsModule, ButtonModule, InputNumberModule, SafeImageUrlPipe, StatusBadgeComponent, ImageModule, SolesPipe],
     templateUrl: './producto-detalle.html',
     styleUrl: './producto-detalle.css',
 })
@@ -37,12 +38,10 @@ export class ProductoDetalleComponent implements OnInit {
 
     ngOnInit(): void {
         const id = Number(this.route.snapshot.paramMap.get('id'));
-
         if (!id) {
             this.regresar();
             return;
         }
-
         this.cargarProducto(id);
     }
 
@@ -53,12 +52,10 @@ export class ProductoDetalleComponent implements OnInit {
             next: (resp) => {
                 this.producto = resp.data ?? null;
                 this.cargando = false;
-
                 if (!this.producto) {
                     this.regresar();
                     return;
                 }
-
                 this.imagenSeleccionada = this.obtenerImagenPrincipal(this.producto);
                 this.images = (this.producto.urlsMultimedia ?? []).map((u: string) => ({ itemImageSrc: u, thumbnailImageSrc: u }));
                 this.cantidad = 1;

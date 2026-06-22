@@ -1,0 +1,13 @@
+.filtros-panel {
+    .p-inputtext,
+    .p-select,
+    .p-datepicker-input,
+    .p-treeselectl,
+    .p-multiselect,
+    .p-inputnumber-input {
+        min-height: 2.75rem !important;
+        padding: 0.55rem 0.65rem !important;
+        font-size: 0.85rem;
+    }
+}
+

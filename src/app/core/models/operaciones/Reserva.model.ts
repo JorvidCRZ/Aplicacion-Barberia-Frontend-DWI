@@ -10,5 +10,6 @@ export interface Reserva{
     horaInicio: Date;
     horaFin: Date;
     tipoReserva: TipoReserva;
+    total: number;
     estadoReserva: EstadoReserva;
 }

@@ -1,0 +1,12 @@
+<div class="fx-wrap">
+  <div class="fx-grid">
+
+    <div class="fx-card" *ngFor="let card of cards">
+      <i class="ti {{ card.icon }} fx-card-icon"></i>
+      <p class="fx-card-label">{{ card.label }}</p>
+      <p class="fx-card-value {{ card.color }}">{{ card.value }}</p>
+      <p class="fx-card-sub">{{ card.sub }}</p>
+    </div>
+
+  </div>
+</div>

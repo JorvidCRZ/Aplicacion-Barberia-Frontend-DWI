@@ -16,10 +16,11 @@ import { Producto } from '@/app/core/models/catalogos/productos.model';
 import { environment } from '@/environments/environment.development';
 import { SafeImageUrlPipe } from '@/app/shared/pipes/safe-image-url.pipe';
 import { INVENTARIO_CONFIG } from '@/app/core/config/valores.config';
+import { SolesPipe } from '@/app/shared/pipes/moneda.pipe';
 
 @Component({
   selector: 'app-producto-table',
-  imports: [ButtonModule, CommonModule, TableModule, ConfirmPopoverComponent, DialogModule, ToggleSwitchModule, 
+  imports: [ButtonModule, CommonModule, TableModule, ConfirmPopoverComponent, DialogModule, ToggleSwitchModule, SolesPipe,
     ImageModule, IconFieldModule, InputIconModule, StatusBadgeComponent, GalleriaModule, FormsModule, SafeImageUrlPipe
   ],
   templateUrl: './producto-table.html',
@@ -27,11 +28,11 @@ import { INVENTARIO_CONFIG } from '@/app/core/config/valores.config';
 })
 export class ProductoTableComponent {
   @Output() lazyLoad = new EventEmitter<TableLazyLoadEvent>();
+  @Output() publicado = new EventEmitter<{ id: number, publicado: boolean }>();
+  @Output() estado = new EventEmitter<{ id: number, activo: boolean }>();
   @Output() ver = new EventEmitter<number>();
   @Output() editar = new EventEmitter<Producto>();
   @Output() eliminar = new EventEmitter<Producto>();
-  @Output() estado = new EventEmitter<{ id: number, activo: boolean }>();
-  @Output() publicado = new EventEmitter<{ id: number, publicado: boolean }>();
   @Input({ required: true }) productos: Producto[] = [];
   @Input() icono: string = 'pi-trash';
   @Input() cargado = false;

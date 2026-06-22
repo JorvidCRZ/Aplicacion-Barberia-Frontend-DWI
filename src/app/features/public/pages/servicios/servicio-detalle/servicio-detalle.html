@@ -1,0 +1,70 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-black/90 backdrop-blur-sm overflow-y-auto">
+  <div class="relative w-full max-w-6xl bg-[#0f0f0f] border border-yellow-600/40 rounded-2xl shadow-2xl p-6 md:p-8 my-auto">
+
+    <div class="mb-8">
+      <button (click)="cerrar.emit()"
+        class="cursor-pointer flex items-center gap-2 text-emerald-500 hover:text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 px-4 py-2 rounded-lg transition-colors font-medium w-fit">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Volver
+      </button>
+    </div>
+
+    @if (cargando) {
+      <div class="flex justify-center items-center py-32">
+        <div class="w-12 h-12 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    } @else if (servicio) {
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12">
+
+        <div class="md:col-span-5 flex flex-col gap-4">
+          <div class="w-full aspect-square bg-white/5 rounded-2xl overflow-hidden">
+            <img [src]="servicio.urlsMultimedia?.[0] | safeImageUrl" [alt]="servicio.nombre"
+              (error)="img.src='/assets/cortebarba.jpg'" #img
+              class="w-full h-full object-cover">
+          </div>
+        </div>
+
+        <div class="md:col-span-4 flex flex-col">
+            <app-status-badge type="text" [value]="servicio.categoriaNombre" customClass="badge-text estado-servicio "/>
+          <h2 class="text-3xl lg:text-4xl font-extrabold text-white mb-6 leading-tight">{{ servicio.nombre }}</h2>
+          <p class="text-yellow-500 font-bold text-3xl mb-8">S/ {{ servicio.precio }}</p>
+          <p class="text-gray-400 text-sm leading-relaxed mb-8">
+            {{ servicio.descripcion || 'Servicio profesional garantizado. Relájate y disfruta de una atención de primera calidad.' }}
+          </p>
+          <div class="flex flex-col gap-4 text-sm mt-auto">
+            <div class="flex items-center gap-2">
+              <span class="text-white font-semibold min-w-[100px]">Categoría</span>
+              <span class="text-gray-400">{{ servicio.categoriaNombre }}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-white font-semibold min-w-[100px]">Duración</span>
+              <span class="text-gray-400">{{ servicio.duracion }} min aprox.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="md:col-span-3">
+          <div class="bg-[#141414] border border-white/10 rounded-2xl p-6 sticky top-4">
+            <p class="text-yellow-500 font-bold text-2xl mb-1">S/ {{ servicio.precio }}</p>
+            <p class="text-gray-500 text-xs mb-6 pb-6 border-b border-white/10">Precio del servicio</p>
+            <button (click)="reservar.emit()"
+              class="cursor-pointer w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 rounded-lg transition-colors flex justify-center items-center gap-2 mb-4 uppercase tracking-wide">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              Agendar cita
+            </button>
+            <div class="mt-6 pt-4 border-t border-white/10 flex justify-between items-center text-sm">
+              <span class="text-gray-400">Subtotal:</span>
+              <span class="text-gray-300 font-semibold">S/ {{ servicio.precio }}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    }
+  </div>
+</div>

@@ -4,14 +4,13 @@ import { CommonModule } from '@angular/common';
 import { BarberoService } from '@/app/core/services/gestion/barbero.service';
 import { Barbero } from '@/app/core/models/gestion/barbero/barbero.model';
 import { HeaderPerfilBarbero } from "./components/header-perfil-barbero/header-perfil-barbero";
-import { ResumenPerfilBarbero } from "./components/resumen-perfil-barbero/resumen-perfil-barbero";
 import { DatosBasicosPerfilBarbero } from "./components/datos-basicos-perfil-barbero/datos-basicos-perfil-barbero";
 import { CredencialesPerfilBarbero } from "./components/credenciales-perfil-barbero/credenciales-perfil-barbero";
 
 @Component({
   selector: 'app-perfil-barbero',
   standalone: true,
-  imports: [CommonModule, HeaderPerfilBarbero, ResumenPerfilBarbero, DatosBasicosPerfilBarbero, CredencialesPerfilBarbero],
+  imports: [CommonModule, HeaderPerfilBarbero, DatosBasicosPerfilBarbero, CredencialesPerfilBarbero],
   templateUrl: './perfil-barbero.html',
   styleUrl: './perfil-barbero.css',
 })

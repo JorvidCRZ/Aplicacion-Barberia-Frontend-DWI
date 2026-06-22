@@ -1,17 +1,12 @@
-<form [formGroup]="servicioForm"
-    class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:p-6 p-0 md-border border-default rounded-xl bg-neutral-primary-soft shadow-xs">
-
-    <!-- ================= LEFT ================= -->
+<form [formGroup]="servicioForm" class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:p-6 p-0 md-border border-default rounded-xl bg-neutral-primary-soft shadow-xs">
     <div class="flex flex-col gap-6">
-
         <h1 class="subtitle-form">Información del servicio</h1>
 
         <div class="part-form">
             <label for="nombre">Nombre *</label>
             <input pInputText id="nombre" formControlName="nombre" />
-
             @if (campoInvalido('nombre')) {
-            <p-message severity="error" variant="simple" size="small">Ingrese un nombre válido</p-message>
+                <p-message severity="error" variant="simple" size="small">Ingrese un nombre válido</p-message>
             }
         </div>
 
@@ -21,97 +16,68 @@
         </div>
 
         <h1 class="subtitle-form">Precio y duración</h1>
-
         <div class="grid grid-cols-2 gap-6">
 
             <div class="part-form col-span-2 sm:col-span-1">
                 <label for="precio">Precio *</label>
-                <p-inputNumber formControlName="precio" inputId="precio" mode="currency" currency="PEN" locale="es-PE"
-                    [min]="0" [showButtons]="true" [minFractionDigits]="2" [maxFractionDigits]="2" />
+                <p-inputNumber formControlName="precio" inputId="precio" mode="currency" currency="PEN" locale="es-PE" [min]="0" [showButtons]="true" [minFractionDigits]="2" [maxFractionDigits]="2" />
             </div>
 
             <div class="part-form col-span-2 sm:col-span-1">
                 <label for="duracion">Duración (min) *</label>
                 <p-inputNumber formControlName="duracion" inputId="duracion" [min]="1" [showButtons]="true" />
             </div>
-
         </div>
-
     </div>
 
-    <!-- ================= RIGHT ================= -->
     <div class="flex flex-col gap-6">
-
         <h1 class="subtitle-form">Clasificación</h1>
-
         <div class="part-form">
             <span class="label-form">Categoría *</span>
 
-            <p-treeSelect [options]="categoriaTree" formControlName="idCategoria" placeholder="Seleccione una categoría"
-                filter="true" filterBy="label" selectionMode="single" [metaKeySelection]="false" inputId="idCategoria">
-            </p-treeSelect>
-
+            <p-treeSelect [options]="categoriaTree" formControlName="idCategoria" placeholder="Seleccione una categoría" filter="true" filterBy="label" selectionMode="single" [metaKeySelection]="false" inputId="idCategoria"></p-treeSelect>
             @if (campoInvalido('idCategoria')) {
-            <p-message severity="error" variant="simple" size="small">
-                Seleccione una categoría
-            </p-message>
+                <p-message severity="error" variant="simple" size="small">Seleccione una categoría</p-message>
             }
         </div>
 
-        <!-- IMAGENES -->
         <div class="part-form">
             <span class="label-form">Imagenes del servicio</span>
-
-            <p-fileUpload #fileUpload mode="basic" accept="image/*" [maxFileSize]="10000000" chooseLabel="Elegir imagen"
-                (onSelect)="onSeleccionarArchivo($event)" customUpload class="w-full inline-block break-all"
-                [chooseButtonProps]="{ severity: 'secondary' }">
-            </p-fileUpload>
+            <p-fileUpload #fileUpload mode="basic" accept="image/*" [maxFileSize]="10000000" chooseLabel="Elegir imagen" (onSelect)="onSeleccionarArchivo($event)" customUpload class="w-full inline-block break-all" [chooseButtonProps]="{ severity: 'secondary' }"></p-fileUpload>
         </div>
 
-        <!-- PREVIEW IMAGENES -->
         @for (img of imagenes; track img; let i = $index) {
-        <div class="contenido-imagen">
-
-            <p-image [src]="img.tipo === 'nueva' ? img.preview : (img.urlOriginal | safeImageUrl)"
-                imageClass="rounded-lg object-cover" width="100" height="100" [preview]="true">
-            </p-image>
-
-            <div class="flex flex-col w-full sm:w-auto text-center">
-                <span class="text-text-secondary font-medium break-all">
-                    {{ img.nombre }}
-                </span>
-
-                <span class="text-text-tertiary text-base break-words">
-                    {{ img.peso }}
-                </span>
-
-                @if (img.tipo === 'nueva') {
-                <span class="text-orange-500 text-sm font-semibold">
-                    Nueva imagen
-                </span>
-                } @else {
-                <span class="text-green-600 text-sm font-semibold">
-                    Imagen actual
-                </span>
-                }
+            <div class="contenido-imagen">
+                <p-image [src]="img.tipo === 'nueva' ? img.preview : (img.urlOriginal | safeImageUrl)" imageClass="rounded-lg object-cover" width="100" height="100" [preview]="true"></p-image>
+                <div class="flex flex-col w-full sm:w-auto text-center">
+                    <span class="text-text-secondary font-medium break-all">{{ img.nombre }}</span>
+                    <span class="text-text-tertiary text-base break-words">{{ img.peso }}</span>
+                    @if (img.tipo === 'nueva') {
+                        <span class="text-orange-500 text-sm font-semibold">Nueva imagen</span>
+                    } @else {
+                        <span class="text-green-600 text-sm font-semibold">Imagen actual</span>
+                    }
+                </div>
+            
+                <button type="button" class="boton-cierre" (click)="eliminarImagen(i)">✕</button>
+            </div>
+        }
+        
+        <div class="flex justify-around gap-6">
+            <div class="part-form items-center">
+                <label for="estado">Activo</label>
+                <p-checkbox binary="true" formControlName="estado" inputId="estado"></p-checkbox>
             </div>
 
-            <button type="button" class="boton-cierre" (click)="eliminarImagen(i)">
-                ✕
-            </button>
+            <div class="part-form items-center">
+                <label for="publicado">¿Publicado?</label>
+                <p-checkbox binary="true" formControlName="publicado" inputId="publicado"></p-checkbox>
+            </div>
         </div>
-        }
 
-        <!-- BOTONES -->
         <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
-
-            <button pButton label="Guardar" class="boton-submit w-full sm:w-auto" type="button" (click)="onGuardar()">
-            </button>
-
-            <button pButton label="Cancelar" class="boton-cancel w-full sm:w-auto" type="button" (click)="onCancelar()">
-            </button>
-
+            <button pButton label="Guardar" class="boton-submit w-full sm:w-auto" type="button" (click)="onGuardar()"></button>
+            <button pButton label="Cancelar" class="boton-cancel w-full sm:w-auto" type="button" (click)="onCancelar()"></button>
         </div>
-
     </div>
 </form>

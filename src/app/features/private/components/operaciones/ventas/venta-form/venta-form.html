@@ -2,364 +2,291 @@
     class="grid grid-cols-1 xl:grid-cols-3 gap-6 md:p-6 p-4 rounded-xl bg-neutral-primary-soft border border-default shadow-xs">
 
     @if (isEditMode) {
-
     <div
         class="xl:col-span-3 flex items-start gap-4 p-4 rounded-xl border border-amber-200 bg-amber-50 dark:border-amber-900/40 dark:bg-amber-950/20">
-
         <span class="pi pi-lock text-amber-500 text-lg mt-0.5 shrink-0"></span>
-
         <div class="flex flex-col gap-0.5">
-
             <div class="flex items-center gap-2 flex-wrap">
-
                 <span class="text-sm font-semibold text-amber-800 dark:text-amber-300">
                     Registro de venta — Solo lectura
                 </span>
-
                 <p-tag value="Administrador" severity="warn" [rounded]="true"
                     styleClass="text-[10px] font-semibold px-2 py-0.5">
                 </p-tag>
-
             </div>
-
         </div>
-
     </div>
-
     }
 
-    <div class="xl:col-span-2 flex flex-col gap-6">
+    <div class="xl:col-span-2 flex flex-col gap-8">
 
         <div class="flex flex-col gap-6">
-
             <div class="flex items-center justify-between">
-
-                <h1 class="subtitle-form">
-                    Datos de la venta
-                </h1>
-
+                <h1 class="subtitle-form">Datos de la venta</h1>
                 @if (isEditMode) {
                 <div class="flex items-center gap-1.5 text-xs text-text-tertiary">
                     <span class="pi pi-eye text-[11px]"></span>
                     <span>Modo visualización</span>
                 </div>
                 }
-
             </div>
 
             <div class="grid grid-cols-12 gap-6">
-
                 <div class="col-span-12 md:col-span-8 part-form">
-
-                    <label class="flex items-center gap-2">
-                        Cliente *
-                        @if (isEditMode) {
-                        <span class="pi pi-lock text-[10px] text-text-tertiary"
-                            pTooltip="No editable en ventas registradas" tooltipPosition="top">
-                        </span>
-                        }
-                    </label>
-
+                    <label class="flex items-center gap-2">Cliente *</label>
                     @if (!isEditMode) {
-                    <p-select formControlName="clienteId" [options]="clientes" optionLabel="persona.nombre"
-                        optionValue="clienteId" [filter]="true" filterBy="persona.nombre,persona.apellido"
-                        placeholder="Seleccione un cliente" class="w-full" [style]="{ width: '100%' }">
+                    <p-select formControlName="clienteId" [options]="clientes" optionValue="clienteId" [filter]="true"
+                        filterBy="persona.nombre,persona.apellido" placeholder="Seleccione un cliente" class="w-full"
+                        [style]="{ width: '100%' }">
+                        <ng-template pTemplate="selectedItem" let-selectedOption>
+                            <div class="flex items-center gap-2" *ngIf="selectedOption">
+                                <span class="text-sm font-medium text-text-primary">
+                                    {{ selectedOption.persona.nombre }} {{ selectedOption.persona.apellido }}
+                                </span>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="item" let-cliente>
+                            <div class="flex flex-col py-1">
+                                <span class="text-sm font-medium text-text-primary">
+                                    {{ cliente.persona.nombre }} {{ cliente.persona.apellido }}
+                                </span>
+                            </div>
+                        </ng-template>
                     </p-select>
                     }
-
                     @if (isEditMode) {
                     <div
                         class="h-[42px] px-4 rounded-xl border border-default bg-neutral-primary-lighter flex items-center gap-2">
                         <span class="pi pi-user text-[12px] text-text-tertiary"></span>
-                        <span class="text-sm text-text-primary font-medium">
-                            {{ getNombreCliente() }}
-                        </span>
+                        <span class="text-sm text-text-primary font-medium">{{ getNombreCliente() }}</span>
                     </div>
                     }
-
                 </div>
 
                 <div class="col-span-12 md:col-span-4 part-form">
-
-                    <label class="flex items-center gap-2">
-                        Comprobante
-                        @if (isEditMode) {
-                        <span class="pi pi-lock text-[10px] text-text-tertiary"
-                            pTooltip="No editable en ventas registradas" tooltipPosition="top">
-                        </span>
-                        }
-                    </label>
-
+                    <label class="flex items-center gap-2">Comprobante</label>
                     @if (!isEditMode) {
                     <p-select formControlName="tipoComprobante" [options]="tiposComprobante" optionLabel="label"
                         optionValue="value" class="w-full" [style]="{ width: '100%' }">
                     </p-select>
                     }
-
                     @if (isEditMode) {
                     <div
                         class="h-[42px] px-4 rounded-xl border border-default bg-neutral-primary-lighter flex items-center gap-2">
                         <span class="pi pi-file text-[12px] text-text-tertiary"></span>
-                        <span class="text-sm text-text-primary font-medium">
-                            {{ getLabelComprobante() }}
-                        </span>
+                        <span class="text-sm text-text-primary font-medium">{{ getLabelComprobante() }}</span>
                     </div>
                     }
-
                 </div>
-
             </div>
-
         </div>
 
-        <!-- DETALLE DEL PEDIDO -->
-        <div formArrayName="detalles" class="flex flex-col gap-6">
+        <hr class="border-t border-default opacity-50">
 
+        <div formArrayName="productosDetalles" class="flex flex-col gap-4">
             <div class="flex items-center justify-between">
-
-                <div class="flex items-center gap-3">
-
-                    <h1 class="subtitle-form">
-                        Detalle del pedido
-                    </h1>
-
-                    @if (isEditMode) {
-                    <span
-                        class="text-xs font-semibold px-2 py-0.5 rounded-full bg-neutral-primary-lighter border border-default text-text-secondary">
-                        {{ detalles.length }} ítem{{ detalles.length !== 1 ? 's' : '' }}
-                    </span>
-                    }
-
-                </div>
-
+                <h1 class="text-lg font-semibold text-text-primary flex items-center gap-2">
+                    <i class="pi pi-box text-brand-gold"></i> Productos Físicos
+                </h1>
                 @if (!isEditMode) {
-                <button pButton type="button" icon="pi pi-plus" label="Agregar" class="boton-submit p-button-sm"
-                    (click)="agregarDetalleVacio()">
-                </button>
+                <button pButton type="button" icon="pi pi-plus" label="Añadir" class="p-button-sm boton-submit"
+                    (click)="agregarProductoVacio()"></button>
                 }
-
-                @if (isEditMode) {
-                <div class="flex items-center gap-1.5 text-xs text-text-tertiary bg-neutral-primary-lighter px-3 py-1.5 rounded-lg border border-default">
-                    <span class="pi pi-lock text-[10px]"></span>
-                    <span>Sin modificaciones</span>
-                </div>
-                }
-
             </div>
 
-            @for (detalle of detalles.controls; track $index) {
+            @if (productosDetalles.length === 0) {
+            <p class="text-sm text-text-tertiary italic">No se han agregado productos a la venta.</p>
+            }
 
+            @for (detalle of productosDetalles.controls; track $index) {
             <div [formGroupName]="$index"
-                class="grid grid-cols-12 gap-5 p-5 rounded-xl border border-default bg-neutral-primary-lighter shadow-xs"
-                [class.opacity-90]="isEditMode">
+                class="grid grid-cols-12 gap-5 p-5 rounded-xl border border-default bg-neutral-primary-lighter shadow-xs">
 
                 <div class="col-span-12 lg:col-span-5 part-form">
-
-                    <label class="flex items-center gap-2">
-                        Producto
-                        @if (isEditMode) {
-                        <span class="pi pi-lock text-[10px] text-text-tertiary"></span>
-                        }
-                    </label>
-
+                    <label>Producto</label>
                     @if (!isEditMode) {
-                    <p-select formControlName="productoId" [options]="productos" optionLabel="nombre" optionValue="id"
+                    <p-select formControlName="itemId" [options]="productos" optionLabel="nombre" optionValue="id"
                         [filter]="true" filterBy="nombre" placeholder="Seleccione producto"
-                        (onChange)="actualizarPrecio($index)" class="w-full" [style]="{ width: '100%' }">
-
+                        (onChange)="actualizarPrecioProducto($index)" class="w-full" [style]="{ width: '100%' }">
                         <ng-template let-producto pTemplate="item">
                             <div class="flex flex-col py-1">
                                 <span class="text-sm font-medium text-text-primary">{{ producto.nombre }}</span>
-                                <span class="text-[11px]"
-                                    [ngClass]="producto.stock > 5 ? 'text-text-secondary' : 'text-red-500'">
-                                    Stock: {{ producto.stock }}
-                                </span>
+                                <span class="text-[11px] text-brand-gold font-medium">Stock disponible: {{
+                                    producto.stock }}</span>
                             </div>
                         </ng-template>
-
                     </p-select>
                     }
-
-                    @if (isEditMode) {
-                    <div
-                        class="h-[42px] px-4 rounded-xl border border-default bg-neutral-primary-soft flex items-center gap-2">
-                        <span class="pi pi-box text-[12px] text-text-tertiary"></span>
-                        <span class="text-sm text-text-primary font-medium">
-                            {{ getNombreProducto($index) }}
-                        </span>
-                    </div>
-                    }
-
-                </div>
-
-                <div class="part-form col-span-12 sm:col-span-4 lg:col-span-2">
-
-                    <label for="cantidad-{{$index}}" class="flex items-center gap-2">
-                        Cantidad
-                        @if (isEditMode) {
-                        <span class="pi pi-lock text-[10px] text-text-tertiary"></span>
-                        }
-                    </label>
-
-                    @if (!isEditMode) {
-                    <p-inputNumber formControlName="cantidad" [showButtons]="true" [min]="1"
-                        [max]="getStock($index) || 9999" [step]="1" inputId="cantidad-{{$index}}"
-                        (onInput)="validarStock($index)">
-                    </p-inputNumber>
-
-                    @if (detalles.at($index).get('cantidad')?.hasError('stockInsuficiente')) {
-                    <p-message severity="error" variant="simple" size="small">
-                        Stock insuficiente
-                    </p-message>
-                    }
-                    }
-
-                    @if (isEditMode) {
-                    <div
-                        class="h-[42px] px-4 rounded-xl border border-default bg-neutral-primary-soft flex items-center justify-center">
-                        <span class="text-sm font-bold text-text-primary">
-                            {{ detalles.at($index).get('cantidad')?.value ?? '—' }}
-                        </span>
-                    </div>
-                    }
-
-                </div>
-
-                <div class="col-span-12 sm:col-span-4 lg:col-span-2 part-form">
-
-                    <label class="flex items-center gap-2">
-                        Precio unit.
-                        @if (isEditMode) {
-                        <span class="pi pi-lock text-[10px] text-text-tertiary"></span>
-                        }
-                    </label>
-
-                    @if (!isEditMode) {
-                    <p-inputNumber formControlName="precioUnitario" mode="currency" currency="PEN" locale="es-PE"
-                        [min]="0"
-                        inputStyleClass="!text-gray-900 dark:!text-white !bg-white dark:!bg-neutral-900 font-semibold"
-                        styleClass="w-full">
-                    </p-inputNumber>
-                    }
-
                     @if (isEditMode) {
                     <div
                         class="h-[42px] px-4 rounded-xl border border-default bg-neutral-primary-soft flex items-center">
-                        <span class="text-sm font-bold text-text-primary">
-                            S/ {{ detalles.at($index).get('precioUnitario')?.value | number:'1.2-2' }}
-                        </span>
+                        <span class="text-sm text-text-primary font-medium">{{ getNombreProducto($index) }}</span>
                     </div>
                     }
+                </div>
 
+                <div class="part-form col-span-12 sm:col-span-4 lg:col-span-2">
+                    <label>Cantidad (Max: {{ getMaxStockProducto($index) }})</label>
+                    @if (!isEditMode) {
+                    <p-inputNumber formControlName="cantidad" [showButtons]="true" [min]="1"
+                        [max]="getMaxStockProducto($index)" styleClass="w-full"
+                        inputStyleClass="w-full text-center font-bold" onkeydown="return false;">
+                    </p-inputNumber>
+                    }
+                    @if (isEditMode) {
+                    <div
+                        class="h-[42px] px-4 rounded-xl border border-default bg-neutral-primary-soft flex items-center justify-center">
+                        <span class="text-sm font-bold text-text-primary">{{
+                            productosDetalles.at($index).get('cantidad')?.value }}</span>
+                    </div>
+                    }
+                </div>
+
+                <div class="col-span-12 sm:col-span-4 lg:col-span-2 part-form">
+                    <label>Precio unit.</label>
+                    @if (!isEditMode) {
+                    <p-inputNumber formControlName="precioUnitario" mode="currency" currency="PEN" locale="es-PE"
+                        [min]="0" styleClass="w-full"></p-inputNumber>
+                    }
+                    @if (isEditMode) {
+                    <div
+                        class="h-[42px] px-4 rounded-xl border border-default bg-neutral-primary-soft flex items-center">
+                        <span class="text-sm font-bold text-text-primary">S/ {{
+                            productosDetalles.at($index).get('precioUnitario')?.value | number:'1.2-2' }}</span>
+                    </div>
+                    }
                 </div>
 
                 <div class="col-span-12 sm:col-span-4 lg:col-span-3 flex flex-col justify-end gap-3">
-
                     <div class="part-form">
-
                         <label>Subtotal</label>
-
                         <div
                             class="h-[42px] px-4 rounded-xl border border-default bg-neutral-primary-soft flex items-center justify-between">
-                            <span class="font-bold text-green-600 text-sm">
-                                S/ {{ getSubtotalLinea($index) | number:'1.2-2' }}
-                            </span>
+                            <span class="font-bold text-green-600 text-sm">S/ {{ getSubtotalLineaProducto($index) |
+                                number:'1.2-2' }}</span>
                         </div>
-
                     </div>
-
                     @if (!isEditMode) {
                     <button pButton type="button" icon="pi pi-trash" class="boton-cancel p-button-sm"
-                        (click)="eliminarDetalle($index)">
-                    </button>
+                        (click)="eliminarProducto($index)"></button>
                     }
-
-                    @if (isEditMode) {
-                    <div
-                        class="h-[38px] flex items-center justify-center rounded-lg border border-default bg-neutral-primary-soft text-xs text-text-tertiary gap-1">
-                        <span class="pi pi-hashtag text-[10px]"></span>
-                        <span>Ítem {{ $index + 1 }} de {{ detalles.length }}</span>
-                    </div>
-                    }
-
                 </div>
+            </div>
+            }
+        </div>
 
+        <div formArrayName="serviciosDetalles" class="flex flex-col gap-4 mb-4">
+            <div class="flex items-center justify-between">
+                <h1 class="text-lg font-semibold text-text-primary flex items-center gap-2">
+                    <i class="pi pi-scissors text-brand-gold"></i> Servicios Realizados
+                </h1>
+                @if (!isEditMode) {
+                <button pButton type="button" icon="pi pi-plus" label="Añadir" class="p-button-sm boton-submit"
+                    (click)="agregarServicioVacio()"></button>
+                }
             </div>
 
+            @if (serviciosDetalles.length === 0) {
+            <p class="text-sm text-text-tertiary italic">No se han agregado servicios a la venta.</p>
             }
 
+            @for (detalle of serviciosDetalles.controls; track $index) {
+            <div [formGroupName]="$index"
+                class="grid grid-cols-12 gap-5 p-5 rounded-xl border border-default bg-neutral-primary-lighter shadow-xs">
+
+                <div class="col-span-12 lg:col-span-6 part-form">
+                    <label>Servicio realizado</label>
+                    @if (!isEditMode) {
+                    <p-select formControlName="itemId" [options]="servicios" optionLabel="nombre"
+                        optionValue="servicioId" [filter]="true" filterBy="nombre"
+                        placeholder="Seleccione servicio realizado" (onChange)="actualizarPrecioServicio($index)"
+                        class="w-full" [style]="{ width: '100%' }">
+                    </p-select>
+                    }
+                    @if (isEditMode) {
+                    <div
+                        class="h-[42px] px-4 rounded-xl border border-default bg-neutral-primary-soft flex items-center">
+                        <span class="text-sm text-text-primary font-medium">{{ getNombreServicio($index) }}</span>
+                    </div>
+                    }
+                </div>
+
+                <div class="col-span-12 sm:col-span-6 lg:col-span-3 part-form">
+                    <label>Precio del servicio</label>
+                    @if (!isEditMode) {
+                    <p-inputNumber formControlName="precio" mode="currency" currency="PEN" locale="es-PE" [min]="0"
+                        styleClass="w-full"></p-inputNumber>
+                    }
+                    @if (isEditMode) {
+                    <div
+                        class="h-[42px] px-4 rounded-xl border border-default bg-neutral-primary-soft flex items-center">
+                        <span class="text-sm font-bold text-text-primary">S/ {{
+                            serviciosDetalles.at($index).get('precio')?.value | number:'1.2-2' }}</span>
+                    </div>
+                    }
+                </div>
+
+                <div class="col-span-12 sm:col-span-6 lg:col-span-3 flex flex-col justify-end">
+                    @if (!isEditMode) {
+                    <button pButton type="button" icon="pi pi-trash" label="Quitar"
+                        class="boton-cancel p-button-sm h-[42px]" (click)="eliminarServicio($index)"></button>
+                    }
+                    @if (isEditMode) {
+                    <div
+                        class="h-[42px] flex items-center justify-center rounded-lg border border-default bg-neutral-primary-soft text-xs text-text-tertiary gap-1">
+                        <span class="pi pi-check-circle text-green-500"></span>
+                        <span>Cobrado</span>
+                    </div>
+                    }
+                </div>
+            </div>
+            }
         </div>
 
     </div>
 
     <div class="flex flex-col gap-6">
-
         <div
             class="flex flex-col gap-6 p-6 rounded-xl bg-neutral-primary-lighter border border-default shadow-xs sticky top-4">
-
             <div class="flex items-center justify-between">
-
-                <h1 class="subtitle-form">
-                    Resumen de venta
-                </h1>
-
-                @if (isEditMode) {
-                <span class="pi pi-lock text-text-tertiary text-sm"
-                    pTooltip="Resumen calculado del registro original" tooltipPosition="left">
-                </span>
-                }
-
+                <h1 class="subtitle-form">Resumen de venta</h1>
             </div>
 
-            <!-- SUBTOTAL -->
             <div class="flex justify-between items-center p-4 rounded-xl bg-neutral-primary-soft border border-default">
                 <div class="flex flex-col">
                     <span class="text-sm text-text-secondary">Subtotal</span>
-                    <span class="text-xs text-text-tertiary">Productos agregados</span>
+                    <span class="text-xs text-text-tertiary">Bienes y Servicios</span>
                 </div>
-                <span class="font-bold text-text-primary">
-                    S/ {{ subtotalGeneral | number:'1.2-2' }}
-                </span>
+                <span class="font-bold text-text-primary">S/ {{ subtotalGeneral | number:'1.2-2' }}</span>
             </div>
 
-¿            <div class="flex justify-between items-center p-4 rounded-xl bg-neutral-primary-soft border border-default">
+            <div class="flex justify-between items-center p-4 rounded-xl bg-neutral-primary-soft border border-default">
                 <div class="flex flex-col">
                     <span class="text-sm text-text-secondary">IGV (18%)</span>
                     <span class="text-xs text-text-tertiary">Impuesto aplicado</span>
                 </div>
-                <span class="font-bold text-text-primary">
-                    S/ {{ igv | number:'1.2-2' }}
-                </span>
+                <span class="font-bold text-text-primary">S/ {{ igv | number:'1.2-2' }}</span>
             </div>
 
-            <!-- TOTAL -->
             <div class="p-5 rounded-xl border border-primary/20 bg-primary/5 flex flex-col gap-2">
                 <span class="text-sm uppercase tracking-wide text-text-secondary">Total a pagar</span>
-                <span class="text-4xl font-black text-primary">
-                    S/ {{ total | number:'1.2-2' }}
-                </span>
+                <span class="text-4xl font-black text-primary">S/ {{ total | number:'1.2-2' }}</span>
             </div>
 
             @if (!isEditMode) {
-            <button pButton type="button" label="Guardar Venta" [disabled]="ventaForm.invalid || hayErroresDeStock"
+            <button pButton type="button" label="Guardar Venta"
+                [disabled]="ventaForm.invalid || (productosDetalles.length === 0 &&  serviciosDetalles.length === 0)"
                 class="boton-submit w-full" (click)="guardarVenta()">
             </button>
             }
 
             @if (isEditMode) {
-
             <div class="flex flex-col gap-3">
-
                 <button pButton type="button" icon="pi pi-times" label="Cerrar" class="boton-cancel w-full"
                     (click)="cancelarEvento.emit()">
                 </button>
-
             </div>
-
             }
-
         </div>
-
     </div>
-
 </form>

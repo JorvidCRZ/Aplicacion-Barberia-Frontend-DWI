@@ -4,6 +4,7 @@
         <app-search-bar placeholder="Buscar producto" (search)="buscarProductos($event)" />
         <button pButton label="Crear Producto" icon="pi pi-plus" class="p-button-sm boton-primary" (click)="abrirCrear()"></button>
     </aside>
+    <app-filtros [fields]="filtrosFields" [titulo]="texto" [text]="texto" [acordeon]="true" (buscar)="onBuscar($event)" (limpiar)="onLimpiar()"/>
     <app-producto-table [productos]="productos" [cargado]="cargado" [totalRecords]="totalRecords" [rows]="rows" (lazyLoad)="onLazyLoad($event)" [icono]="icono" (estado)="onCambiarEstado($event)" (publicado)="onCambiarPublicado($event)" (editar)="abrirEditar($event)" (eliminar)="eliminarProducto($event)" (ver)="abrirVer($event)" />
 </div>
 <p-dialog [(visible)]="mostrarFormulario" [modal]="true" [dismissableMask]="true" [closable]="true" [style]="{ width: '90vw', maxWidth: '80rem' }" (onHide)="onDialogHide()">

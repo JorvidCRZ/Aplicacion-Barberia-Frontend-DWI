@@ -1,0 +1,126 @@
+<div class="fx-wrap">
+
+  <div class="header-chart">
+    <p class="fx-title">Comisión vs sueldo base por barbero</p>
+
+    <div class="filtros">
+
+      <!-- Selector de mes -->
+      <select class="chart-filter" [(ngModel)]="mes">
+        <option *ngFor="let m of meses" [value]="m.id">
+          {{ m.nombre }}
+        </option>
+      </select>
+
+      <!-- Selector de año -->
+      <select class="chart-filter" [(ngModel)]="anio">
+        <option *ngFor="let a of aniosDisponibles" [value]="a">
+          {{ a }}
+        </option>
+      </select>
+
+      <!-- Botón aplicar -->
+      <button class="btn-aplicar" (click)="aplicarFiltro()">
+        Aplicar
+      </button>
+
+      <!-- Selector de tipo de gráfico -->
+      <select class="chart-filter" [(ngModel)]="tipoGrafico">
+        <option value="completo">Sueldo base + comisión</option>
+        <option value="comision">Solo comisión</option>
+      </select>
+
+    </div>
+  </div>
+
+  <div class="chart-container">
+
+    <div class="y-axis">
+      <span>S/{{ maxValor }}</span>
+      <span>S/{{ maxValor * 0.83 | number:'1.0-0' }}</span>
+      <span>S/{{ maxValor * 0.66 | number:'1.0-0' }}</span>
+      <span>S/{{ maxValor * 0.50 | number:'1.0-0' }}</span>
+      <span>S/{{ maxValor * 0.33 | number:'1.0-0' }}</span>
+      <span>S/{{ maxValor * 0.16 | number:'1.0-0' }}</span>
+      <span>S/0</span>
+    </div>
+
+    <div class="bars-area">
+
+      <div class="grid-lines">
+        <div class="grid-line" *ngFor="let l of [0,1,2,3,4,5]"></div>
+      </div>
+
+      <div class="bars">
+
+        <div class="bar-group" *ngFor="let b of barberosGrafico">
+
+          <div class="bar-stack">
+
+            <ng-container *ngIf="tipoGrafico === 'comision'">
+              <div
+                class="bar-comision solo"
+                [style.height.%]="(b.montoComision / maxValor) * 100"
+                [title]="'Comisión: S/ ' + (b.montoComision | number:'1.2-2')">
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="tipoGrafico === 'completo'">
+              <div
+                class="bar-comision apilada"
+                [style.height.%]="(b.montoComision / maxValor) * 100"
+                [title]="'Comisión: S/ ' + (b.montoComision | number:'1.2-2')">
+              </div>
+              <div
+                class="bar-base"
+                [style.height.%]="(b.sueldoBase / maxValor) * 100"
+                [title]="'Sueldo base: S/ ' + (b.sueldoBase | number:'1.2-2')">
+              </div>
+            </ng-container>
+
+          </div>
+
+          <div class="bar-label" [title]="b.nombreBarbero">
+
+            <div class="nombre-barbero">
+              {{ b.nombreBarbero.length > 12
+                  ? (b.nombreBarbero | slice:0:12) + '...'
+                  : b.nombreBarbero }}
+            </div>
+
+            <ng-container *ngIf="tipoGrafico === 'comision'">
+              <div class="dato-secundario">
+                S/ {{ b.montoComision | number:'1.2-2' }}
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="tipoGrafico === 'completo'">
+              <div class="dato-secundario">Base: S/ {{ b.sueldoBase | number:'1.2-2' }}</div>
+              <div class="dato-secundario">Com.: S/ {{ b.montoComision | number:'1.2-2' }}</div>
+              <div class="dato-total">Total: S/ {{ b.sueldoFinal | number:'1.2-2' }}</div>
+            </ng-container>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="leyenda" *ngIf="tipoGrafico === 'completo'">
+    <span class="leyenda-item"><span class="dot base"></span>Sueldo base</span>
+    <span class="leyenda-item"><span class="dot comision"></span>Comisión ganada</span>
+  </div>
+
+  <div class="leyenda" *ngIf="tipoGrafico === 'comision'">
+    <span class="leyenda-item"><span class="dot comision"></span>Comisión ganada</span>
+  </div>
+
+  <div class="empty-state" *ngIf="barberosGrafico.length === 0">
+    No existen comisiones registradas para el período seleccionado
+  </div>
+
+</div>

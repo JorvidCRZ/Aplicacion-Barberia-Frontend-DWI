@@ -1,0 +1,58 @@
+<div class="min-h-screen bg-black py-8 px-4">
+
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-yellow-500 rounded-2xl mb-4">
+        <i class="pi pi-star" style="color: black;"></i>
+      </div>
+      <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">
+        Reconocimiento Facial
+      </h1>
+      <p class="text-gray-400">
+        Analiza tu rostro y descubre tu forma facial, molde facial y ratios faciales. ¡Descubre tu belleza única!
+      </p>
+    </div>
+
+    <!-- reconocimiento-facial.html -->
+
+    <div class="contenedor-ia">
+
+      @if(!resultado){
+
+      <div class="estado-camara">
+
+        <app-camara (fotoTomada)="onFotoTomada($event)" (previewGenerada)="onPreview($event)">
+        </app-camara>
+
+        <button class="btn-analizar" type="button" [disabled]="!fotoBlob || cargando || idCliente === 0"
+          (click)="analizar()">
+          {{ cargando ? 'Analizando...' : 'Analizar rostro' }}
+        </button>
+      </div>
+
+      }
+
+      @if(error){
+      <div class="error-mensaje">
+        {{ error }}
+      </div>
+      }
+
+      @if(resultado){
+
+      <div class="estado-resultado">
+
+        <app-resultado [resultado]="resultado" [fotoPreview]="previewFoto" [clienteId]="idCliente">
+        </app-resultado>
+
+        <button class="btn-reiniciar" type="button" (click)="analizarOtraVez()">
+          Analizar otra vez
+        </button>
+
+      </div>
+
+      }
+
+    </div>
+
+  </div>

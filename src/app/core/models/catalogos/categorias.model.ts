@@ -9,7 +9,7 @@ export interface Categoria {
     subcategorias?: Categoria[];
 }
 
-export interface CategoriaFilter {
+export interface CategoriaFiltro {
     page?: number;
     size?: number;
     sort?: string;

@@ -1,0 +1,49 @@
+<div class="header-card">
+
+  <div class="barbero-info">
+    <div class="avatar">
+      {{ resumen.nombreBarbero | slice:0:2 | uppercase }}
+    </div>
+    <div class="barbero-nombre">
+      <span class="label">Barbero</span>
+      <h2>{{ resumen.nombreBarbero }}</h2>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="info-grid">
+    <div class="info-item">
+      <span class="info-label">Sueldo base</span>
+      <span class="info-value">S/ {{ resumen.sueldoBase | number:'1.2-2' }}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Comisión</span>
+      <span class="info-value">{{ resumen.porcentajeComision | number:'1.0-2' }}%</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Ventas realizadas</span>
+      <span class="info-value">{{ resumen.cantidadVentas }}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Total vendido</span>
+      <span class="info-value">S/ {{ resumen.totalVentas | number:'1.2-2' }}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Comisión generada</span>
+      <span class="info-value">S/ {{ resumen.montoComision | number:'1.2-2' }}</span>
+    </div>
+  </div>
+
+  <div class="right-col">
+    <button class="btn-volver" (click)="volver()">
+      <i class="ti ti-arrow-left"></i>
+      Volver
+    </button>
+    <div class="sueldo-final-card">
+      <span class="sf-label">Sueldo Final</span>
+      <span class="sf-monto">S/ {{ resumen.sueldoFinal | number:'1.2-2' }}</span>
+    </div>
+  </div>
+
+</div>

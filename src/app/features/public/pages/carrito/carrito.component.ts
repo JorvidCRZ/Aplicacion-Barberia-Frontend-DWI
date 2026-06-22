@@ -9,11 +9,13 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { TokenService } from '@/app/core/services/auth/token.service';
 import { NotificationService } from '@/app/core/services/common/notification.service';
 import { CarritoService } from '@/app/core/services/catalogos/carrito.service';
+import { SafeImageUrlPipe } from '@/app/shared/pipes/safe-image-url.pipe';
+import { SolesPipe } from '@/app/shared/pipes/moneda.pipe';
 
 @Component({
   selector: 'app-carrito',
   standalone: true,
-  imports: [ CommonModule, FormsModule, TableModule, ButtonModule, InputNumberModule,
+  imports: [ CommonModule, FormsModule, TableModule, ButtonModule, InputNumberModule, SafeImageUrlPipe, SolesPipe
   ],
   templateUrl: './carrito.html',
   styleUrl: './carrito.css'
@@ -30,19 +32,15 @@ export class CarritoComponent {
   readonly total = this.carritoService.total;
   readonly cantidad = this.carritoService.cantidad;
 
-  // =========================
-  // ACCIONES
-  // =========================
-
   procesarCompra(): void {
     if (!this.tokenService.isLogged()) {
       this.notify.showError('Debes iniciar sesión para continuar con la compra');
-      this.router.navigate(['/login']);
+      this.router.navigate(['/productos']);
       return;
     }
-
     this.router.navigate(['/checkout']);
   }
+
   actualizarCantidad(index: number, cantidad: number): void {
     this.carritoService.actualizarCantidad(index, cantidad);
   }
@@ -58,6 +56,6 @@ export class CarritoComponent {
   }
 
   continuarCompra(): void {
-    this.router.navigate(['/home']);
+    this.router.navigate(['/productos']);
   }
 }

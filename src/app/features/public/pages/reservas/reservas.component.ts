@@ -18,45 +18,21 @@ import { TokenService } from '@/app/core/services/auth/token.service';
       </div>
     </div>
 
-    <p-dialog 
-      header="⚠️ Acceso restringido" 
-      [(visible)]="showModal" 
-      [modal]="true" 
-      [closable]="false"
-      [dismissableMask]="false"
-      [style]="{ width: '400px' }">
-      
+    <p-dialog header="⚠️ Acceso restringido" [(visible)]="showModal" [modal]="true" [closable]="false"[dismissableMask]="false"[style]="{ width: '400px' }"> 
       <div class="text-center py-4">
         <div class="inline-flex items-center justify-center w-16 h-16 bg-yellow-500/20 rounded-full mb-4">
           <i class="pi pi-lock text-yellow-500 text-2xl"></i>
         </div>
-        
         <h3 class="text-white text-xl font-bold mb-2">¡Necesitas iniciar sesión!</h3>
-        
-        <p class="text-gray-400 text-sm mb-6">
-          Para agendar una cita debes tener una cuenta activa. 
-          Inicia sesión para continuar.
-        </p>
-        
+        <p class="text-gray-400 text-sm mb-6"> Para agendar una cita debes tener una cuenta activa.  Inicia sesión para continuar.</p>
         <div class="flex gap-3 justify-center">
-          <button 
-            pButton 
-            label="Cancelar" 
-            severity="secondary" 
-            (click)="cancelar()"
-            class="p-button-outlined">
-          </button>
-          
-          <button 
-            pButton 
-            label="Iniciar sesión" 
-            (click)="irALogin()"
-            styleClass="bg-yellow-500 text-black border-none hover:bg-yellow-600">
-          </button>
+          <button pButton label="Cancelar" (click)="cancelar()"class="boton-secondary"></button>
+          <button  pButton label="Iniciar sesión"  (click)="irALogin()" class="boton-primary"></button>
         </div>
       </div>
     </p-dialog>
   `,
+
   styles: [`
     :host ::ng-deep .p-dialog .p-dialog-header {
       background-color: #0c0c0c;
@@ -73,14 +49,10 @@ export class ReservasComponent implements OnInit {
   showModal = false;
   verificado = false;
   
-  constructor(
-    private tokenService: TokenService,
-    private router: Router
-  ) {}
+  constructor(private tokenService: TokenService,private router: Router) {}
   
   ngOnInit(): void {
-    this.verificarAutenticacion();
-    
+    this.verificarAutenticacion(); 
   }
   
   verificarAutenticacion(): void {
@@ -88,7 +60,6 @@ export class ReservasComponent implements OnInit {
       const isLoggedIn = this.tokenService.isLogged();
       
       if (isLoggedIn) {
-       
         this.router.navigate(['/mi-cuenta/reservar/agendar']);
       } else {
       

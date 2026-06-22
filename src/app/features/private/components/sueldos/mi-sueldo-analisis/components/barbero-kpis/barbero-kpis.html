@@ -1,0 +1,27 @@
+<div class="kpis-grid">
+
+  <div class="kpi-card">
+    <i class="ti ti-shopping-cart kpi-icon"></i>
+    <span class="kpi-label">Ventas</span>
+    <span class="kpi-value">{{ resumen.cantidadVentas }}</span>
+  </div>
+
+  <div class="kpi-card">
+    <i class="ti ti-cash kpi-icon"></i>
+    <span class="kpi-label">Total vendido</span>
+    <span class="kpi-value">S/ {{ resumen.totalVentas | number:'1.2-2' }}</span>
+  </div>
+
+  <div class="kpi-card">
+    <i class="ti ti-receipt kpi-icon"></i>
+    <span class="kpi-label">Ticket promedio</span>
+    <span class="kpi-value">S/ {{ ticketPromedio | number:'1.2-2' }}</span>
+  </div>
+
+  <div class="kpi-card kpi-accent">
+    <i class="ti ti-coin kpi-icon"></i>
+    <span class="kpi-label">Comisión</span>
+    <span class="kpi-value">S/ {{ resumen.montoComision | number:'1.2-2' }}</span>
+  </div>
+
+</div>

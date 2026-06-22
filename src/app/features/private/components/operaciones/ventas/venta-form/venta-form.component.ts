@@ -26,6 +26,18 @@ import { TagModule } from 'primeng/tag';
 
 import { ClienteService } from '@/app/core/services/gestion/cliente.service';
 import { ProductoService } from '@/app/core/services/catalogos/producto.service';
+import { ServicioService } from '@/app/core/services/catalogos/servicio.service';
+
+interface DetalleProductoValue {
+  itemId: number;
+  cantidad: number;
+  precioUnitario: number;
+}
+
+interface DetalleServicioValue {
+  itemId: number;
+  precio: number;
+}
 
 @Component({
   selector: 'app-venta-form',
@@ -53,9 +65,11 @@ export class VentaFormComponent implements OnInit, OnChanges {
   private fb = inject(FormBuilder);
   private clienteService = inject(ClienteService);
   private productoService = inject(ProductoService);
+  private servicioService = inject(ServicioService);
 
   clientes: any[] = [];
   productos: any[] = [];
+  servicios: any[] = [];
 
   tiposComprobante = [
     { label: 'Boleta', value: 'BOLETA' },
@@ -65,7 +79,8 @@ export class VentaFormComponent implements OnInit, OnChanges {
   ventaForm: FormGroup = this.fb.group({
     clienteId: [null, Validators.required],
     tipoComprobante: ['BOLETA', Validators.required],
-    detalles: this.fb.array([])
+    productosDetalles: this.fb.array([]),
+    serviciosDetalles: this.fb.array([])
   });
 
   ngOnInit(): void {
@@ -73,46 +88,36 @@ export class VentaFormComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-
     if (changes['venta'] && this.venta && this.isEditMode) {
       this.cargarVentaParaEditar();
     }
-
     if (changes['isEditMode'] && this.isEditMode) {
       this.bloquearTodoElFormulario();
     }
-
   }
 
   cargarDatosIniciales(): void {
-
     this.clienteService.listar(0, 100).subscribe({
-      next: (resp) => {
-        this.clientes = resp.data.content || [];
-      },
-      error: () => {
-        this.clientes = [];
-      }
+      next: (resp) => { this.clientes = resp.data.content || []; },
+      error: () => { this.clientes = []; }
     });
 
     this.productoService.obtenerProductos(0, 100).subscribe({
-  next: (resp: any) => {
-    this.productos = resp.data.content || [];
-  },
-  error: () => {
-    this.productos = [];
-  }
-});
+      next: (resp: any) => { this.productos = resp.data.content || []; },
+      error: () => { this.productos = []; }
+    });
+
+    this.servicioService.obtenerServiciosConFiltro({ page: 0, size: 100 } as any).subscribe({
+      next: (resp: any) => { this.servicios = resp.data.content || []; },
+      error: () => { this.servicios = []; }
+    });
 
     if (!this.isEditMode) {
-      this.detalles.clear();
-      this.agregarDetalleVacio();
+      this.limpiarFormulario();
     }
-
   }
 
   cargarVentaParaEditar(): void {
-
     if (!this.venta) return;
 
     this.ventaForm.patchValue({
@@ -120,62 +125,54 @@ export class VentaFormComponent implements OnInit, OnChanges {
       tipoComprobante: this.venta.tipoComprobante
     });
 
-    this.detalles.clear();
+    this.productosDetalles.clear();
+    this.serviciosDetalles.clear();
 
     if (this.venta.detalles?.length > 0) {
-
       this.venta.detalles.forEach((detalle: any) => {
-
-        const detalleForm = this.crearDetalleForm();
-
-        detalleForm.patchValue({
-          productoId: detalle.productoId,
-          cantidad: detalle.cantidad,
-          precioUnitario: detalle.precioUnitario
-        });
-
-        this.detalles.push(detalleForm);
-
+        if (detalle.servicioId) {
+          const detalleForm = this.crearServicioForm();
+          detalleForm.patchValue({
+            itemId: detalle.servicioId,
+            precio: detalle.precioUnitario
+          });
+          this.serviciosDetalles.push(detalleForm);
+        } else {
+          const detalleForm = this.crearProductoForm();
+          detalleForm.patchValue({
+            itemId: detalle.productoId,
+            cantidad: detalle.cantidad,
+            precioUnitario: detalle.precioUnitario
+          });
+          this.productosDetalles.push(detalleForm);
+        }
       });
-
-    } else {
-
-      this.agregarDetalleVacio();
-
     }
 
     this.bloquearTodoElFormulario();
-
   }
 
   bloquearTodoElFormulario(): void {
-
-    this.ventaForm.get('clienteId')?.disable();
-    this.ventaForm.get('tipoComprobante')?.disable();
-
-    this.detalles.controls.forEach(control => {
-      control.get('productoId')?.disable();
-      control.get('cantidad')?.disable();
-      control.get('precioUnitario')?.disable();
-    });
-
+    this.ventaForm.disable();
   }
 
-  get detalles(): FormArray {
-    return this.ventaForm.get('detalles') as FormArray;
+  get productosDetalles(): FormArray {
+    return this.ventaForm.get('productosDetalles') as FormArray;
+  }
+
+  get serviciosDetalles(): FormArray {
+    return this.ventaForm.get('serviciosDetalles') as FormArray;
   }
 
   get total(): number {
-
-    return this.detalles.controls.reduce((acc, control) => {
-
-      const cantidad = Number(control.get('cantidad')?.value || 0);
-      const precio = Number(control.get('precioUnitario')?.value || 0);
-
-      return acc + (cantidad * precio);
-
+    const totalProd = this.productosDetalles.controls.reduce((acc, control) => {
+      return acc + (Number(control.get('cantidad')?.value || 0) * Number(control.get('precioUnitario')?.value || 0));
+    }, 0);
+    const totalServ = this.serviciosDetalles.controls.reduce((acc, control) => {
+      return acc + Number(control.get('precio')?.value || 0);
     }, 0);
 
+    return totalProd + totalServ;
   }
 
   get subtotalGeneral(): number {
@@ -186,202 +183,115 @@ export class VentaFormComponent implements OnInit, OnChanges {
     return this.total - this.subtotalGeneral;
   }
 
-  get hayErroresDeStock(): boolean {
-
-    return this.detalles.controls.some(control =>
-      control.get('cantidad')?.hasError('stockInsuficiente')
-    );
-
-  }
-
   getNombreCliente(): string {
-
     const clienteId = this.ventaForm.getRawValue().clienteId;
     const cliente = this.clientes.find(c => c.clienteId === clienteId);
-
     if (!cliente) return '—';
-
     const { nombre = '', apellido = '' } = cliente.persona ?? {};
-
     return `${nombre} ${apellido}`.trim() || '—';
-
   }
 
   getLabelComprobante(): string {
-
     const value = this.ventaForm.getRawValue().tipoComprobante;
     const tipo = this.tiposComprobante.find(t => t.value === value);
-
     return tipo?.label ?? value ?? '—';
-
   }
 
   getNombreProducto(index: number): string {
-
-    const productoId = this.detalles.at(index).get('productoId')?.value;
-    const producto = this.productos.find(p => Number(p.id) === Number(productoId));
-
+    const itemId = this.productosDetalles.at(index).get('itemId')?.value;
+    const producto = this.productos.find(p => Number(p.id) === Number(itemId));
     return producto?.nombre ?? '—';
-
   }
 
-  crearDetalleForm(): FormGroup {
+  getNombreServicio(index: number): string {
+    const itemId = this.serviciosDetalles.at(index).get('itemId')?.value;
+    const servicio = this.servicios.find(s => Number(s.servicioId) === Number(itemId));
+    return servicio?.nombre ?? '—';
+  }
 
+  crearProductoForm(): FormGroup {
     const detalleForm = this.fb.group({
-      productoId: [null, Validators.required],
-      cantidad: [
-        1,
-        [
-          Validators.required,
-          Validators.min(1),
-          Validators.max(9999)
-        ]
-      ],
-      precioUnitario: [
-        0,
-        [
-          Validators.required,
-          Validators.min(0)
-        ]
-      ]
+      itemId: [null, Validators.required],
+      cantidad: [1, [Validators.required, Validators.min(1)]],
+      precioUnitario: [0, [Validators.required, Validators.min(0)]]
     });
 
     if (!this.isEditMode) {
-
-      detalleForm.get('productoId')?.valueChanges.subscribe((productoId) => {
-
-        const producto = this.productos.find(
-          p => Number(p.id) === Number(productoId)
-        );
-
+      detalleForm.get('itemId')?.valueChanges.subscribe((itemId) => {
+        const producto = this.productos.find(p => Number(p.id) === Number(itemId));
         detalleForm.patchValue({
-          precioUnitario: producto ? Number(producto.precio || 0) : 0
+          precioUnitario: producto ? Number(producto.precio || 0) : 0,
+          cantidad: 1
         }, { emitEvent: false });
-
-        this.validarStockForm(detalleForm);
-
       });
-
-      detalleForm.get('cantidad')?.valueChanges.subscribe((cantidad) => {
-
-        let valor = Number(cantidad || 1);
-
-        if (valor < 1) valor = 1;
-        if (valor > 9999) valor = 9999;
-
-        detalleForm.get('cantidad')?.setValue(valor, { emitEvent: false });
-
-        this.validarStockForm(detalleForm);
-
-      });
-
     }
-
     return detalleForm;
-
   }
 
-  agregarDetalleVacio(): void {
-
-    if (this.isEditMode) return; 
-
-    const detalleForm = this.crearDetalleForm();
-    this.detalles.push(detalleForm);
-
-  }
-
-  eliminarDetalle(index: number): void {
-
-    if (this.isEditMode) return; 
-
-    this.detalles.removeAt(index);
-
-    if (this.detalles.length === 0) {
-      this.agregarDetalleVacio();
-    }
-
-  }
-
-  validarStock(index: number): void {
-
+  agregarProductoVacio(): void {
     if (this.isEditMode) return;
-
-    const detalle = this.detalles.at(index) as FormGroup;
-    this.validarStockForm(detalle);
-
+    this.productosDetalles.push(this.crearProductoForm());
   }
 
-  validarStockForm(detalle: FormGroup): void {
-
+  eliminarProducto(index: number): void {
     if (this.isEditMode) return;
-
-    const productoId = detalle.get('productoId')?.value;
-    const cantidad = Number(detalle.get('cantidad')?.value || 0);
-    const producto = this.productos.find(p => Number(p.id) === Number(productoId));
-
-    if (!producto) return;
-
-    const stock = Number(producto.stock || 0);
-
-    if (cantidad > stock) {
-
-      detalle.get('cantidad')?.setErrors({ stockInsuficiente: true });
-
-    } else {
-
-      const errors = detalle.get('cantidad')?.errors;
-
-      if (errors) {
-        delete errors['stockInsuficiente'];
-        detalle.get('cantidad')?.setErrors(
-          Object.keys(errors).length === 0 ? null : errors
-        );
-      }
-
-    }
-
+    this.productosDetalles.removeAt(index);
   }
 
-  getStock(index: number): number {
-
-    const productoId = this.detalles.at(index).get('productoId')?.value;
-    const producto = this.productos.find(p => Number(p.id) === Number(productoId));
-
-    return producto ? Number(producto.stock) : 9999;
-
+  actualizarPrecioProducto(index: number): void {
+    if (this.isEditMode) return;
+    const detalle = this.productosDetalles.at(index);
+    const itemId = detalle.get('itemId')?.value;
+    const producto = this.productos.find(p => Number(p.id) === Number(itemId));
+    detalle.patchValue({
+      precioUnitario: producto ? Number(producto.precio || 0) : 0,
+      cantidad: 1
+    }, { emitEvent: false });
   }
 
-  getSubtotalLinea(index: number): number {
+  getMaxStockProducto(index: number): number {
+    const itemId = this.productosDetalles.at(index).get('itemId')?.value;
+    const producto = this.productos.find(p => Number(p.id) === Number(itemId));
+    if (!producto) return 12;
+    return Math.min(Number(producto.stock || 0), 12);
+  }
 
-    const detalle = this.detalles.at(index);
+  getSubtotalLineaProducto(index: number): number {
+    const detalle = this.productosDetalles.at(index);
     const cantidad = Number(detalle.get('cantidad')?.value || 0);
     const precio = Number(detalle.get('precioUnitario')?.value || 0);
-
     return cantidad * precio;
-
   }
 
-  actualizarPrecio(index: number): void {
+  crearServicioForm(): FormGroup {
+    return this.fb.group({
+      itemId: [null, Validators.required],
+      precio: [0, [Validators.required, Validators.min(0)]]
+    });
+  }
 
+  agregarServicioVacio(): void {
     if (this.isEditMode) return;
+    this.serviciosDetalles.push(this.crearServicioForm());
+  }
 
-    const detalle = this.detalles.at(index);
-    const productoId = detalle.get('productoId')?.value;
-    const producto = this.productos.find(p => Number(p.id) === Number(productoId));
+  eliminarServicio(index: number): void {
+    if (this.isEditMode) return;
+    this.serviciosDetalles.removeAt(index);
+  }
 
-    detalle.patchValue({
-      precioUnitario: producto ? Number(producto.precio || 0) : 0
-    }, { emitEvent: false });
-
-    this.validarStock(index);
-
+  actualizarPrecioServicio(index: number): void {
+    if (this.isEditMode) return;
+    const detalle = this.serviciosDetalles.at(index);
+    const itemId = detalle.get('itemId')?.value;
+    const servicio = this.servicios.find(s => Number(s.servicioId) === Number(itemId)); // <-- CAMBIO AQUÍ
+    detalle.patchValue({ precio: servicio ? Number(servicio.precio || 0) : 0 }, { emitEvent: false });
   }
 
   guardarVenta(): void {
+    if (this.isEditMode) return;
 
-    if (this.isEditMode) return; // Guardia final de seguridad
-
-    if (this.ventaForm.invalid || this.hayErroresDeStock) {
+    if (this.ventaForm.invalid || (this.productosDetalles.length === 0 && this.serviciosDetalles.length === 0)) {
       this.ventaForm.markAllAsTouched();
       return;
     }
@@ -392,23 +302,31 @@ export class VentaFormComponent implements OnInit, OnChanges {
       clienteId: formValue.clienteId,
       fecha: new Date(),
       tipoComprobante: formValue.tipoComprobante,
-      detalles: formValue.detalles.map((detalle: any) => ({
-        productoId: detalle.productoId,
-        cantidad: detalle.cantidad,
-        precioUnitario: detalle.precioUnitario
-      }))
+      detalles: [
+        ...formValue.productosDetalles.map((d: DetalleProductoValue) => ({
+          productoId: d.itemId,
+          cantidad: d.cantidad,
+          precioUnitario: d.precioUnitario
+        })),
+        ...formValue.serviciosDetalles.map((d: DetalleServicioValue) => ({
+          servicioId: d.itemId,
+          cantidad: 1,
+          precioUnitario: d.precio
+        }))
+      ]
     };
 
     this.guardar.emit(payload);
-
-    this.ventaForm = this.fb.group({
-      clienteId: [null, Validators.required],
-      tipoComprobante: ['BOLETA', Validators.required],
-      detalles: this.fb.array([])
-    });
-
-    this.agregarDetalleVacio();
-
+    this.limpiarFormulario();
   }
 
+  limpiarFormulario(): void {
+    this.ventaForm.reset({
+      clienteId: null,
+      tipoComprobante: 'BOLETA'
+    });
+    this.productosDetalles.clear();
+    this.serviciosDetalles.clear();
+    this.agregarProductoVacio();
+  }
 }

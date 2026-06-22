@@ -1,0 +1,26 @@
+
+<div class="flex flex-col gap-6 mt-5">
+    <app-stats [items]="statsCards" />
+    <aside class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between px-6 py-4 border-b border-brand-gold-soft bg-brand-black rounded-xl">
+        <h1 class="text-lg font-semibold text-brand-gold  text-center md:text-start"> <i class="pi" [class]="icono"></i> Reclamos </h1>
+        <app-search-bar placeholder="Buscar por N° reclamo" (search)="buscarReclamos($event)" />
+        <button pButton label="Crear Reclamo" icon="pi pi-plus" class="p-button-sm boton-primary" (click)="abrirCrear()"></button>
+    </aside>
+    <app-filtros [fields]="filtrosReclamo" [titulo]="texto" [text]="texto" [acordeon]="true"   (buscar)="onBuscar($event)" (limpiar)="onLimpiar()" />
+    <app-reclamo-table [reclamos]="reclamos" [cargado]="cargado" [totalRecords]="totalRecords" [rows]="rows" [icono]="icono" (lazyLoad)="onLazyLoad($event)" (actualizar)="abrirActualizar($event)" (eliminar)="eliminarReclamo($event)" (ver)="abrirVer($event)"/>
+</div>
+
+<p-dialog [(visible)]="mostrarFormulario" [modal]="true" [dismissableMask]="true" [style]="{ width: '90vw', maxWidth: '80rem' }" (onHide)="cerrarFormulario()">
+    <ng-template pTemplate="header">
+        <app-dialog-header icono="pi-exclamation-circle" title="Crear Reclamo" mode="crear" />
+    </ng-template>
+    <app-reclamo-form (guardar)="guardarReclamo($event)" (cancelarEvento)="cerrarFormulario()" />
+</p-dialog>
+
+<p-dialog [(visible)]="mostrarFormularioActualizar" [modal]="true" [dismissableMask]="true"
+    [style]="{ width: '90vw', maxWidth: '50rem' }" (onHide)="cerrarActualizar()">
+    <ng-template pTemplate="header">
+        <app-dialog-header icono="pi-exclamation-circle" title="Actualizar Reclamo" mode="editar" />
+    </ng-template>
+    <app-reclamo-actualizar [reclamo]="reclamoSeleccionado" (guardar)="guardarActualizacion($event)" (cancelarEvento)="cerrarActualizar()" />
+</p-dialog>

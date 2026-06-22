@@ -12,12 +12,13 @@ import { ConfirmPopoverComponent } from '@/app/shared/components/confirm-popover
 import { StatusBadgeComponent } from '@/app/shared/components/status-badge/status-badge.component';
 import { CategoriaTreeComponent } from '../categoria-tree/categoria-tree.component';
 import { Categoria } from '@/app/core/models/catalogos/categorias.model';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-categoria-table',
   standalone: true,
   imports: [
-    ButtonModule, CommonModule, TableModule, ConfirmPopoverComponent, ToggleSwitchModule, FormsModule,
+    ButtonModule, CommonModule, TableModule, ConfirmPopoverComponent, ToggleSwitchModule, FormsModule,TooltipModule,
     CategoriaTreeComponent, ImageModule, IconFieldModule, InputIconModule, StatusBadgeComponent,
   ],
   templateUrl: './categoria-table.html'

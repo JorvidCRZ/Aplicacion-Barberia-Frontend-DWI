@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { ApiResponse, Page } from '../../models/common/index.model';
 import { environment } from '@/environments/environment.development';
 import { buildHttpParamsComponent } from '@/app/shared/utils/build-http-params.component';
-import { Producto, ProductoFilter, ProductoRequest } from '../../models/catalogos/productos.model';
+import { Producto, ProductoFiltro, ProductoRequest } from '../../models/catalogos/productos.model';
 
 @Injectable({
     providedIn: 'root'
@@ -12,7 +12,7 @@ export class ProductoService {
     private http = inject(HttpClient);
     private apiUrl = `${environment.apiUrl}/productos`;
 
-    obtenerProductosPublico(filter?: ProductoFilter) {
+    obtenerProductosPublico(filter?: ProductoFiltro) {
         return this.http.get<ApiResponse<Page<Producto>>>(`${this.apiUrl}/publicados`, { params: buildHttpParamsComponent(filter) });
     }
 
@@ -28,7 +28,7 @@ export class ProductoService {
         return this.http.get<ApiResponse<Page<Producto>>>(this.apiUrl, { params: buildHttpParamsComponent({ page, size }) });
     }
 
-    obtenerProductosConFiltro(filter?: ProductoFilter) {
+    obtenerProductosConFiltro(filter?: ProductoFiltro) {
         return this.http.get<ApiResponse<Page<Producto>>>(this.apiUrl, { params: buildHttpParamsComponent(filter) });
     }
 

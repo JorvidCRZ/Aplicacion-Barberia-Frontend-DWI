@@ -1,0 +1,70 @@
+.kpis-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.kpi-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 20px;
+  transition: border-color 0.2s;
+}
+
+.kpi-card:hover {
+  border-color: #c9972a55;
+}
+
+.kpi-icon {
+  font-size: 22px;
+  color: #c9972a;
+}
+
+.kpi-label {
+  font-size: 11px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.kpi-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #f0f0f0;
+}
+
+/* Card de comisión destacada */
+.kpi-accent {
+  background: #c9972a12;
+  border-color: #c9972a44;
+}
+
+.kpi-accent .kpi-value {
+  color: #c9972a;
+}
+
+.kpi-accent .kpi-icon {
+  color: #c9972a;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .kpis-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .kpis-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .kpi-value {
+    font-size: 18px;
+  }
+}

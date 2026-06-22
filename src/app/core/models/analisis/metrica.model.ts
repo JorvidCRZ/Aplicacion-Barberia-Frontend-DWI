@@ -27,3 +27,7 @@ export interface ServicioSolicitado {
   nombre: string;
   cantidad: number;
 }
+export interface MetricasFiltro {
+  fechaInicio: string;
+  fechaFin: string;
+}

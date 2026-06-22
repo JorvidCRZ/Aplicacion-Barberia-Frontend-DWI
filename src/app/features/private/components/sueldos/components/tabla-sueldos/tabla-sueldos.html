@@ -1,0 +1,96 @@
+<div class="fx-wrap">
+
+    <div class="header-tabla">
+        <p class="fx-title">Detalle por barbero</p>
+
+        <div class="filtros">
+            <select class="tabla-filter" [(ngModel)]="mes">
+                <option *ngFor="let m of meses" [ngValue]="m.id">
+                    {{ m.nombre }}
+                </option>
+            </select>
+
+            <select class="tabla-filter" [(ngModel)]="anio">
+                <option *ngFor="let a of aniosDisponibles" [ngValue]="a">
+                    {{ a }}
+                </option>
+            </select>
+
+            <button class="btn-aplicar" (click)="aplicarFiltro()">
+                Aplicar
+            </button>
+        </div>
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Barbero</th>
+                    <th>Sueldo base</th>
+                    <th>Ventas</th>
+                    <th>Comisión</th>
+                    <th>Sueldo final</th>
+                    <th>Accion</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let b of barberos">
+                    <td>
+                        <div class="barbero-cell">
+                            <span class="avatar">{{ b.nombreBarbero | slice:0:2 | uppercase }}</span>
+                            {{ b.nombreBarbero }}
+                        </div>
+                    </td>
+                    <td>S/ {{ b.sueldoBase | number:'1.2-2' }}</td>
+                    <td>{{ b.cantidadVentas }}</td>
+                    <td>
+                        <span class="comision-badge">
+                            {{ b.porcentajeComision | number:'1.0-2' }}%
+                            &nbsp;
+                            S/ {{ b.montoComision | number:'1.2-2' }}
+                        </span>
+                    </td>
+                    <td class="sueldo-final">
+                        S/ {{ b.sueldoFinal | number:'1.2-2' }}
+                    </td>
+                    <td>
+                        <button class="btn-ver" (click)="verDetalle(b)">
+                            <i class="pi pi-eye"></i>
+                        </button>
+                    </td>
+                </tr>
+
+                <tr *ngIf="barberos.length === 0">
+                    <td colspan="5" class="text-center">
+                        No hay registros para el período seleccionado
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="table-footer">
+            <span class="pag-info">
+                Mostrando {{ page * size + 1 }} –
+                {{ Math.min((page + 1) * size, totalElements) }}
+                de {{ totalElements }} registros
+            </span>
+
+            <div class="pagination-buttons">
+
+                <button class="pag-btn" [disabled]="page === 0" (click)="cambiarPagina(page - 1)">
+                    Anterior
+                </button>
+
+                <span class="pag-current">
+                    {{ page + 1 }} / {{ totalPages }}
+                </span>
+
+                <button class="pag-btn" [disabled]="page + 1 >= totalPages" (click)="cambiarPagina(page + 1)">
+                    Siguiente
+                </button>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,159 @@
+<!-- LAYOUT: col-visual (izquierda) | col-datos (derecha) -->
+<div class="resultado-layout">
+
+  <!-- ── Columna izquierda: foto + gráfico ── -->
+  <div class="col-visual">
+
+    <!-- Foto con overlay de landmarks -->
+    <div class="panel">
+      <div class="panel-head">
+        <span>Foto analizada</span>
+      </div>
+      <div class="foto-overlay-container">
+        <img [src]="fotoPreview" alt="foto">
+        <canvas #overlayCanvas class="overlay-canvas"></canvas>
+      </div>
+    </div>
+
+    <!-- Gráfico facial -->
+    <div class="grafico-card">
+      <h3>Gráfico facial</h3>
+      <canvas #graficoCanvas class="grafico-canvas"></canvas>
+    </div>
+
+  </div>
+
+  <!-- ── Columna derecha: todos los datos ── -->
+  <div class="col-datos">
+
+    <!-- Forma detectada -->
+    <div class="card-forma">
+      <div class="forma-etiqueta">Forma de cara detectada</div>
+      <div class="forma-nombre">{{ resultado.forma_cara }}</div>
+      <div class="forma-confianza">Confianza: {{ resultado.confianza_pct }}%</div>
+    </div>
+
+    <!-- Molde facial -->
+    @if(resultado.molde_facial){
+    <div class="molde-card">
+      <h3>{{ resultado.molde_facial.forma }}</h3>
+      <p>{{ resultado.molde_facial.mensaje }}</p>
+      <div><strong>Estado:</strong> {{ resultado.molde_facial.estado }}</div>
+      <div><strong>Confianza:</strong> {{ resultado.molde_facial.confianza_pct }}%</div>
+    </div>
+    }
+
+    <!-- Ratios -->
+    @if(resultado.molde_facial?.ratios){
+    <div class="panel">
+      <div class="panel-head"><span>Ratios</span></div>
+      <div class="panel-body">
+        <div class="ratios-grid">
+          <div class="ratio-card">
+            <strong>{{ resultado.molde_facial?.ratios?.ratio_largo_ancho }}</strong>
+            <span>Largo / Ancho</span>
+          </div>
+          <div class="ratio-card">
+            <strong>{{ resultado.molde_facial?.ratios?.ratio_frente_mandibula }}</strong>
+            <span>Frente / Mandíb.</span>
+          </div>
+          <div class="ratio-card">
+            <strong>{{ resultado.molde_facial?.ratios?.ratio_pomulos_mandibula }}</strong>
+            <span>Pómulos / Mandíb.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- Medidas px -->
+    @if(resultado.molde_facial?.mediciones_px){
+    <div class="panel">
+      <div class="panel-head"><span>Medidas (px)</span></div>
+      <div class="panel-body">
+        <div class="medidas-grid">
+          <div class="medida-card">
+            <div class="valor">{{ resultado.molde_facial?.mediciones_px?.ancho_frente }}</div>
+            <div>Frente</div>
+          </div>
+          <div class="medida-card">
+            <div class="valor">{{ resultado.molde_facial?.mediciones_px?.ancho_pomulos }}</div>
+            <div>Pómulos</div>
+          </div>
+          <div class="medida-card">
+            <div class="valor">{{ resultado.molde_facial?.mediciones_px?.ancho_mandibula }}</div>
+            <div>Mandíbula</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- Métricas avanzadas -->
+    @if(resultado.features_avanzadas){
+    <div class="features-card">
+      <h3>Métricas faciales avanzadas</h3>
+      <ul>
+        <li>
+          Jaw angle
+          <strong>{{ resultado.features_avanzadas.jaw_angle ?? resultado.features_avanzadas.jawAngle }}</strong>
+        </li>
+        <li>
+          Simetría
+          <strong>{{ resultado.features_avanzadas.facial_symmetry ?? resultado.features_avanzadas.symmetry }}</strong>
+        </li>
+        <li>
+          Redondez
+          <strong>{{ resultado.features_avanzadas.face_roundness ?? resultado.features_avanzadas.roundness }}</strong>
+        </li>
+        <li>
+          Curvatura
+          <strong>{{ resultado.features_avanzadas.jaw_curvature ?? resultado.features_avanzadas.curvature }}</strong>
+        </li>
+      </ul>
+    </div>
+    }
+
+    <!-- Scores -->
+    @if(resultado.scores_debug){
+    <div class="scores-card">
+      <h3>Puntuación del algoritmo</h3>
+      @for(item of resultado.scores_debug | keyvalue; track item.key){
+      <div class="score-row">
+        <span>{{ item.key }}</span>
+        <strong>{{ item.value }}</strong>
+      </div>
+      }
+    </div>
+    }
+
+  </div>
+</div>
+
+<!-- ── Cortes recomendados (ancho completo abajo) ── -->
+<div class="cortes-container">
+  <h2>Cortes recomendados</h2>
+  <div class="cortes-grid">          <!-- ← añade este wrapper -->
+    @for(corte of resultado.cortes_recomendados; track corte.id){
+
+  <app-corte-card
+    [corte]="corte"
+    [clienteId]="clienteId"
+    (ver)="abrirModal($event)">
+  </app-corte-card>
+
+}
+  </div>
+</div>
+
+@if(corteSeleccionado){
+
+  <app-corte-modal
+    [corte]="corteSeleccionado"
+    (cerrar)="cerrarModal()">
+  </app-corte-modal>
+
+}
+
+<app-corte-modal [corte]="corteSeleccionado" (cerrar)="cerrarModal()">
+</app-corte-modal>

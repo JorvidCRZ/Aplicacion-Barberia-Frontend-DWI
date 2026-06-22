@@ -1,0 +1,147 @@
+<form [formGroup]="reclamoForm" class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:p-6 p-0 md-border border-default rounded-xl bg-neutral-primary-soft shadow-xs">   
+    <div class="flex flex-col gap-6">
+        <h2 class="subtitle-form">Datos del cliente</h2>
+        <div class="part-form">
+            <label for="nombreCliente">Nombre completo *</label>
+            <input pInputText id="nombreCliente" formControlName="nombreCliente" placeholder="Ej. Juan Pérez" />
+            @if (campoInvalido('nombreCliente')) {
+            <p-message severity="error" variant="simple" size="small">El nombre es requerido</p-message>
+            }
+        </div>
+
+        <div class="part-form">
+            <label for="correoCliente">Correo electrónico</label>
+            <input pInputText id="correoCliente" formControlName="correoCliente" placeholder="cliente@correo.com" />
+            @if (campoInvalido('correoCliente')) {
+            <p-message severity="error" variant="simple" size="small">Ingrese un correo válido</p-message>
+            }
+        </div>
+
+        <div class="part-form">
+            <label for="telefonoCliente">Teléfono</label>
+            <input pInputText id="telefonoCliente" formControlName="telefonoCliente" placeholder="Ej. 987654321" />
+            @if (campoInvalido('telefonoCliente')) { 
+                <p-message severity="error" variant="simple" size="small">El teléfono es requerido y debe tener 9 dígitos</p-message>
+            }
+        </div>
+
+        <div class="grid grid-cols-2 gap-6">
+            <div class="part-form">
+                <label for="tipoDocumentoCliente">Tipo de documento</label>
+                <p-select [options]="tipoDocumentoOpts" formControlName="tipoDocumentoCliente" optionLabel="label" optionValue="value" placeholder="Seleccione" inputId="tipoDocumentoCliente" />
+                @if (campoInvalido('tipoDocumentoCliente')) {
+                    <p-message severity="error" variant="simple" size="small">Seleccione un tipo de documento</p-message>
+                }
+            </div>
+            <div class="part-form">
+                <label for="numeroDocumentoCliente">N° de documento</label>
+                <input pInputText id="numeroDocumentoCliente" formControlName="numeroDocumentoCliente" placeholder="Ej. 12345678" [maxlength]="maxLengthDocumento" />
+                <div class="flex justify-between mt-1">
+                    @if (campoInvalido('numeroDocumentoCliente')) {
+                        <p-message severity="error" variant="simple" size="small">
+                            @switch (reclamoForm.get('tipoDocumentoCliente')?.value) {
+                                @case ('DNI') {DNI: debe tener exactamente 8 dígitos}
+                                @case ('CE') {Carné de Extranjería: debe tener exactamente 9 dígitos}
+                                @case ('PASAPORTE') {Pasaporte: entre 6 y 12 caracteres alfanuméricos}
+                                @default {Documento inválido}
+                            }
+                        </p-message>
+                    }
+                    <span class="text-text-subtle text-xs">{{ reclamoForm.get('numeroDocumentoCliente')?.value?.length || 0 }}/{{ maxLengthDocumento }}</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="subtitle-form">Descripción del problema</h2>
+        <div class="part-form">
+            <label for="descripcion">Descripción *</label>
+            <textarea pTextarea id="descripcion" formControlName="descripcion" rows="4"
+                placeholder="Describa el inconveniente con detalle..."></textarea>
+            @if (campoInvalido('descripcion')) {
+            <p-message severity="error" variant="simple" size="small">La descripción es requerida</p-message>
+            }
+        </div>
+
+        <div class="part-form">
+            <label for="notasInternas">Notas internas</label>
+            <textarea pTextarea id="notasInternas" formControlName="notasInternas" rows="3"
+                placeholder="Notas solo visibles para el equipo..."></textarea>
+        </div>
+
+    </div>
+
+    <!-- ── Columna derecha ────────────────────────────────────────── -->
+    <div class="flex flex-col gap-6">
+
+        <h2 class="subtitle-form">Clasificación del reclamo</h2>
+
+        <div class="part-form">
+            <label for="tipoReclamacion">Tipo de reclamación *</label>
+            <p-select [options]="tipoReclamacionOpts" formControlName="tipoReclamacion" optionLabel="label"
+                optionValue="value" placeholder="Seleccione tipo" inputId="tipoReclamacion" />
+            @if (campoInvalido('tipoReclamacion')) {
+            <p-message severity="error" variant="simple" size="small">Seleccione un tipo de reclamación</p-message>
+            }
+        </div>
+
+        <div class="part-form">
+            <label for="tipoProblema">Tipo de problema *</label>
+            <p-select [options]="tipoProblemaOpts" formControlName="tipoProblema" optionLabel="label"
+                optionValue="value" placeholder="Seleccione problema" inputId="tipoProblema" />
+            @if (campoInvalido('tipoProblema')) {
+            <p-message severity="error" variant="simple" size="small">Seleccione un tipo de problema</p-message>
+            }
+        </div>
+
+        <div class="part-form">
+            <label for="causaReclamo">Causa del reclamo</label>
+            <p-select [options]="causaReclamoOpts" formControlName="causaReclamo" optionLabel="label"
+                optionValue="value" placeholder="Seleccione causa (opcional)" inputId="causaReclamo"
+                [showClear]="true" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-6">
+            <div class="part-form">
+                <label for="montoReclamado">Monto reclamado (S/)</label>
+                <p-inputNumber formControlName="montoReclamado" inputId="montoReclamado" mode="decimal"
+                    [minFractionDigits]="2" [maxFractionDigits]="2" [showButtons]="true" [min]="0" [step]="0.5"
+                    [max]="999999" placeholder="0.00" mode="currency" currencyDisplay="symbol" currency="PEN" locale="es-PE" />
+            </div>
+            <div class="part-form">
+                <label for="fechaOcurrencia">Fecha de ocurrencia</label>
+                <p-datepicker formControlName="fechaOcurrencia" [maxDate]="today" dateFormat="dd/mm/yy" hourFormat="24"
+                    inputId="fechaOcurrencia" dateFormat="dd/mm/yy" placeholder="dd/mm/aaaa" />
+            </div>
+        </div>
+
+        <h2 class="subtitle-form">Archivos adjuntos</h2>
+
+        <div class="part-form">
+            <span class="label-form">Adjuntar archivos (imágenes)</span>
+            <p-fileUpload #fileUpload mode="basic" accept="image/*" [maxFileSize]="10000000" chooseLabel="Elegir imagen"
+                (onSelect)="onSeleccionarArchivo($event)" customUpload class="w-full inline-block break-all"
+                [chooseButtonProps]="{ severity: 'secondary' }" />
+        </div>
+
+        @for (img of imagenes; track img; let i = $index) {
+        <div class="contenido-imagen">
+            <p-image [src]="img.preview" imageClass="rounded-lg object-cover" width="100" height="100"
+                [preview]="true" />
+            <div class="flex flex-col w-full sm:w-auto text-center">
+                <span class="text-text-secondary font-medium break-all">{{ img.nombre }}</span>
+                <span class="text-text-tertiary text-base break-words">{{ img.peso }}</span>
+                <span class="text-orange-500 text-sm font-semibold">Nueva imagen</span>
+            </div>
+            <button type="button" class="boton-cierre" (click)="eliminarImagen(i)">✕</button>
+        </div>
+        }
+
+        <div class="flex flex-col gap-3 sm:flex-row sm:justify-end mt-auto">
+            <button pButton label="Guardar" class="boton-submit w-full sm:w-auto" type="button"
+                (click)="onGuardar()"></button>
+            <button pButton label="Cancelar" class="boton-cancel w-full sm:w-auto" type="button"
+                (click)="onCancelar()"></button>
+        </div>
+
+    </div>
+</form>

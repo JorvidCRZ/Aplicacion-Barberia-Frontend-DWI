@@ -1,177 +1,55 @@
-<section class="relative h-64 sm:h-80 w-full flex items-center justify-center text-text-primary overflow-hidden">
+<!-- Hero -->
+<section class="relative h-64 sm:h-80 w-full flex items-center justify-center overflow-hidden">
   <div class="absolute inset-0">
     <img src="/assets/cortebarba.jpg" alt="Servicios Barbería" class="w-full h-full object-cover object-center" />
     <div class="absolute inset-0 bg-black/70"></div>
   </div>
   <div class="relative z-10 text-center px-6 max-w-3xl">
     <p class="text-yellow-500 text-sm font-semibold tracking-widest uppercase mb-3">Lo que ofrecemos</p>
-    <h1 class="text-4xl md:text-5xl font-bold tracking-wide uppercase">Nuestros Servicios</h1>
-    <p class="mt-4 text-text-secondary text-lg">Precisión, estilo y cuidado en cada corte.</p>
+    <h1 class="text-4xl md:text-5xl font-bold tracking-wide uppercase text-white">Nuestros Servicios</h1>
+    <p class="mt-4 text-gray-300 text-lg">Precisión, estilo y cuidado en cada corte.</p>
+  </div>
+</section>
+>
+<section class="bg-black py-10 px-4">
+  <div class="mx-auto max-w-7xl flex flex-col gap-6">
+
+    <app-filtros [fields]="filtrosFields" titulo="Filtrar servicios" (buscar)="onBuscar($event)" (limpiar)="onLimpiar()" />
+
+    <div class="flex items-center justify-between text-sm text-gray-400">
+      <span>{{ totalRecords }} servicio(s) disponible(s)</span>
+      @if (cargando) { <span>Cargando...</span> }
+    </div>
+
+    <div class="mt-8">
+      <app-servicio-lista [servicios]="servicios" [cargando]="cargando" (seleccionado)="abrirDetalle($event)" />
+		</div>
+
+    @if (totalRecords > size) { 
+      <p-paginator [first]="page * size" [rows]="size" [totalRecords]="totalRecords" [rowsPerPageOptions]="[10, 20, 50]" [showCurrentPageReport]="true" currentPageReportTemplate="Página {currentPage} de {totalPages} · {totalRecords} servicio(s)" (onPageChange)="onPaginatorChange($event)" />
+    }
+
   </div>
 </section>
 
-<section class="bg-black py-10 px-0">
-  <div class="w-full">
-    <div class="text-center mb-10">
-      <h2 class="text-text-primary text-3xl font-bold uppercase tracking-wide">¿Qué hacemos por ti?</h2>
-      <div class="mt-3 w-16 h-1 bg-yellow-500 mx-auto rounded-full"></div>
-    </div>
-
-    @if (cargando) {
-    <div class="flex justify-center py-20">
-      <div class="w-12 h-12 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
-    </div>
-    } @else {
-    @if (servicios.length > 0) {
-    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-8 sm:px-12 lg:px-16 w-full">
-      @for (servicio of servicios; track servicio.servicioId) {
-
-      <div (click)="abrirDetalle(servicio.servicioId)"
-        class="relative bg-black border border-white/10 hover:border-yellow-500 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-yellow-500/10 group flex flex-col cursor-pointer">
-
-        <div class="w-full aspect-square bg-white/5 group-hover:bg-yellow-500/10 transition overflow-hidden">
-          <img [src]="obtenerImagen(servicio)" [alt]="servicio.nombre" class="w-full h-full object-cover" />
-        </div>
-
-        <div class="p-3 flex flex-col flex-1">
-          <h3 class="text-text-primary font-bold text-sm mb-2 leading-tight uppercase">{{ servicio.nombre }}</h3>
-          <p class="text-text-muted text-xs leading-relaxed mb-3 flex-1">{{ servicio.categoriaNombre }}</p>
-
-          <div class="flex items-center justify-between pt-2 border-t border-white/10">
-            <span class="text-yellow-500 font-bold text-lg">S/ {{ servicio.precio }}</span>
-            <span class="text-gray-500 text-xs flex items-center gap-1">
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-              {{ servicio.duracion }} min
-            </span>
-          </div>
-        </div>
-      </div>
-
-      }
-    </div>
-    } @else {
-    <div class="text-center py-20">
-      <h3 class="text-white text-xl font-semibold">No hay servicios disponibles</h3>
-      <p class="text-gray-400 mt-2">Vuelve más tarde.</p>
-    </div>
-    }
-    }
-  </div>
-</section>
-
+<!-- CTA -->
 <section class="bg-black border-t border-white/10 py-16 px-4">
   <div class="max-w-2xl mx-auto text-center">
     <h2 class="text-white text-3xl font-bold uppercase tracking-wide">¿Listo para el cambio?</h2>
     <p class="mt-4 text-gray-300 text-lg">Reserva tu cita ahora y déjate atender por los mejores.</p>
-    <div class="mt-8 flex justify-center">
-      <button (click)="irAReservas()"
-        class="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-6 py-3 rounded-full transition">
+    <div class="mt-8 flex justify-center gap-4 flex-wrap">
+      <button class="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-6 py-3 rounded-full transition">
         Reservar cita
+      </button>
+      <button class="border border-white hover:bg-white hover:text-black text-white px-6 py-3 rounded-full transition">
+        Ver más
       </button>
     </div>
   </div>
 </section>
 
+<!-- Modal detalle -->
 @if (mostrarModal) {
-<div
-  class="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-black/90 backdrop-blur-sm transition-opacity overflow-y-auto">
-
-  <div
-    class="relative w-full max-w-6xl bg-[#0f0f0f] border border-yellow-600/40 rounded-2xl shadow-2xl p-6 md:p-8 my-auto">
-
-    <div class="mb-8">
-      <button (click)="cerrarModal()"
-        class="flex items-center gap-2 text-emerald-500 hover:text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 px-4 py-2 rounded-lg transition-colors font-medium w-fit">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-        </svg>
-        Volver
-      </button>
-    </div>
-
-    @if (cargandoDetalle) {
-    <div class="flex justify-center items-center py-32">
-      <div class="w-12 h-12 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
-    </div>
-    }
-
-    @else if (servicioSeleccionado) {
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12">
-
-      <div class="md:col-span-5 flex flex-col gap-4">
-        <div class="w-full aspect-square bg-white/5 rounded-2xl overflow-hidden">
-          <img [src]="obtenerImagen(servicioSeleccionado)" [alt]="servicioSeleccionado.nombre"
-            class="w-full h-full object-cover">
-        </div>
-        <div
-          class="w-20 h-20 rounded-lg overflow-hidden border border-white/20 cursor-pointer hover:border-yellow-500 transition-colors">
-          <img [src]="obtenerImagen(servicioSeleccionado)"
-            class="w-full h-full object-cover opacity-80 hover:opacity-100">
-        </div>
-      </div>
-
-      <div class="md:col-span-4 flex flex-col">
-        <span class="bg-white/5 text-gray-300 border border-white/10 text-xs px-4 py-1.5 rounded-full w-fit mb-4">
-          {{ servicioSeleccionado.categoriaNombre }}
-        </span>
-
-        <h2 class="text-3xl lg:text-4xl font-extrabold text-white mb-6 leading-tight">
-          {{ servicioSeleccionado.nombre }}
-        </h2>
-
-        <p class="text-yellow-500 font-bold text-3xl mb-8">
-          S/ {{ servicioSeleccionado.precio }}
-        </p>
-
-        <p class="text-gray-400 text-sm leading-relaxed mb-8">
-          {{ servicioSeleccionado.descripcion || 'Servicio profesional garantizado. Relájate y disfruta de una atención
-          de primera calidad con nuestros expertos, diseñado para mejorar tu estilo y brindarte el mejor acabado.' }}
-        </p>
-
-        <div class="flex flex-col gap-4 text-sm mt-auto">
-          <div class="flex items-center gap-2">
-            <span class="text-white font-semibold min-w-[100px]">Marca</span>
-            <span class="text-gray-400 font-medium">FadeX</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="text-white font-semibold min-w-[100px]">Categoría</span>
-            <span class="text-gray-400">{{ servicioSeleccionado.categoriaNombre }}</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="text-white font-semibold min-w-[100px]">Duración</span>
-            <span class="text-gray-400">{{ servicioSeleccionado.duracion }} min aprox.</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="md:col-span-3">
-        <div class="bg-[#141414] border border-white/10 rounded-2xl p-6 sticky top-4">
-
-          <p class="text-yellow-500 font-bold text-2xl mb-1">S/ {{ servicioSeleccionado.precio }}</p>
-          <p class="text-gray-500 text-xs mb-6 pb-6 border-b border-white/10">Precio del servicio</p>
-
-          <button (click)="irAReservar()"
-            class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 rounded-lg transition-colors flex justify-center items-center gap-2 mb-4 uppercase tracking-wide">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-            </svg>
-            Agendar cita
-          </button>
-
-          <div class="mt-6 pt-4 border-t border-white/10 flex justify-between items-center text-sm">
-            <span class="text-gray-400">Subtotal:</span>
-            <span class="text-gray-300 font-semibold">S/ {{ servicioSeleccionado.precio }}</span>
-          </div>
-
-        </div>
-      </div>
-
-    </div>
-    }
-  </div>
-</div>
+<app-servicio-detalle [servicio]="servicioSeleccionado" [cargando]="cargandoDetalle" (cerrar)="cerrarModal()"
+  (reservar)="irAReservar()" />
 }

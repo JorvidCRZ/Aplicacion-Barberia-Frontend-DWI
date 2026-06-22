@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { guestGuard } from './core/guards/guest.guard';
 import { NosotrosComponent } from './features/public/pages/nosotros/nosotros..component';
-import { ServiciosComponent } from './features/public/pages/servicios/servicios.component';
 import { ReservasComponent } from './features/public/pages/reservas/reservas.component';
 import { ReclamosComponent } from './features/public/pages/reclamos/reclamos.component';
 import { RegisterComponent } from './features/auth/register/register.component';
@@ -44,7 +43,28 @@ export const routes: Routes = [
           { path: 'ventas', loadComponent: () => import('./features/private/components/operaciones/ventas/ventas.component').then(m => m.VentasComponent) },
           { path: 'reservas', loadComponent: () => import('./features/private/components/operaciones/reservas/reserva-list/reserva-list').then(m => m.ReservaList) },
           { path: 'reservas/nueva', loadComponent: () => import('./features/private/components/operaciones/reservas/reserva-create/create-reserva/create-reserva').then(m => m.CreateReserva) },
-          { path: 'pagos', loadComponent: () => import('./features/private/components/operaciones/pagos/pagos.component').then(m => m.PagosComponent) }
+          { path: 'reservas/calendario', loadComponent: () => import('./features/private/components/operaciones/reservas/reserva-calendar/reserva-calendar').then(m => m.CalendarReservas) },
+          { path: 'pagos', loadComponent: () => import('./features/private/components/operaciones/pagos/pagos.component').then(m => m.PagosComponent) },
+          { path: 'reclamos', loadComponent: () => import('./features/private/components/operaciones/reclamos/reclamos.component').then(m => m.ReclamosComponent) },
+          { path: 'reclamos/:id', loadComponent: () => import('./features/private/components/operaciones/reclamos/reclamo-detalle/reclamo-detalle.component').then(m => m.ReclamoDetalleComponent) }
+        ]
+      },
+      {
+        path: 'sueldos',
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./features/private/components/sueldos/sueldos')
+                .then(m => m.Sueldos)
+          },
+           {
+            path: ':id',
+            loadComponent: () =>
+              import('./features/private/components/sueldos/mi-sueldo-analisis/mi-sueldo-analisis')
+                .then(m => m.MiSueldoAnalisis)
+          }
+         
         ]
       },
       {
@@ -96,7 +116,7 @@ export const routes: Routes = [
         path: 'operaciones', children: [
           { path: 'ventas', loadComponent: () => import('./features/private/components/operaciones/ventas/ventas.component').then(m => m.VentasComponent) },
           { path: 'reservas', loadComponent: () => import('./features/private/components/operaciones/reservas/reserva-list/reserva-list').then(m => m.ReservaList) },
-          { path: 'pagos', loadComponent: () => import('./features/private/components/operaciones/pagos/pagos.component').then(m => m.PagosComponent) }
+          { path: 'pagos', loadComponent: () => import('./features/private/components/operaciones/pagos/pagos.component').then(m => m.PagosComponent) },
         ]
       },
       {
@@ -120,7 +140,7 @@ export const routes: Routes = [
       { path: 'forgot-password', component: ForgotPasswordComponent },
       { path: 'reset-password', component: ResetPassword },
       { path: 'productos/detalle/:id', loadComponent: () => import('./features/public/pages/productos/producto-detalle/producto-detalle.component').then(m => m.ProductoDetalleComponent) },
-      { path: 'servicios', component: ServiciosComponent },
+      { path: 'servicios', loadComponent: () => import('./features/public/pages/servicios/servicios.component').then(m => m.ServiciosComponent) },
       { path: 'reclamos', component: ReclamosComponent },
       { path: 'reservas', component: ReservasComponent },
       { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
@@ -135,6 +155,7 @@ export const routes: Routes = [
           { path: 'dashboard', loadComponent: () => import('./features/private/pages/resumen/resumen.component').then(m => m.ResumenComponent) },
           { path: 'reservar/agendar', loadComponent: () => import('./features/private/pages/reservar/reservar.component').then(m => m.ReservarComponent), canActivate: [authGuard] },
           { path: 'reservas/mis-reservas', loadComponent: () => import('./features/private/pages/mis-reservas/mis-reservas').then(m => m.MisReservasComponent) },
+          { path: 'ia/analisis-facial', loadComponent: () => import('./features/private/pages/reconocimiento-facial/reconocimiento-facial').then(m => m.ReconocimientoFacial) },
           { path: 'historial', loadComponent: () => import('./features/private/pages/historial/historial.component').then(m => m.ClienteHistorialComponent) },
           { path: 'rewards', loadComponent: () => import('./features/private/pages/rewards/rewards.component').then(m => m.RewardsComponent) },
           { path: 'perfil', loadComponent: () => import('./features/private/pages/perfil/perfil.component').then(m => m.PerfilComponent) },

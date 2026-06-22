@@ -3,11 +3,16 @@ import { provideRouter } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
 import { MessageService } from 'primeng/api';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { registerLocaleData } from '@angular/common';
+import localeEs from '@angular/common/locales/es';
 
 import { routes } from './app.routes';
 import Aura from '@primeuix/themes/aura';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './core/interceptors/auth-interceptor';
+import { LOCALE_ID } from '@angular/core';
+
+registerLocaleData(localeEs);
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,7 +20,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideAnimations(),
     provideRouter(routes),
-     providePrimeNG({
+    providePrimeNG({
       theme: {
         preset: Aura,
         options: {
@@ -24,9 +29,12 @@ export const appConfig: ApplicationConfig = {
       }
     }),
     MessageService,
-   provideHttpClient(
+    provideHttpClient(
       withInterceptors([authInterceptor])
     ),
-     
+    { provide: LOCALE_ID, useValue: 'es-PE' },
   ]
 };
+
+
+

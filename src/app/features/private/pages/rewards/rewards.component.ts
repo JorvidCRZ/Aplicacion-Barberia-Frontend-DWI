@@ -13,7 +13,7 @@ import { RecompensaService } from '@core/services/recompensa/recompensa.service'
 import { Recompensa } from '@core/models/recompensas/Recompensa.model';
 import { BarberoService } from '@/app/core/services/gestion/barbero.service';
 import { ServicioService } from '@/app/core/services/catalogos/servicio.service';
-import { ReservaService } from '@/app/core/services/operaciones/reserva-service';
+import { ReservaService } from '@/app/core/services/operaciones/reserva.service';
 import { ReservaRequest } from '@/app/core/models/reserva/reservaRequest';
 import { Barbero } from '@/app/core/models/gestion/barbero/barbero.model';
 import { Servicio, ServicioFiltro } from '@/app/core/models/catalogos/servicios.model';

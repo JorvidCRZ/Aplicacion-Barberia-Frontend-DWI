@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { environment } from '@/environments/environment.development';
 import { FilaSemanal } from '../../models/analisis/reporte.model';
 import { ReporteFiltro } from '../../models/analisis/reporte.model';
+import { ApiResponse, Page, PageResponse } from '../../models/common/index.model';
 
 @Injectable({ providedIn: 'root' })
 export class ReporteService {
@@ -42,12 +43,25 @@ descargarArchivo(tipo: string, formato: string, filtro: ReporteFiltro): Observab
   return this.http.get(`${this.base}/${tipo}/${formato}`, { params, responseType: 'blob' });
 }
 
-getBarberos(): Observable<{id: number, nombre: string}[]> {
-  return this.http.get<any>(`${environment.apiUrl}/barberos/lista`).pipe(map(r => r.data));
+getBarberos(): Observable<{ id: number, nombre: string }[]> {
+  return this.http.get<ApiResponse<any>>(`${environment.apiUrl}/barberos`, {
+    params: { size: '100' }
+  }).pipe(
+    map(res => res.data.content.map((b: any) => ({
+      id: b.barberoId,
+      nombre: `${b.persona.nombre} ${b.persona.apellido}`
+    })))
+  );
 }
 
-getServicios(): Observable<{id: number, nombre: string}[]> {
-  return this.http.get<any>(`${environment.apiUrl}/servicios/lista`).pipe(map(r => r.data));
+getServicios(): Observable<{ id: number, nombre: string }[]> {
+  return this.http.get<ApiResponse<any>>(`${environment.apiUrl}/servicios`).pipe(
+    map(res => res.data.content.map((s: any) => ({
+      id: s.servicioId,
+      nombre: s.nombre
+    }))) 
+  );
 }
+
 }
 

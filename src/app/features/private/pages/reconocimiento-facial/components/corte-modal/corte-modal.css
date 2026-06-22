@@ -1,0 +1,223 @@
+:host{
+    display:block;
+}
+
+/* FONDO OSCURECIDO */
+
+.modal-backdrop{
+    position:fixed;
+    inset:0;
+
+    background:
+      rgba(0,0,0,.85);
+
+    backdrop-filter:blur(8px);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:20px;
+
+    z-index:9999;
+
+    animation:fadeIn .25s ease;
+}
+
+/* PANEL */
+
+.modal-panel{
+    width:100%;
+    max-width:700px;
+
+    background:
+      linear-gradient(
+        145deg,
+        #141414,
+        #1d1d1d
+      );
+
+    border:1px solid rgba(212,175,55,.25);
+
+    border-radius:28px;
+
+    overflow:hidden;
+
+    position:relative;
+
+    box-shadow:
+      0 25px 60px rgba(0,0,0,.6);
+
+    animation:modalShow .3s ease;
+}
+
+/* TITULO */
+
+.modal-panel h2{
+    padding:25px 25px 15px;
+
+    text-align:center;
+
+    color:#d4af37;
+
+    font-size:2rem;
+
+    font-weight:800;
+
+    letter-spacing:1px;
+}
+
+/* IMAGEN */
+
+.modal-panel img{
+    width:100%;
+    height:450px;
+
+    object-fit:cover;
+
+    display:block;
+
+    border-top:1px solid rgba(212,175,55,.15);
+    border-bottom:1px solid rgba(212,175,55,.15);
+}
+
+/* DESCRIPCION */
+
+.modal-panel p{
+    padding:25px;
+
+    color:#d8d8d8;
+
+    font-size:1rem;
+
+    line-height:1.8;
+
+    text-align:justify;
+}
+
+/* DIFICULTAD */
+
+.modal-panel small{
+    display:block;
+
+    margin:0 25px 25px;
+
+    padding:12px 18px;
+
+    width:max-content;
+
+    border-radius:50px;
+
+    background:rgba(212,175,55,.12);
+
+    border:1px solid rgba(212,175,55,.25);
+
+    color:#f4d06f;
+
+    font-size:.9rem;
+
+    font-weight:600;
+}
+
+/* BOTON CERRAR */
+
+.btn-cerrar{
+    position:absolute;
+
+    top:15px;
+    right:15px;
+
+    width:42px;
+    height:42px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#d4af37;
+
+    color:#000;
+
+    font-size:1.2rem;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+.btn-cerrar:hover{
+    transform:rotate(90deg) scale(1.1);
+
+    box-shadow:
+      0 0 15px rgba(212,175,55,.6);
+}
+
+/* ANIMACIONES */
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+    }
+
+    to{
+        opacity:1;
+    }
+
+}
+
+@keyframes modalShow{
+
+    from{
+        opacity:0;
+        transform:translateY(20px) scale(.95);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+    .modal-panel{
+        max-width:95%;
+    }
+
+    .modal-panel h2{
+        font-size:1.6rem;
+    }
+
+    .modal-panel img{
+        height:300px;
+    }
+
+    .modal-panel p{
+        font-size:.95rem;
+        padding:20px;
+    }
+
+}
+
+@media(max-width:480px){
+
+    .modal-panel h2{
+        font-size:1.3rem;
+    }
+
+    .modal-panel img{
+        height:250px;
+    }
+
+    .btn-cerrar{
+        width:38px;
+        height:38px;
+    }
+
+}

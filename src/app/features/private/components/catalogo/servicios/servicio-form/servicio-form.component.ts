@@ -1,21 +1,7 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  DestroyRef,
-  EventEmitter,
-  inject,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-  SimpleChanges,
-  ViewChild
-} from '@angular/core';
-
+import { ChangeDetectorRef, Component, DestroyRef, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { forkJoin } from 'rxjs';
-
 import { TreeNode } from 'primeng/api';
 import { FileUpload, FileUploadModule } from 'primeng/fileupload';
 import { ImageModule } from 'primeng/image';
@@ -25,7 +11,6 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { TreeSelectModule } from 'primeng/treeselect';
 import { InputNumberModule } from 'primeng/inputnumber';
-
 import { Servicio, ServicioRequest } from '@/app/core/models/catalogos/servicios.model';
 import { Categoria } from '@/app/core/models/catalogos/categorias.model';
 import { ImageUploadService } from '@/app/core/services/common/imageUpload.service';
@@ -36,19 +21,16 @@ import { campoInvalido, marcarFormulario } from '@/app/shared/utils/form-utils.c
 @Component({
   selector: 'app-servicio-form',
   imports: [
-    ReactiveFormsModule, InputTextModule,CheckboxModule, TreeSelectModule, ButtonModule, 
+    ReactiveFormsModule, InputTextModule, CheckboxModule, TreeSelectModule, ButtonModule,
     MessageModule, ImageModule, FileUploadModule, InputNumberModule, SafeImageUrlPipe
   ],
   templateUrl: './servicio-form.html',
   styleUrl: './servicio-form.css',
 })
 export class ServicioFormComponent implements OnInit, OnChanges {
-
   @Output() guardar = new EventEmitter<{ data: ServicioRequest, imagenes?: File[] }>();
   @Output() cancelarEvento = new EventEmitter<void>();
-
   @ViewChild('fileUpload') fileUpload!: FileUpload;
-
   @Input() servicio: Servicio | null = null;
   @Input() categorias: Categoria[] = [];
   @Input() resetTrigger: number = 0;
@@ -59,15 +41,12 @@ export class ServicioFormComponent implements OnInit, OnChanges {
   private imageService = inject(ImageUploadService);
 
   servicioForm!: FormGroup;
-
   categoriaTree: TreeNode[] = [];
   imagenes: ImagenProductoUI[] = [];
   imagenesEliminadas: string[] = [];
-
   formSubmitted = false;
 
-  campoInvalido = (campo: string) =>
-    campoInvalido(this.servicioForm, campo, this.formSubmitted);
+  campoInvalido = (campo: string) => campoInvalido(this.servicioForm, campo, this.formSubmitted);
 
   ngOnInit(): void {
     this.initForm();
@@ -76,15 +55,8 @@ export class ServicioFormComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (!this.servicioForm || Object.keys(this.servicioForm.controls).length === 0) return;
-
-    if (changes['resetTrigger'] && !changes['resetTrigger'].firstChange) {
-      this.limpiarFormulario();
-    }
-
-    if (changes['categorias'] || (changes['servicio'] && !changes['servicio'].firstChange && !this.servicio)) {
-      this.cargarCategoriasTree();
-    }
-
+    if (changes['resetTrigger'] && !changes['resetTrigger'].firstChange) { this.limpiarFormulario(); }
+    if (changes['categorias'] || (changes['servicio'] && !changes['servicio'].firstChange && !this.servicio)) { this.cargarCategoriasTree(); }
     if (changes['servicio']) {
       this.actualizarFormulario();
       if (this.servicio?.urlsMultimedia?.length) {
@@ -100,27 +72,23 @@ export class ServicioFormComponent implements OnInit, OnChanges {
       precio: [0, [Validators.required, Validators.min(0)]],
       duracion: [0, [Validators.required, Validators.min(1)]],
       idCategoria: [null, Validators.required],
-      estado: [true]
+      estado: [false],
+      publicado: [false]
     });
   }
 
-  // ========================
-  // PATCH EDIT
-  // ========================
   private actualizarFormulario(): void {
     this.imagenes = [];
     this.imagenesEliminadas = [];
-
     if (this.servicio) {
       this.servicioForm.patchValue({
         nombre: this.servicio.nombre,
         precio: this.servicio.precio,
         duracion: this.servicio.duracion,
-        estado: this.servicio.estado
+        estado: this.servicio.estado,
+        publicado: this.servicio.publicado,
       });
-
       if (this.servicio.categoriaId) {
-        // wait for tree to be ready
         setTimeout(() => {
           if (this.categoriaTree.length && this.servicio?.categoriaId) {
             const match = this.findTreeNodeById(this.categoriaTree, this.servicio!.categoriaId!);
@@ -132,44 +100,30 @@ export class ServicioFormComponent implements OnInit, OnChanges {
     } else {
       this.resetFormularioBase();
     }
-
     this.servicioForm.markAsPristine();
     this.servicioForm.markAsUntouched();
   }
 
-  // ========================
-  // IMAGES EXISTENTES
-  // ========================
   private cargarImagenExistente(urls: string[]) {
     const requests = urls.map(url => this.imageService.obtenerImagenProtegida(url));
-
-    forkJoin(requests).pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(blobs => {
-
-        this.imagenes = [];
-
-        blobs.forEach((blob, index) => {
-          if (!blob) return;
-
-          const file = new File([blob], `img-${index}.jpg`, { type: blob.type });
-
-          this.imagenes.push({
-            file,
-            preview: URL.createObjectURL(file),
-            nombre: 'Imagen actual',
-            peso: this.imageService.obtenerReadableSize(file),
-            tipo: 'existente',
-            urlOriginal: urls[index]
-          });
+    forkJoin(requests).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(blobs => {
+      this.imagenes = [];
+      blobs.forEach((blob, index) => {
+        if (!blob) return;
+        const file = new File([blob], `img-${index}.jpg`, { type: blob.type });
+        this.imagenes.push({
+          file,
+          preview: URL.createObjectURL(file),
+          nombre: 'Imagen actual',
+          peso: this.imageService.obtenerReadableSize(file),
+          tipo: 'existente',
+          urlOriginal: urls[index]
         });
-
-        this.cd.detectChanges();
       });
+      this.cd.detectChanges();
+    });
   }
 
-  // ========================
-  // IMAGE STATE HELPERS
-  // ========================
   private limpiarEstadoImagen(): void {
     this.imagenes.forEach(img => { if (img.preview) { URL.revokeObjectURL(img.preview); } });
     this.imagenes = [];
@@ -188,14 +142,9 @@ export class ServicioFormComponent implements OnInit, OnChanges {
     this.limpiarEstadoImagen();
   }
 
-  // ========================
-  // UPLOAD
-  // ========================
   onSeleccionarArchivo(event: any): void {
     const files: File[] = Array.from(event.files);
-
     const validas = this.imageService.imagenesValidas(files);
-
     validas.forEach(file => {
       this.imagenes.push({
         file,
@@ -209,19 +158,11 @@ export class ServicioFormComponent implements OnInit, OnChanges {
 
   eliminarImagen(index: number) {
     const img = this.imagenes[index];
-
     if (img.preview) URL.revokeObjectURL(img.preview);
-
-    if (img.tipo === 'existente' && img.urlOriginal) {
-      this.imagenesEliminadas.push(img.urlOriginal);
-    }
-
+    if (img.tipo === 'existente' && img.urlOriginal) { this.imagenesEliminadas.push(img.urlOriginal); }
     this.imagenes.splice(index, 1);
   }
 
-  // ========================
-  // TREE
-  // ========================
   cargarCategoriasTree() {
     this.categoriaTree = this.construirTree(this.categorias ?? []);
     this.cd.detectChanges();
@@ -235,39 +176,27 @@ export class ServicioFormComponent implements OnInit, OnChanges {
     }));
   }
 
-  // ========================
-  // SAVE
-  // ========================
   onGuardar() {
     this.formSubmitted = true;
-
     if (this.servicioForm.invalid) {
       marcarFormulario(this.servicioForm);
       return;
     }
-
-    const archivos = this.imagenes
-      .filter(i => i.file)
-      .map(i => i.file as File);
-
+    const archivos = this.imagenes.filter(i => i.file).map(i => i.file as File);
     const categoria = this.servicioForm.value.idCategoria;
-
     const data: ServicioRequest = {
       nombre: this.servicioForm.value.nombre,
       precio: this.servicioForm.value.precio,
       duracion: this.servicioForm.value.duracion,
-      categoriaId: Number(categoria?.key)
+      categoriaId: Number(categoria?.key),
+      descripcion: this.servicioForm.value.descripcion,
+      estado: this.servicioForm.value.estado,
+      publicado: this.servicioForm.value.publicado
     };
 
-    this.guardar.emit({
-      data,
-      imagenes: archivos.length ? archivos : undefined
-    });
+    this.guardar.emit({ data, imagenes: archivos.length ? archivos : undefined });
   }
 
-  // ========================
-  // CANCEL
-  // ========================
   onCancelar() {
     this.formSubmitted = false;
     this.limpiarFormulario();
@@ -281,9 +210,6 @@ export class ServicioFormComponent implements OnInit, OnChanges {
     this.servicioForm.markAsUntouched();
   }
 
-  // ========================
-  // TREE UTIL
-  // ========================
   private findTreeNodeById(nodes: TreeNode[], id: number): TreeNode | null {
     for (const node of nodes) {
       if (Number(node.key) === id) return node;

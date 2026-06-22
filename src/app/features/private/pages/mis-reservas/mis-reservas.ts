@@ -13,7 +13,7 @@ import { MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 
-import { ReservaService } from '@/app/core/services/operaciones/reserva-service';
+import { ReservaService } from '@/app/core/services/operaciones/reserva.service';
 import { ApiResponse, Page } from '@/app/core/models/common/index.model';
 import { Reserva } from '@/app/core/models/operaciones/Reserva.model';
 

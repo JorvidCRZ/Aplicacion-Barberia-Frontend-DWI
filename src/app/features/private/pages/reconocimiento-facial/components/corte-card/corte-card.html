@@ -1,0 +1,68 @@
+<div class="corte-card">
+
+    <div class="corte-info">
+
+        <div class="titulo-row">
+
+            <h3>
+                {{ corte.nombre }}
+            </h3>
+
+            <span class="estado">
+                Recomendado
+            </span>
+
+        </div>
+
+        <div class="rating">
+
+            @for(star of [1,2,3,4,5]; track star){
+
+            <span
+                class="star"
+                [class.activa]="rating >= star"
+                (click)="calificar(star)">
+
+                ★
+
+            </span>
+
+            }
+
+        </div>
+
+        <p class="descripcion">
+            {{ corte.descripcion }}
+        </p>
+
+    </div>
+
+    <div class="acciones">
+
+        <button
+            class="btn-ver"
+            (click)="abrirModal()">
+
+            Ver imagen
+
+        </button>
+
+        <button
+            class="btn-like"
+            [class.activo]="liked"
+            (click)="like()">
+
+            👍
+        </button>
+
+        <button
+            class="btn-dislike"
+            [class.activo]="dislike"
+            (click)="dislike()">
+
+            👎
+        </button>
+
+    </div>
+
+</div>

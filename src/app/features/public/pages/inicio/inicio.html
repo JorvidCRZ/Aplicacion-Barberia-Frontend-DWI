@@ -23,12 +23,8 @@
     </p>
 
     <div class="mt-8 flex justify-center gap-4">
-      <button routerLink="/reservas" class="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-6 py-3 rounded-full transition">
-        Reservar cita
-      </button>
-      <button routerLink="/servicios" class="border border-ui-border hover:bg-white hover:text-black px-6 py-3 rounded-full transition">
-        Ver servicios
-      </button>
+      <button pButtton (click)="reservarCita()" class="boton-primary"> Reservar cita </button>
+      <button pButton (click)="verServicios()" class="boton-secondary"> Ver servicios </button>
     </div>
 
   </div>

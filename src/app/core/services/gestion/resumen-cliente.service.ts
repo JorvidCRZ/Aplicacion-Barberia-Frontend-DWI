@@ -22,37 +22,7 @@ export class ResumenCliente {
     return this.tokenService.getDecodedToken()?.sub?.split('@')[0] ?? 'Cliente';
   }
 
-getProximaCita(): Observable<ReservaDTO | null> {
-  return this.http
-    .get<any>(`${BASE}/reservas/mis-reservas?page=0&size=10`)
-    .pipe(
-      map((response) => {
-        // Extraer reservas de la respuesta paginada
-        const reservas: ReservaDTO[] = response?.data?.content || [];
-        
-        if (reservas.length === 0) return null;
-
-        const hoy = new Date();
-        hoy.setHours(0, 0, 0, 0);
-
-        // Filtrar reservas futuras y ordenar por fecha más cercana
-        const proximaCita = reservas
-          .filter(r => new Date(r.fecha) >= hoy)
-          .sort((a, b) => 
-            new Date(`${a.fecha}T${a.horaInicio}`).getTime() - 
-            new Date(`${b.fecha}T${b.horaInicio}`).getTime()
-          )[0] || null;
-
-        console.log('Próxima cita:', proximaCita);
-        return proximaCita;
-      }),
-      catchError((error) => {
-        console.error('Error al obtener próxima cita:', error);
-        return of(null);
-      })
-    );
-}
-  getKpis(): Observable<ClienteDetalleResumenDTO> {
+    getKpis(): Observable<ClienteDetalleResumenDTO> {
     return this.http
       .get<ApiResponse<ClienteDetalleResumenDTO>>(`${BASE}/clientes/perfil-propio/resumen`)
       .pipe(map(res => res.data));
@@ -69,11 +39,44 @@ getProximaCita(): Observable<ReservaDTO | null> {
       );
   }
 
-  cargarDashboard() {
-    return forkJoin({
-      proximaCita: this.getProximaCita(),
-      kpis:        this.getKpis(),
-      servicios:   this.getRecomendados(),
-    });
-  }
+cargarDashboard() {
+  const reservas$ = this.http
+    .get<any>(`${BASE}/reservas/mis-reservas?page=0&size=40`)
+    .pipe(
+      map(res => res?.data?.content || []),
+      catchError(() => of([]))
+    );
+
+  return forkJoin({
+    reservas:  reservas$,
+    kpis:      this.getKpis(),
+    servicios: this.getRecomendados(),
+  }).pipe(
+    map(({ reservas, kpis, servicios }) => {
+      console.log('RESERVAS RAW:', reservas);
+      const hoy = new Date();
+      hoy.setHours(0, 0, 0, 0);
+
+      const proximasCitas = [...reservas]
+        .filter((r: any) => {
+          const estadosExcluidos = ['CANCELADA', 'RECHAZADA'];
+          return new Date(r.fecha) >= hoy && !estadosExcluidos.includes(r.estadoReserva);
+        })
+        .sort((a: any, b: any) =>
+          new Date(`${a.fecha}T${a.horaInicio}`).getTime() -
+          new Date(`${b.fecha}T${b.horaInicio}`).getTime()
+        )
+        .slice(0, 3);
+
+      const historialReciente = [...reservas]
+        .sort((a: any, b: any) =>
+          new Date(`${b.fecha}T${b.horaInicio}`).getTime() -
+          new Date(`${a.fecha}T${a.horaInicio}`).getTime()
+        )
+        .slice(0, 5);
+
+      return { proximasCitas, historialReciente, kpis, servicios };
+    })
+  );
+}
 }

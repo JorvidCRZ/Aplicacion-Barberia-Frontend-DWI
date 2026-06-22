@@ -1,0 +1,168 @@
+.corte-card{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    background:linear-gradient(
+        180deg,
+        #151515,
+        #101010
+    );
+
+    border:1px solid rgba(201,162,39,.15);
+
+    border-radius:14px;
+
+    padding:20px;
+
+    transition:.25s;
+
+    gap:20px;
+}
+
+.corte-card:hover{
+    border-color:#c9a227;
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.35);
+}
+
+.corte-info{
+    flex:1;
+}
+
+.titulo-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:8px;
+}
+
+.titulo-row h3{
+    margin:0;
+    color:white;
+    font-size:1.1rem;
+    font-weight:600;
+}
+
+.estado{
+    background:rgba(201,162,39,.15);
+
+    color:#c9a227;
+
+    padding:4px 10px;
+
+    border-radius:30px;
+
+    font-size:.7rem;
+
+    font-weight:700;
+
+    text-transform:uppercase;
+}
+
+.rating{
+    display:flex;
+    gap:4px;
+    margin-bottom:10px;
+}
+
+.star{
+    font-size:20px;
+    color:#444;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.star:hover,
+.star.activa{
+    color:#c9a227;
+}
+
+.descripcion{
+    margin:0;
+    color:#9f9f9f;
+    line-height:1.5;
+    font-size:.9rem;
+}
+
+.acciones{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.btn-ver{
+    background:#c9a227;
+    color:#000;
+
+    border:none;
+
+    border-radius:10px;
+
+    padding:12px 20px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.btn-ver:hover{
+    background:#ddb63b;
+}
+
+.btn-like,
+.btn-dislike{
+    width:46px;
+    height:46px;
+
+    border:none;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    background:#1f1f1f;
+
+    color:white;
+
+    transition:.2s;
+}
+
+.btn-like:hover{
+    background:#2c2c2c;
+}
+
+.btn-dislike:hover{
+    background:#2c2c2c;
+}
+
+.btn-like.activo{
+    background:#c9a227;
+    color:black;
+}
+
+.btn-dislike.activo{
+    background:#d63031;
+}
+
+@media(max-width:768px){
+
+    .corte-card{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .acciones{
+        width:100%;
+    }
+
+    .btn-ver{
+        flex:1;
+    }
+}

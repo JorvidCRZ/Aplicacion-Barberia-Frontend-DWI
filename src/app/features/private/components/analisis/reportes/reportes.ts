@@ -4,11 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { ReporteService } from '@/app/core/services/analisis/reporte.service';
 import { FilaSemanal, ReporteItem, EstadoReserva, MetodoPago, ReporteFiltro } from '@/app/core/models/analisis/reporte.model';
+import { FILTROS_REPORTE } from '@/app/core/config/filtros.config';
+import { FilterField } from '@/app/core/models/common/filtro.model';
+import { FiltrosComponent } from '@/app/shared/components/filtros/filtros.component';
 
 @Component({
   selector: 'app-reportes',
   standalone: true,
-  imports: [CommonModule, FormsModule, DecimalPipe],
+  imports: [CommonModule, FormsModule, DecimalPipe, FiltrosComponent],
   templateUrl: './reportes.html',
 })
 export class ReportesComponent implements OnInit, OnDestroy {
@@ -79,13 +82,25 @@ export class ReportesComponent implements OnInit, OnDestroy {
       });
   }
 
-  cargarBarberos(): void {
-    this.reporteSvc.getBarberos().subscribe(data => this.barberos = data);
-  }
+cargarBarberos(): void {
+  this.reporteSvc.getBarberos().subscribe(data => {
+    this.filtrosFields = this.filtrosFields.map(f =>
+      f.key === 'barberoId'
+        ? { ...f, options: data.map(b => ({ label: b.nombre, value: b.id })) }
+        : f
+    );
+  });
+}
 
-  cargarServicios(): void {
-    this.reporteSvc.getServicios().subscribe(data => this.servicios = data);
-  }
+cargarServicios(): void {
+  this.reporteSvc.getServicios().subscribe(data => {
+    this.filtrosFields = this.filtrosFields.map(f =>
+      f.key === 'servicioId'
+        ? { ...f, options: data.map(s => ({ label: s.nombre, value: s.id })) }
+        : f
+    );
+  });
+}
 
   aplicarFiltros(): void {
     if (!this.filtro.desde || !this.filtro.hasta) {
@@ -149,4 +164,23 @@ export class ReportesComponent implements OnInit, OnDestroy {
     };
     return map[tipo] ?? tipo;
   }
+  filtrosFields: FilterField<ReporteFiltro>[] = [...FILTROS_REPORTE];
+  texto = 'Reportes';
+
+onBuscar(filtros: Partial<ReporteFiltro>): void {
+  if (!filtros.desde || !filtros.hasta) return;
+  this.filtro = { ...this.filtro, ...filtros };
+  this.cargarDatos();
+}
+
+onLimpiar(): void {
+  const hoy   = new Date();
+  const hace7 = new Date();
+  hace7.setDate(hoy.getDate() - 7);
+  this.filtro = {
+    desde: hace7.toISOString().split('T')[0],
+    hasta: hoy.toISOString().split('T')[0]
+  };
+  this.cargarDatos();
+}
 }

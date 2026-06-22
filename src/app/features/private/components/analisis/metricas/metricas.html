@@ -1,76 +1,38 @@
 <div class="p-6 flex flex-col gap-5 min-h-screen bg-ui-surface text-(--color-text-primary)">
 
-  <!-- ══════════════════════════════════════════════════════════════════
-       HEADER + FILTROS
-  ═══════════════════════════════════════════════════════════════════ -->
-  <div class="flex items-start justify-between flex-wrap gap-4
-              bg-ui-card border border-ui-borderSoft
-              rounded-2xl px-6 py-5">
+  <!-- HEADER -->
+  <div class="bg-ui-card border border-ui-borderSoft rounded-2xl px-6 py-5">
     <div>
       <h1 class="text-[1.4rem] font-bold text-(--color-brand-gold) m-0 leading-tight">
         Métricas del negocio
       </h1>
-      <p class="text-[0.8rem] text-text-secondary mt-0.5 mb-0">
+
+      <p class="text-[0.8rem] text-text-secondary mt-0.5 mb-4">
         Visualiza el rendimiento general de la barbería
       </p>
     </div>
 
-    <div class="flex items-end gap-3 flex-wrap">
-      <!-- Desde -->
-      <div class="flex flex-col gap-1">
-        <label class="text-[0.7rem] font-semibold tracking-widest uppercase text-text-muted">
-          Desde
-        </label>
-        <input type="date" [(ngModel)]="fechaInicio" [max]="fechaFin"
-               class="bg-ui-elevated border border-ui-border
-                      text-(--color-text-primary) px-3 py-[0.45rem] rounded-xl
-                      text-[0.85rem] outline-none transition-colors duration-200
-                      focus:border-brand-gold-soft
-                      [&::-webkit-calendar-picker-indicator]:opacity-60
-                      [&::-webkit-calendar-picker-indicator]:cursor-pointer" />
-      </div>
-      <!-- Hasta -->
-      <div class="flex flex-col gap-1">
-        <label class="text-[0.7rem] font-semibold tracking-widest uppercase text-text-muted">
-          Hasta
-        </label>
-        <input type="date" [(ngModel)]="fechaFin" [min]="fechaInicio"
-               class="bg-ui-elevated border border-ui-border
-                      text-(--color-text-primary) px-3 py-[0.45rem] rounded-xl
-                      text-[0.85rem] outline-none transition-colors duration-200
-                      focus:border-brand-gold-soft
-                      [&::-webkit-calendar-picker-indicator]:opacity-60
-                      [&::-webkit-calendar-picker-indicator]:cursor-pointer" />
-      </div>
-      <!-- Botón Aplicar -->
-      <button (click)="aplicarFiltros()" [disabled]="cargando"
-              class="bg-(--color-brand-gold) text-black font-bold
-                     px-[1.1rem] py-[0.45rem] h-9 min-w-30 rounded-xl
-                     text-[0.85rem] flex items-center justify-center gap-1
-                     transition-opacity duration-200 cursor-pointer
-                     hover:enabled:opacity-85 disabled:opacity-45 disabled:cursor-not-allowed">
-        <ng-container *ngIf="!cargando">
-          <i class="pi pi-filter"></i> Aplicar
-        </ng-container>
-        <span *ngIf="cargando"
-              class="w-4 h-4 rounded-full border-2 border-transparent border-t-black
-                     animate-spin inline-block"></span>
-      </button>
-    </div>
+    <app-filtros
+      [fields]="filtrosFields"
+      [titulo]="'Métricas del negocio'"
+      [text]="texto"
+      [icono]="'pi pi-chart-line'"
+      [acordeon]="true"
+      [abierto]="true"
+      (buscar)="onBuscar($event)"
+      (limpiar)="onLimpiar()">
+    </app-filtros>
+
   </div>
 
-  <!-- ══════════════════════════════════════════════════════════════════
-       ERROR
-  ═══════════════════════════════════════════════════════════════════ -->
+  <!-- ERROR -->
   <div *ngIf="error"
        class="bg-red-950/40 border border-red-600/30 text-brand-red
               px-4 py-3 rounded-xl text-[0.85rem]">
     <i class="pi pi-exclamation-triangle mr-2"></i>{{ error }}
   </div>
 
-  <!-- ══════════════════════════════════════════════════════════════════
-       CARGANDO
-  ═══════════════════════════════════════════════════════════════════ -->
+  <!-- CARGANDO -->
   <div *ngIf="cargando"
        class="flex flex-col items-center gap-3 py-12
               text-text-muted text-[0.875rem]">
@@ -79,33 +41,20 @@
     <p>Cargando métricas...</p>
   </div>
 
-  <!-- ══════════════════════════════════════════════════════════════════
-       CONTENIDO PRINCIPAL
-  ═══════════════════════════════════════════════════════════════════ -->
+  <!-- CONTENIDO PRINCIPAL -->
   <ng-container *ngIf="!cargando">
 
-    <!-- ── KPI Cards ───────────────────────────────────────────────── -->
+    <!-- KPI Cards -->
     <div class="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-3">
       <div *ngFor="let kpi of kpis"
            class="relative bg-ui-card border border-ui-borderSoft
                   rounded-2xl p-4 transition-all duration-200
                   hover:-translate-y-0.5 hover:border-brand-gold-soft">
-
-        <!-- Ícono top-right -->
         <i class="pi pi-{{ kpi.icon }} absolute top-4 right-4
                   text-[1.1rem] text-(--color-brand-gold) opacity-55"></i>
-
-        <p class="text-[0.72rem] text-text-secondary mb-1.5 pr-8 m-0">
-          {{ kpi.label }}
-        </p>
-        <p class="text-[1.6rem] font-bold text-(--color-brand-gold) leading-none m-0">
-          {{ kpi.value }}
-        </p>
-        <p class="text-[0.7rem] text-text-muted mt-1 mb-0">
-          {{ kpi.sub }}
-        </p>
-
-        <!-- Badge delta -->
+        <p class="text-[0.72rem] text-text-secondary mb-1.5 pr-8 m-0">{{ kpi.label }}</p>
+        <p class="text-[1.6rem] font-bold text-(--color-brand-gold) leading-none m-0">{{ kpi.value }}</p>
+        <p class="text-[0.7rem] text-text-muted mt-1 mb-0">{{ kpi.sub }}</p>
         <span class="inline-flex items-center gap-0.5 text-[0.7rem] font-semibold
                      mt-1.5 px-2 py-0.5 rounded-full"
               [ngClass]="kpi.deltaPositivo
@@ -119,57 +68,75 @@
       </div>
     </div>
 
-    <!-- ── Gráficas fila 1 ─────────────────────────────────────────── -->
-    <div class="grid grid-cols-[repeat(auto-fit,minmax(380px,1fr))] gap-4">
+    <!-- TABS DE GRÁFICAS -->
+    <p-tabs value="0" styleClass="!bg-transparent">
+      <p-tablist>
+        <p-tab value="0">Ingresos & Reservas</p-tab>
+        <p-tab value="1">Rendimiento</p-tab>
+      </p-tablist>
 
-      <div class="bg-ui-card border border-ui-borderSoft rounded-2xl p-5">
-        <div class="flex items-center gap-2 text-[0.85rem] font-semibold
-                    text-(--color-text-primary) mb-4">
-          <span class="w-2 h-2 rounded-full bg-(--color-brand-gold) shrink-0"></span>
-          Ingresos diarios
-        </div>
-        <div class="relative h-55">
-          <canvas #ventasChart></canvas>
-        </div>
-      </div>
+      <p-tabpanels>
 
-      <div class="bg-ui-card border border-ui-borderSoft rounded-2xl p-5">
-        <div class="flex items-center gap-2 text-[0.85rem] font-semibold
-                    text-(--color-text-primary) mb-4">
-          <span class="w-2 h-2 rounded-full bg-(--color-brand-gold) shrink-0"></span>
-          Reservas por día
-        </div>
-        <div class="relative h-55">
-          <canvas #reservasChart></canvas>
-        </div>
-      </div>
-    </div>
+        <!-- TAB 1 -->
+        <p-tabpanel value="0" styleClass="!bg-transparent">
+          <div class="grid grid-cols-[repeat(auto-fit,minmax(380px,1fr))] gap-4 pt-4">
 
-    <!-- ── Gráficas fila 2 ─────────────────────────────────────────── -->
-    <div class="grid grid-cols-[repeat(auto-fit,minmax(380px,1fr))] gap-4">
+            <div class="bg-ui-card border border-ui-borderSoft rounded-2xl p-5">
+              <div class="flex items-center gap-2 text-[0.85rem] font-semibold
+                          text-(--color-text-primary) mb-4">
+                <span class="w-2 h-2 rounded-full bg-(--color-brand-gold) shrink-0"></span>
+                Ingresos diarios
+              </div>
+              <div class="relative h-55">
+                <canvas #ventasChart></canvas>
+              </div>
+            </div>
 
-      <div class="bg-ui-card border border-ui-borderSoft rounded-2xl p-5">
-        <div class="flex items-center gap-2 text-[0.85rem] font-semibold
-                    text-(--color-text-primary) mb-4">
-          <span class="w-2 h-2 rounded-full bg-(--color-brand-gold) shrink-0"></span>
-          Rendimiento por barbero
-        </div>
-        <div class="relative h-55">
-          <canvas #barberosChart></canvas>
-        </div>
-      </div>
+            <div class="bg-ui-card border border-ui-borderSoft rounded-2xl p-5">
+              <div class="flex items-center gap-2 text-[0.85rem] font-semibold
+                          text-(--color-text-primary) mb-4">
+                <span class="w-2 h-2 rounded-full bg-(--color-brand-gold) shrink-0"></span>
+                Reservas por día
+              </div>
+              <div class="relative h-55">
+                <canvas #reservasChart></canvas>
+              </div>
+            </div>
 
-      <div class="bg-ui-card border border-ui-borderSoft rounded-2xl p-5">
-        <div class="flex items-center gap-2 text-[0.85rem] font-semibold
-                    text-(--color-text-primary) mb-4">
-          <span class="w-2 h-2 rounded-full bg-(--color-brand-gold) shrink-0"></span>
-          Servicios más solicitados
-        </div>
-        <div class="relative h-55">
-          <canvas #serviciosChart></canvas>
-        </div>
-      </div>
-    </div>
+          </div>
+        </p-tabpanel>
+
+        <!-- TAB 2 -->
+        <p-tabpanel value="1" styleClass="!bg-transparent">
+          <div class="grid grid-cols-[repeat(auto-fit,minmax(380px,1fr))] gap-4 pt-4">
+
+            <div class="bg-ui-card border border-ui-borderSoft rounded-2xl p-5">
+              <div class="flex items-center gap-2 text-[0.85rem] font-semibold
+                          text-(--color-text-primary) mb-4">
+                <span class="w-2 h-2 rounded-full bg-(--color-brand-gold) shrink-0"></span>
+                Rendimiento por barbero
+              </div>
+              <div class="relative h-55">
+                <canvas #barberosChart></canvas>
+              </div>
+            </div>
+
+            <div class="bg-ui-card border border-ui-borderSoft rounded-2xl p-5">
+              <div class="flex items-center gap-2 text-[0.85rem] font-semibold
+                          text-(--color-text-primary) mb-4">
+                <span class="w-2 h-2 rounded-full bg-(--color-brand-gold) shrink-0"></span>
+                Servicios más solicitados
+              </div>
+              <div class="relative h-55">
+                <canvas #serviciosChart></canvas>
+              </div>
+            </div>
+
+          </div>
+        </p-tabpanel>
+
+      </p-tabpanels>
+    </p-tabs>
 
   </ng-container>
 </div>

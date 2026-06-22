@@ -28,6 +28,12 @@ export const CLIENTE_MENU = [
     },
 
     {
+    label: "Análisis Facial",
+    icon: "pi pi-camera",
+    routerLink: ["ia/analisis-facial"],
+    },
+
+    {
         label: "Historial",
         icon: "pi pi-history",
         routerLink: ["historial"],

@@ -3,7 +3,9 @@
     <ng-template #header>
       <div class="producto-card-media">
         <img alt="Card" class="producto-card-image" [src]="getImagenProducto(producto) | safeImageUrl" />
-        <app-status-badge type="text" [value]="producto.nombreCategoria" class="producto-card-category" />
+        <span class="absolute top-2 left-2 bg-black/50 rounded-full px-2 py-1">
+          <app-status-badge type="text" [value]="producto.nombreCategoria" customClass="badge-text estado-producto"/>
+        </span>
       </div>
     </ng-template>
 
@@ -12,7 +14,7 @@
     </ng-template>
     
     <div class="producto-card-meta">
-      <span class="producto-card-price"> {{ producto.precio | currency:'USD' }} </span>
+      <span class="producto-card-price"> {{ producto.precio | soles }} </span>
       <span class="producto-card-stock"> Stock: {{ producto.stock }} </span>
     </div>
 

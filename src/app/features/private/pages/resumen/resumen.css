@@ -1,231 +1,416 @@
-/* ==================================
-   DASHBOARD RESUMEN PREMIUM
-================================== */
+/* =========================
+   DASHBOARD RESUMEN ADMIN
+========================= */
 
-:host {
-  display: block;
+/* ── Layout base ─────────────────────────────────────────────────────────── */
+.dashboard {
+  padding: 1.5rem;
+  min-height: 100vh;
+  background: var(--color-ui-surface);
+  color: var(--color-text-primary);
 }
 
-/* Fondo decorativo */
-.max-w-4xl {
-  position: relative;
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.dashboard__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background: var(--color-ui-card);
+  border: 1px solid var(--color-ui-borderSoft);
+  border-radius: 1rem;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
-.max-w-4xl::before {
-  content: '';
-
-  position: fixed;
-
-  top: -300px;
-  left: 50%;
-
-  transform: translateX(-50%);
-
-  width: 900px;
-  height: 900px;
-
-  background:
-    radial-gradient(
-      circle,
-      rgba(212, 175, 55, 0.08),
-      transparent 70%
-    );
-
-  pointer-events: none;
-  z-index: -1;
+.dashboard__title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffffff;                         /* blanco, no dorado */
 }
 
-/* ==================================
-   HEADER
-================================== */
-
-header h1 {
-  font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: -0.5px;
+.dashboard__subtitle {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
 }
 
-header h1::after {
-  content: '';
-  display: block;
-  width: 60px;
-  height: 3px;
-  margin-top: 10px;
-  border-radius: 999px;
-  background: var(--color-brand-gold);
+.dashboard__date {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);         /* gris, no dorado */
+  margin-top: 0.5rem;
+  display: inline-block;
+  letter-spacing: 0.03em;
 }
 
-header p {
-  color: var(--color-text-secondary) !important;
-  margin-top: 8px;
+.dashboard__error {
+  font-size: 0.85rem;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  color: var(--color-brand-red);
 }
 
-/* ==================================
-   BOTÓN NOTIFICACIÓN
-================================== */
-
-header button {
-  background: linear-gradient(
-    145deg,
-    #121212,
-    #1a1a1a
-  ) !important;
-
-  border: 1px solid rgba(255,255,255,.08) !important;
-
-  transition: all .25s ease;
-}
-
-header button:hover {
-  border-color: var(--color-brand-gold) !important;
-
-  color: var(--color-brand-gold) !important;
-
-  box-shadow:
-    0 0 20px rgba(212,175,55,.15);
-
-  transform: translateY(-2px);
-}
-
-/* ==================================
-   KPI CARDS
-================================== */
-
-.grid.grid-cols-2.gap-3.mt-5 > div {
-  position: relative;
-
-  overflow: hidden;
-
-  border-radius: 18px !important;
-
-  border: 1px solid rgba(255,255,255,.08) !important;
-
-  background:
-    linear-gradient(
-      145deg,
-      #121212,
-      #181818
-    ) !important;
-
-  transition: all .3s ease;
-}
-
-.grid.grid-cols-2.gap-3.mt-5 > div::before {
-  content: '';
-
-  position: absolute;
-
-  top: 0;
-  left: 0;
-
-  width: 100%;
-  height: 2px;
-
-  background: var(--color-brand-gold);
-}
-
-.grid.grid-cols-2.gap-3.mt-5 > div:hover {
-  transform: translateY(-5px);
-
-  border-color: rgba(212,175,55,.35) !important;
-
-  box-shadow:
-    0 10px 25px rgba(0,0,0,.45),
-    0 0 20px rgba(212,175,55,.08);
-}
-
-/* ==================================
-   KPI ICONOS
-================================== */
-
-.grid.grid-cols-2.gap-3.mt-5 > div span {
-  display: inline-flex;
+/* ── Period buttons ──────────────────────────────────────────────────────── */
+.dashboard__periods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
   align-items: center;
-  justify-content: center;
-
-  width: 42px;
-  height: 42px;
-
-  border-radius: 12px;
-
-  background: rgba(212,175,55,.08);
-
-  border: 1px solid rgba(212,175,55,.15);
 }
 
-/* ==================================
-   KPI LABELS
-================================== */
-
-.grid.grid-cols-2.gap-3.mt-5 > div p:first-of-type {
-  color: var(--color-text-secondary) !important;
-
-  letter-spacing: 2px;
-
-  font-size: 11px !important;
-
-  margin-top: 12px !important;
+.period-btn {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.4rem 0.9rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: transparent;
+  border: 1px solid var(--color-ui-border);
+  color: var(--color-text-secondary);     /* gris por defecto */
 }
 
-/* ==================================
-   KPI VALORES
-================================== */
-
-.grid.grid-cols-2.gap-3.mt-5 > div p:last-of-type {
-  color: white;
-
-  font-weight: 800;
-
-  margin-top: 8px !important;
+.period-btn:hover {
+  background: var(--color-ui-elevated);
+  color: #ffffff;
 }
 
-/* ==================================
-   SKELETON
-================================== */
+.period-btn--active {
+  background: var(--color-brand-gold) !important;
+  border-color: var(--color-brand-gold) !important;
+  color: #000 !important;
+  font-weight: 700;
+}
+
+/* ── KPI Grid ────────────────────────────────────────────────────────────── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.kpi-card {
+  position: relative;
+  border-radius: 1rem;
+  padding: 1rem 1.1rem;
+  background: var(--color-ui-card);
+  border: 1px solid var(--color-ui-borderSoft);
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(212, 175, 55, 0.25); /* sutil dorado al hover */
+}
 
 .kpi-card--skeleton {
-  background:
-    linear-gradient(
-      90deg,
-      #121212,
-      #1a1a1a,
-      #121212
-    );
-
+  min-height: 100px;
+  background: linear-gradient(
+    90deg,
+    var(--color-ui-card) 25%,
+    var(--color-ui-elevated) 50%,
+    var(--color-ui-card) 75%
+  );
   background-size: 200% 100%;
-
-  animation: skeleton-loading 1.5s infinite;
+  animation: shimmer 1.4s infinite;
 }
 
-@keyframes skeleton-loading {
-  from {
-    background-position: 200% 0;
-  }
-
-  to {
-    background-position: -200% 0;
-  }
+.kpi-card__icon {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.1rem;
+  color: var(--color-brand-gold);         /* dorado solo en icono */
+  opacity: 0.5;
 }
 
-/* ==================================
-   ERROR
-================================== */
-
-.bg-red-500\/8 {
-  background: rgba(220,38,38,.08) !important;
+.kpi-card__label {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);         /* gris apagado */
+  margin-bottom: 0.5rem;
+  padding-right: 1.8rem;
 }
 
-/* ==================================
-   RESPONSIVE
-================================== */
+.kpi-card__value {
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: #ffffff;                         /* blanco para el número */
+  line-height: 1.1;
+}
 
-@media (max-width: 768px) {
+.kpi-card__delta {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.7rem;
+  margin-top: 0.4rem;
+  color: var(--color-text-muted);
+}
 
-  header h1 {
-    font-size: 1.6rem;
-  }
+.kpi-card__delta--positive { color: #4ade80; }  /* verde más moderno */
+.kpi-card__delta--negative { color: #f87171; }  /* rojo suave */
 
-  .grid.grid-cols-2.gap-3.mt-5 {
-    grid-template-columns: 1fr !important;
-  }
+/* ── Citas Section ───────────────────────────────────────────────────────── */
+.citas-section {
+  background: var(--color-ui-card);
+  border: 1px solid var(--color-ui-borderSoft);
+  border-radius: 1rem;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.citas-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.citas-section__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;                         /* blanco */
+}
+
+/* ── Tabla citas ─────────────────────────────────────────────────────────── */
+.citas-table-wrapper {
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: var(--color-ui-card);
+  border: 1px solid var(--color-ui-borderSoft);
+}
+
+.citas-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.citas-table thead tr {
+  background: var(--color-brand-dark);
+  border-bottom: 1px solid var(--color-ui-borderSoft);
+}
+
+.citas-table th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);         /* gris en headers */
+}
+
+.citas-table td {
+  padding: 0.75rem 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--color-ui-borderSoft);
+  color: #ffffff;                         /* blanco en celdas */
+}
+
+.citas-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.citas-table tbody tr:hover td {
+  background: var(--color-ui-elevated);
+}
+
+.citas-table__empty {
+  text-align: center;
+  padding: 1.5rem !important;
+  color: var(--color-text-muted);
+}
+
+/* ── Celdas ──────────────────────────────────────────────────────────────── */
+.cliente-nombre {
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: #ffffff;                         /* blanco, no dorado */
+}
+
+.cliente-tel {
+  font-size: 0.7rem;
+  margin-top: 2px;
+  color: var(--color-text-muted);
+}
+
+.hora {
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+}
+
+.servicio-badge {
+  background: var(--color-brand-gold-soft);
+  color: var(--color-brand-gold);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+/* ── Predicción ──────────────────────────────────────────────────────────── */
+.prediccion-section {
+  background: var(--color-ui-card);
+  border: 1px solid var(--color-ui-borderSoft);
+  border-radius: 1rem;
+  padding: 1.25rem 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.prediccion-section__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.prediccion-section__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;                         /* blanco */
+  margin: 0;
+}
+
+.prediccion-section__title i {
+  color: var(--color-brand-gold);         /* icono dorado, texto blanco */
+}
+
+.prediccion-badge {
+  background: var(--color-brand-gold-soft);
+  color: var(--color-brand-gold);
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 0.3rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+.prediccion-loading {
+  text-align: center;
+  padding: 2.5rem 0;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.prediccion-chart-wrap {
+  height: 220px;
+  margin-bottom: 1.25rem;
+}
+
+.prediccion-stats {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--color-ui-borderSoft);
+  padding-top: 1rem;
+}
+
+.prediccion-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.prediccion-stat__label {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);         /* gris */
+}
+
+.prediccion-stat__val {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;                         /* blanco, no dorado */
+}
+
+/* ── Animaciones ─────────────────────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position:  200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.spin {
+  display: inline-block;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .dashboard { padding: 0.75rem; }
+  .dashboard__header { flex-direction: column; gap: 0.75rem; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .citas-table th:nth-child(4),
+  .citas-table td:nth-child(4) { display: none; }
+  .prediccion-stats { gap: 1rem; }
+  .prediccion-chart-wrap { height: 160px; }
+}
+
+/* ==========================
+   PRÓXIMAS CITAS
+========================== */
+
+.next-appointments-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+  gap:1rem;
+}
+
+.next-appointment-card{
+  background:var(--color-ui-card);
+  border:1px solid var(--color-ui-borderSoft);
+  border-radius:1.25rem;
+  padding:1.4rem;
+  transition:.2s;
+}
+
+.next-appointment-card:hover{
+  border-color:rgba(212,175,55,.25);
+  transform:translateY(-2px);
+}
+
+.next-appointment-label{
+  display:block;
+  color:var(--color-brand-gold);
+  font-size:.68rem;
+  letter-spacing:.18em;
+  font-weight:700;
+  margin-bottom:1rem;
+}
+
+.next-appointment-service{
+  color:white;
+  font-size:1.25rem;
+  font-weight:700;
+  margin-bottom:1.4rem;
+}
+
+.next-appointment-bottom{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:1rem;
+}
+
+.next-appointment-barber{
+  color:var(--color-text-muted);
+  font-size:.85rem;
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+}
+
+.next-appointment-date{
+  margin-top:.4rem;
+  color:var(--color-text-muted);
+  font-size:.8rem;
 }

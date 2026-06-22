@@ -1,0 +1,387 @@
+/* =============================================
+   resultado.css — FadEx theme (dark + gold)
+   ============================================= */
+
+/* ── Variables internas ── */
+:host {
+  --gold: #c9a227;
+  --gold-dim: rgba(201, 162, 39, 0.18);
+  --gold-faint: rgba(201, 162, 39, 0.10);
+  --surface: #1a1a1a;
+  --deep: #0d0d0d;
+  --text: #f0ece0;
+  --text-muted: rgba(240, 236, 224, 0.45);
+  --text-faint: rgba(240, 236, 224, 0.25);
+  --sep: rgba(201, 162, 39, 0.12);
+}
+
+/* ── Layout principal: foto+gráfico izquierda | datos derecha ── */
+.resultado-layout{
+  display:grid;
+  grid-template-columns:280px 1fr;
+  gap:16px;
+  align-items:start;
+}
+
+/* Columna izquierda: foto y gráfico apilados */
+.col-visual {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Columna derecha: todos los datos */
+.col-datos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* ── Panel base ── */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--gold-dim);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--sep);
+}
+
+.panel-head span {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.panel-body {
+  padding: 14px;
+}
+
+/* ── Foto overlay ── */
+.foto-overlay-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: var(--deep);
+  overflow: hidden;
+}
+
+.foto-overlay-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.overlay-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Gráfico facial ── */
+.grafico-card {
+  background: var(--surface);
+  border: 1px solid var(--gold-dim);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.grafico-card h3 {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--sep);
+  margin: 0;
+}
+
+.grafico-canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: var(--deep);
+}
+
+/* ── Forma detectada (badge principal) ── */
+.card-forma {
+  text-align: center;
+  padding: 18px 12px;
+  background: var(--deep);
+  border: 1px solid rgba(201, 162, 39, 0.25);
+  border-radius: 4px;
+}
+
+.forma-etiqueta {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 6px;
+}
+
+.forma-nombre {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.forma-confianza {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+/* ── Molde facial (si existe) ── */
+.molde-card {
+  background: var(--surface);
+  border: 1px solid var(--gold-dim);
+  border-radius: 4px;
+  padding: 14px;
+}
+
+.molde-card h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gold);
+  margin: 0 0 8px;
+}
+
+.molde-card p {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0 0 10px;
+}
+
+.molde-card div {
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 4px 0;
+  border-top: 1px solid var(--sep);
+}
+
+.molde-card div strong {
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* ── Ratios ── */
+.ratios-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.ratio-card {
+  background: var(--deep);
+  border: 1px solid var(--sep);
+  border-radius: 3px;
+  padding: 10px 8px;
+  text-align: center;
+}
+
+.ratio-card strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+.ratio-card span {
+  display: block;
+  font-size: 10px;
+  color: var(--text-faint);
+  letter-spacing: 0.04em;
+  margin-top: 3px;
+  line-height: 1.3;
+}
+
+/* ── Medidas px ── */
+.medidas-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.medida-card {
+  background: var(--deep);
+  border: 1px solid var(--sep);
+  border-radius: 3px;
+  padding: 10px 8px;
+  text-align: center;
+}
+
+.medida-card .valor {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.medida-card div:not(.valor) {
+  font-size: 10px;
+  color: var(--text-faint);
+  margin-top: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ── Features avanzadas ── */
+.features-card {
+  background: var(--surface);
+  border: 1px solid var(--gold-dim);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.features-card h3 {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--sep);
+  margin: 0;
+}
+
+.features-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.features-card li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 14px;
+  font-size: 12px;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--sep);
+}
+
+.features-card li:last-child {
+  border-bottom: none;
+}
+
+.features-card li strong {
+  color: var(--gold);
+  font-weight: 500;
+}
+
+/* ── Scores debug ── */
+.scores-card {
+  background: var(--surface);
+  border: 1px solid var(--gold-dim);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.scores-card h3 {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--sep);
+  margin: 0;
+}
+
+.score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 14px;
+  border-bottom: 1px solid var(--sep);
+}
+
+.score-row:last-child {
+  border-bottom: none;
+}
+
+.score-row span {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: capitalize;
+}
+
+.score-row strong {
+  font-size: 12px;
+  color: var(--gold);
+  font-weight: 500;
+}
+
+/* ── Contenedor de cortes ── */
+.cortes-container {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--sep);
+}
+
+.cortes-container h2 {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0 0 0.875rem;
+}
+
+/* ── Responsivo ── */
+@media (max-width: 640px) {
+  .resultado-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ratios-grid,
+  .medidas-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 380px) {
+  .ratios-grid,
+  .medidas-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.cortes-container {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(201, 162, 39, 0.12);
+}
+
+.cortes-container h2 {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(240, 236, 224, 0.35);
+  margin-bottom: 0.875rem;
+}
+
+/* ← ESTO es lo que faltaba */
+.cortes-grid{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+@media (max-width: 900px) { .cortes-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 640px) { .cortes-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 380px) { .cortes-grid { grid-template-columns: 1fr; } }

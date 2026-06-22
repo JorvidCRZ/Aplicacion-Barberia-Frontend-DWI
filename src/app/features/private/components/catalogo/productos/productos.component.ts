@@ -13,13 +13,16 @@ import { CategoriaService } from '@/app/core/services/catalogos/categoria.servic
 import { SearchBarComponent } from '@/app/shared/components/search-bar/search-bar.component';
 import { DialogHeaderComponent } from '@/app/shared/components/dialog-header/dialog-header.component';
 import { ProductoService } from '@/app/core/services/catalogos/producto.service';
-import { Producto, ProductoFilter, ProductoRequest } from '@/app/core/models/catalogos/productos.model';
+import { Producto, ProductoFiltro, ProductoRequest } from '@/app/core/models/catalogos/productos.model';
 import { Categoria, CategoriaTipo } from '@/app/core/models/catalogos/categorias.model';
+import { FILTROS_PRODUCTO } from '@/app/core/config/filtros.config';
+import { FiltrosComponent } from '@/app/shared/components/filtros/filtros.component';
+import { buildCategoryTree } from '@/app/shared/utils/buildCategoryTree.component';
 
 @Component({
   selector: 'app-productos',
   imports: [ProductoFormComponent, ProductoTableComponent, DialogModule, ButtonModule,
-    CommonModule, FormsModule, SearchBarComponent, DialogHeaderComponent],
+    CommonModule, FormsModule, SearchBarComponent, DialogHeaderComponent, FiltrosComponent],
   templateUrl: './productos.html',
   styleUrl: './productos.css',
 })
@@ -30,12 +33,13 @@ export class ProductosComponent implements OnInit {
   private notify = inject(NotificationService);
   private productoService = inject(ProductoService);
   private categoriaService = inject(CategoriaService);
-  
+
   productoSeleccionado: Producto | null = null;
-  filtro: Partial<ProductoFilter> = {};
+  filtro: Partial<ProductoFiltro> = {};
   categorias: Categoria[] = [];
   productos: Producto[] = [];
 
+  filtrosFields = [...FILTROS_PRODUCTO];
   rows = 30;
   pageActual = 0;
   cargado = false;
@@ -46,6 +50,7 @@ export class ProductosComponent implements OnInit {
   cargandoEstado: Set<number> = new Set();
   publicadoAnterior: Set<number> = new Set();
   icono = 'pi-th-large';
+  texto = 'Productos';
 
   ngOnInit() {
     this.cargarCategorias();
@@ -63,7 +68,7 @@ export class ProductosComponent implements OnInit {
         this.cd.detectChanges();
       },
       error: (err) => {
-        this.notify.showError(err.message);
+        this.notify.showHttpError(err.message);
         this.cargado = true;
         this.cd.detectChanges();
       }
@@ -86,7 +91,7 @@ export class ProductosComponent implements OnInit {
         this.notify.showSuccess(resp.message);
         this.cargarProductos(0, this.rows);
       },
-      error: (err) => this.notify.showError(err.message),
+      error: (err) => this.notify.showHttpError(err.message),
     });
   }
 
@@ -97,23 +102,17 @@ export class ProductosComponent implements OnInit {
   abrirCrear() {
     this.modo = 'crear';
     this.productoSeleccionado = null;
-    this.cargarCategorias().subscribe({
-      next: () => {
-        this.mostrarFormulario = true;
-        this.cd.detectChanges();
-      }
-    });
+    this.cargarCategorias();
+    this.mostrarFormulario = true;
+    this.cd.detectChanges();
   }
 
   abrirEditar(producto: Producto) {
     this.productoSeleccionado = { ...producto };
     this.modo = 'editar';
-    this.cargarCategorias().subscribe({
-      next: () => {
-        this.mostrarFormulario = true;
-        this.cd.detectChanges();
-      }
-    });
+    this.cargarCategorias();
+    this.mostrarFormulario = true;
+    this.cd.detectChanges();
   }
 
   cerrarFormulario() {
@@ -133,7 +132,7 @@ export class ProductosComponent implements OnInit {
   private crearProducto(data: ProductoRequest, imagenes?: File[]) {
     this.productoService.crearProducto(data, imagenes).subscribe({
       next: (resp) => { this.postGuardar(resp.message); },
-      error: (err) => { this.notify.showHttpError(err); },
+      error: (err) => { this.notify.showHttpError(err.message); },
     });
   }
 
@@ -141,7 +140,7 @@ export class ProductosComponent implements OnInit {
     if (!this.productoSeleccionado) return;
     this.productoService.actualizarProducto(this.productoSeleccionado.id, data, imagenes).subscribe({
       next: (resp) => { this.postGuardar(resp.message); },
-      error: (err) => { this.notify.showHttpError(err); },
+      error: (err) => { this.notify.showHttpError(err.message); },
     });
   }
 
@@ -156,7 +155,7 @@ export class ProductosComponent implements OnInit {
       next: () => { this.notify.showSuccess(`Producto ${event.activo ? 'activado' : 'desactivado'} exitosamente`); },
       error: (err) => {
         producto.estado = estadoAnterior;
-        this.notify.showHttpError(err);
+        this.notify.showHttpError(err.message);
       },
       complete: () => { this.cargandoEstado.delete(event.id); }
     });
@@ -173,7 +172,7 @@ export class ProductosComponent implements OnInit {
       next: () => { this.notify.showSuccess(`Producto ${event.publicado ? 'publicado' : 'no publicado'} exitosamente`); },
       error: (err) => {
         producto.publicado = publicadoAnterior;
-        this.notify.showHttpError(err);
+        this.notify.showHttpError(err.message);
       },
       complete: () => { this.publicadoAnterior.delete(event.id); }
     });
@@ -187,13 +186,34 @@ export class ProductosComponent implements OnInit {
     this.cargarProductos(page, size);
   }
 
-  private cargarCategorias() {
-    return this.categoriaService.obtenerCategoriasPorTipo(CategoriaTipo.PRODUCTO).pipe(
-      tap(resp => this.categorias = resp.data.content)
-    );
+  private cargarCategorias(): void {
+    this.categoriaService.obtenerCategoriasPorTipo(CategoriaTipo.PRODUCTO).subscribe({
+      next: (resp) => {
+        this.categorias = resp.data.content;
+        const nodos = buildCategoryTree(this.categorias);
+        this.filtrosFields = this.filtrosFields.map(field => field.key === 'idCategoria' ? { ...field, treeOptions: nodos } : field);
+      },
+      error: (err) => {
+        this.notify.showHttpError(err.message);
+      }
+    });
   }
 
   onDialogHide() {
     if (this.modo === 'crear') { this.productoSeleccionado = null; }
+  }
+
+  onBuscar(filtros: Partial<ProductoFiltro>) {
+    if (filtros.idCategoria && typeof filtros.idCategoria === 'object') {
+      const nodo = filtros.idCategoria as any;
+      filtros.idCategoria = nodo.key ?? nodo.data?.id ?? undefined;
+    }
+    this.filtro = { ...this.filtro, ...filtros };
+    this.cargarProductos(0, this.rows);
+  }
+
+  onLimpiar() {
+    this.filtro = { page: 0, size: this.rows };
+    this.cargarProductos(0, this.rows);
   }
 }

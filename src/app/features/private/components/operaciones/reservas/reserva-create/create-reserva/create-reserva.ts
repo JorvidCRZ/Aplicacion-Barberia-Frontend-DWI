@@ -15,6 +15,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { DialogModule } from 'primeng/dialog';
 
 import { Cliente } from '@/app/core/models/gestion/cliente/cliente.model';
 import { ClienteService } from '@/app/core/services/gestion/cliente.service';
@@ -23,7 +24,7 @@ import { BarberoService } from '@/app/core/services/gestion/barbero.service';
 import { Servicio } from '@/app/core/models/catalogos/servicios.model';
 import { ServicioService } from '@/app/core/services/catalogos/servicio.service';
 import { Router } from '@angular/router';
-import { ReservaService } from '@/app/core/services/operaciones/reserva-service';
+import { ReservaService } from '@/app/core/services/operaciones/reserva.service';
 import { ReservaRequest } from '@/app/core/models/reserva/reservaRequest';
 import { ServicioFiltro } from '@/app/core/models/catalogos/servicios.model';
 
@@ -37,7 +38,8 @@ import { ServicioFiltro } from '@/app/core/models/catalogos/servicios.model';
     SelectModule,
     DatePickerModule,
     ButtonModule,
-    ToastModule
+    ToastModule,
+    DialogModule
   ],
   providers: [MessageService],
   templateUrl: './create-reserva.html',

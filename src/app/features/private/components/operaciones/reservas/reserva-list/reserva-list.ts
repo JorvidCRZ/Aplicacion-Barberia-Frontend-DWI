@@ -1,155 +1,156 @@
 import { ApiResponse, Page } from '@/app/core/models/common/index.model';
 import { Reserva } from '@/app/core/models/operaciones/Reserva.model';
-import { ReservaService } from '@/app/core/services/operaciones/reserva-service';
+import { ReservaService } from '@/app/core/services/operaciones/reserva.service';
 import { ConfirmPopoverComponent } from '@/app/shared/components/confirm-popover/confirm-popover.component';
-import { StatusBadgeComponent } from '@/app/shared/components/status-badge/status-badge.component';
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
-import { InputTextModule } from 'primeng/inputtext';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { finalize } from 'rxjs';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-reserva-list',
   standalone: true,
-  imports: [
-    FloatLabelModule, 
-    IconFieldModule, 
-    InputIconModule, 
-    InputTextModule, 
-    FormsModule,
-    ButtonModule, 
-    CommonModule, 
-    TableModule, 
-    ToggleSwitchModule,
-    StatusBadgeComponent
-  ],
+  imports: [CommonModule, FormsModule, ButtonModule, TableModule, DialogModule],
   templateUrl: './reserva-list.html',
   styleUrls: ['./reserva-list.css'],
 })
-export class ReservaList {
+export class ReservaList implements OnInit {
   private router = inject(Router);
   private reservaService = inject(ReservaService);
 
-  @Input() cargado = false;
-  @Input() totalRecords = 0;
-  @Input() rows = 10;
-  @Input() first = 0;
-
-  clienteBusqueda: string = '';
-  
   reservas: Reserva[] = [];
-  loading: boolean = false;
-  totalElements: number = 0;
-  currentPage: number = 0;
-  pageSize: number = 10;
-  totalPages: number = 0;
+  reservasFiltradas: Reserva[] = [];
+  loading = false;
+  totalRecords = 0;
+  rows = 10;
+  currentPage = 0;
 
-  // Estados para filtros
-  filtroEstado: string = '';
-  filtroFechaInicio: string = '';
-  filtroFechaFin: string = '';
+  filtros = {
+    cliente: '',
+    barbero: '',
+    estado: '',
+    fecha: ''
+  };
+  showDetalle = false;
+reservaSeleccionada: Reserva | null = null;
 
-  ngOnInit(): void {
-    this.loadReservas();
-  }
+verDetalle(reserva: Reserva): void {
+  this.reservaSeleccionada = reserva;
+  this.showDetalle = true;
+}
 
-  loadReservas(event?: TableLazyLoadEvent): void {
-    this.loading = true;
-    
-    
-    const page = event ? Math.floor(event.first! / (event.rows || this.pageSize)) : this.currentPage;
-    const size = event?.rows || this.pageSize;
-    
-    this.currentPage = page;
-    this.pageSize = size;
+ 
 
-    
-    this.reservaService.getReservas(page, size)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-          this.cargado = true;
-        })
-      )
+  get totalFiltrados(): number {
+  return this.reservasFiltradas.length;
+}
+
+ngOnInit(): void {
+  this.loadReservas();
+}
+
+loadReservas(event?: TableLazyLoadEvent): void {
+  this.loading = true;
+
+  
+  if (event) {
+    this.rows = event.rows ?? this.rows;
+    this.currentPage = event.first != null ? Math.floor((event.first ?? 0) / this.rows) : 0;
+    this.reservaService.getReservas(this.currentPage, this.rows)
+      .pipe(finalize(() => this.loading = false))
       .subscribe({
         next: (response: ApiResponse<Page<Reserva>>) => {
           if (response.success && response.data) {
             this.reservas = response.data.content;
-            this.totalElements = response.data.totalElements;
-            this.totalPages = response.data.totalPages;
-            this.totalRecords = response.data.totalElements;
-          } else {
-            this.reservas = [];
-            this.totalElements = 0;
-            this.totalRecords = 0;
+            this.totalRecords = response.data.totalElements ?? this.reservas.length;
+            this.aplicarFiltros();
           }
         },
-        error: (error) => {
-          console.error('Error al cargar reservas:', error);
+        error: () => {
           this.reservas = [];
-          this.totalElements = 0;
-          this.totalRecords = 0;
+          this.reservasFiltradas = [];
         }
       });
+    return;
   }
 
   
-  
+  this.reservaService.getReservas(0, 1000)
+    .pipe(finalize(() => this.loading = false))
+    .subscribe({
+      next: (response: ApiResponse<Page<Reserva>>) => {
+        if (response.success && response.data) {
+          this.reservas = response.data.content;
+          this.aplicarFiltros();
+        }
+      },
+      error: () => {
+        this.reservas = [];
+        this.reservasFiltradas = [];
+      }
+    });
+}
 
-  
-  
+aplicarFiltros(): void {
+  this.reservasFiltradas = this.reservas.filter(r => {
+    const okCliente = !this.filtros.cliente ||
+      r.clienteNombre?.toLowerCase().includes(this.filtros.cliente.toLowerCase());
+    const okBarbero = !this.filtros.barbero ||
+      r.barberoNombre === this.filtros.barbero;
+    const okEstado = !this.filtros.estado ||
+      r.estadoReserva === this.filtros.estado;
+    const okFecha = !this.filtros.fecha ||
+      (r.fecha != null && new Date(r.fecha).toISOString().split('T')[0] === this.filtros.fecha);
+    return okCliente && okBarbero && okEstado && okFecha;
+  });
+}
 
  
-  limpiarFiltros(): void {
-    this.clienteBusqueda = '';
-    this.filtroEstado = '';
-    this.filtroFechaInicio = '';
-    this.filtroFechaFin = '';
-    this.loadReservas();
+  get barberosList(): string[] {
+  return [...new Set(this.reservas.map(r => r.barberoNombre).filter(Boolean))].sort();
+}
+
+  
+
+  get hayFiltrosActivos(): boolean {
+    return !!(this.filtros.cliente || this.filtros.barbero || this.filtros.estado || this.filtros.fecha);
   }
 
-  obtenerFechaHora(reserva: Reserva): Date {
-    return new Date(`${reserva.fecha}T${reserva.horaInicio}`);
+  limpiarFiltro(campo: keyof typeof this.filtros): void {
+    this.filtros[campo] = '';
+    this.aplicarFiltros();
+  }
+
+  limpiarTodosFiltros(): void {
+    this.filtros = { cliente: '', barbero: '', estado: '', fecha: '' };
+    this.aplicarFiltros();
+  }
+
+  onLazyLoad(event: TableLazyLoadEvent): void {
+    this.loadReservas(event);
   }
 
   irNuevaReserva(): void {
     this.router.navigate(['/dashboard/admin/operaciones/reservas/nueva']);
   }
 
-  verDetalle(id: number): void {
-    this.router.navigate([`/dashboard/admin/operaciones/reservas/${id}`]);
-  }
-
-  editarReserva(id: number): void {
-    this.router.navigate([`/dashboard/admin/operaciones/reservas/editar/${id}`]);
-  }
-
   
 
-  getEstadoClass(estado: string): string {
-    switch (estado) {
-      case 'PENDIENTE':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'CONFIRMADA':
-        return 'bg-blue-100 text-blue-800';
-      case 'COMPLETADA':
-        return 'bg-green-100 text-green-800';
-      case 'CANCELADA':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
+  editarReserva(reserva: Reserva): void {
+    this.router.navigate([`/dashboard/admin/operaciones/reservas/editar/${reserva.id}`]);
   }
 
-  onLazyLoad(event: TableLazyLoadEvent): void {
-    this.loadReservas(event);
+  getEstadoClass(estado: string | null): string {
+    switch (estado) {
+      case 'CONFIRMADA':  return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+      case 'PENDIENTE':   return 'bg-[#C9A84C]/10 text-[#C9A84C] border-[#C9A84C]/20';
+      case 'COMPLETADA':  return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
+      case 'CANCELADA':   return 'bg-red-500/10 text-red-400 border-red-500/20';
+      default:            return 'bg-[#333333]/50 text-[#666666] border-[#333333]';
+    }
   }
 }

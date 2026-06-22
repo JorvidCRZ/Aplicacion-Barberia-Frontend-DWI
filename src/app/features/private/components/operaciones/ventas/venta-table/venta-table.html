@@ -1,85 +1,64 @@
 <div class="table-base p-4 md:p-6 lg:p-8">
     <div class="relative w-full overflow-x-auto">
 
-        <p-table
-            [value]="ventas"
-            [loading]="!cargado"
-            dataKey="ventaId"
-            [showCurrentPageReport]="true"
+        <p-table [value]="ventas" [loading]="!cargado" dataKey="ventaId" expandableRows [showCurrentPageReport]="true"
             currentPageReportTemplate="Viendo {first} a {last} de {totalRecords} entradas"
-            [tableStyle]="{ 'min-width': '1000px' }"
-            class="rounded-xl"
-        >
+            [tableStyle]="{ 'min-width': '1000px' }" class="rounded-xl">
 
-            <!-- HEADER -->
             <ng-template #header>
                 <tr class="table-header">
-                    <th class="text-center">ID</th>
+                    <th class="text-center">N° Venta</th>
                     <th class="text-center">Cliente</th>
                     <th class="text-center">Comprobante</th>
-                    <th class="text-center">Productos</th>
+                    <th class="text-center">Cant. Ítems</th>
                     <th class="text-center">Fecha</th>
                     <th class="text-center">Total</th>
                     <th class="text-center">Acciones</th>
                 </tr>
             </ng-template>
 
-            <!-- BODY -->
-            <ng-template #body let-venta pTemplate="body">
-
+            <ng-template #body let-venta let-expanded="expanded" pTemplate="body">
                 <tr class="table-row transition-all duration-200">
 
-                    <!-- ID -->
-                    <td class="px-4 py-3 whitespace-nowrap text-center">
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
-                            bg-white/5 text-[#888888] border border-white/10">
-                            #{{ venta.ventaId }}
-                        </span>
+                    <td class="px-4 py-3 whitespace-nowrap">
+                        <div class="inline-flex items-center gap-3">
+                            @if((venta.detalles ?? []).length > 0) {
+                                <p-button type="button" [pRowToggler]="venta" 
+                                    [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" 
+                                    class="boton-expandir-tabla">
+                                </p-button>
+                            }
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-white/5 text-[#888888] border border-white/10">
+                                {{ venta.numeroCorrelativo || ('#' + venta.ventaId) }}
+                            </span>
+                        </div>
                     </td>
 
-                    <!-- CLIENTE -->
                     <td class="px-4 py-3 whitespace-nowrap text-center">
                         <span class="font-semibold text-white text-sm">
                             {{ venta.clienteNombre }}
                         </span>
                     </td>
 
-                    <!-- COMPROBANTE -->
                     <td class="px-4 py-3 whitespace-nowrap text-center">
-
                         @if(venta.tipoComprobante === 'BOLETA'){
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide
-                                bg-purple-500/10 text-purple-400 border border-purple-500/30">
-                                {{ venta.tipoComprobante }}
-                            </span>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide bg-purple-500/10 text-purple-400 border border-purple-500/30">
+                            {{ venta.tipoComprobante }}
+                        </span>
                         }
-
                         @if(venta.tipoComprobante === 'FACTURA'){
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide
-                                bg-blue-500/10 text-blue-400 border border-blue-500/30">
-                                {{ venta.tipoComprobante }}
-                            </span>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide bg-blue-500/10 text-blue-400 border border-blue-500/30">
+                            {{ venta.tipoComprobante }}
+                        </span>
                         }
-
                     </td>
 
-                    <!-- PRODUCTOS -->
                     <td class="px-4 py-3 text-center">
-                        <div class="flex flex-col items-center gap-1">
-                            @for (detalle of venta.detalles; track detalle.detalleVentaId) {
-                                <div class="text-sm text-white">
-                                    <span class="font-medium">
-                                        {{ detalle.productoNombre || ('#' + detalle.productoId) }}
-                                    </span>
-                                    <span class="font-semibold text-[#C9A84C] ml-1">
-                                        x{{ detalle.cantidad }}
-                                    </span>
-                                </div>
-                            }
-                        </div>
+                        <span class="text-sm font-medium text-gray-400 bg-neutral-primary-soft px-3 py-1.5 rounded-lg border border-default">
+                            {{ venta.detalles?.length || 0 }} ítem(s)
+                        </span>
                     </td>
 
-                    <!-- FECHA -->
                     <td class="px-4 py-3 whitespace-nowrap text-center">
                         <div class="flex flex-col items-center">
                             <span class="font-medium text-white text-sm">
@@ -91,34 +70,80 @@
                         </div>
                     </td>
 
-                    <!-- TOTAL -->
                     <td class="px-4 py-3 whitespace-nowrap text-center">
                         <span class="text-base font-bold text-[#C9A84C]">
                             S/ {{ calcularTotal(venta) | number:'1.2-2' }}
                         </span>
                     </td>
 
-                    <!-- ACCIONES -->
                     <td class="px-4 py-3 whitespace-nowrap text-center">
                         <div class="table-actions flex justify-center gap-2">
-                            <p-button
-                                icon="pi pi-pencil"
-                                class="boton-editar-tabla"
-                                (click)="editar.emit(venta)"
-                            ></p-button>
-                            <p-button
-                                icon="pi pi-trash"
-                                class="boton-eliminar-tabla"
-                                (click)="eliminar.emit(venta)"
-                            ></p-button>
+                            <p-button icon="pi pi-pencil" class="boton-editar-tabla" (click)="editar.emit(venta)"></p-button>
+                            <p-button icon="pi pi-trash" class="boton-eliminar-tabla" (click)="eliminar.emit(venta)"></p-button>
                         </div>
                     </td>
 
                 </tr>
-
             </ng-template>
 
-            <!-- EMPTY -->
+            <ng-template #expandedrow pTemplate="rowExpansion" let-venta>
+                <tr>
+                    <td colspan="7" class="p-0">
+                        <div class="p-5 bg-neutral-primary-lighter rounded-xl shadow-inner border border-default mx-4 my-3">
+                            
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                
+                                <div>
+                                    <h3 class="text-sm font-bold text-brand-gold mb-3 flex items-center gap-2 border-b border-default pb-2">
+                                        <i class="pi pi-box"></i> Productos Físicos
+                                    </h3>
+                                    <div class="flex flex-col gap-2">
+                                        @for (detalle of venta.detalles; track detalle.detalleVentaId) {
+                                            @if(detalle.productoNombre) {
+                                                <div class="flex items-center justify-between p-3 rounded-lg border border-default bg-neutral-primary-soft hover:bg-neutral-primary transition-colors">
+                                                    <div class="flex flex-col gap-0.5">
+                                                        <span class="text-sm font-medium text-white">{{ detalle.productoNombre }}</span>
+                                                        <span class="text-[11px] text-gray-400">
+                                                            {{ detalle.cantidad }} unid. x S/ {{ detalle.precioUnitario | number:'1.2-2' }}
+                                                        </span>
+                                                    </div>
+                                                    <span class="text-sm font-bold text-green-500">
+                                                        S/ {{ detalle.subtotal | number:'1.2-2' }}
+                                                    </span>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-sm font-bold text-brand-gold mb-3 flex items-center gap-2 border-b border-default pb-2">
+                                        <i class="pi pi-scissors"></i> Servicios Realizados
+                                    </h3>
+                                    <div class="flex flex-col gap-2">
+                                        @for (detalle of venta.detalles; track detalle.detalleVentaId) {
+                                            @if(detalle.servicioNombre) {
+                                                <div class="flex items-center justify-between p-3 rounded-lg border border-default bg-neutral-primary-soft hover:bg-neutral-primary transition-colors">
+                                                    <div class="flex flex-col gap-0.5">
+                                                        <span class="text-sm font-medium text-white">{{ detalle.servicioNombre }}</span>
+                                                        <span class="text-[11px] text-gray-400">Servicio único</span>
+                                                    </div>
+                                                    <span class="text-sm font-bold text-green-500">
+                                                        S/ {{ detalle.subtotal | number:'1.2-2' }}
+                                                    </span>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+
             <ng-template #empty>
                 <tr>
                     <td colspan="7" class="py-20 text-center">

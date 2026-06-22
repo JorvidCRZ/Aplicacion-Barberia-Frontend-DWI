@@ -17,18 +17,13 @@ import { NotificationService } from '../../../core/services/common/notification.
 import { CarritoService } from '@/app/core/services/catalogos/carrito.service';
 import { VentaService } from '@/app/core/services/venta/venta.service';
 import { Venta } from '@/app/core/models/ventas/venta.model';
+import { SolesPipe } from '@/app/shared/pipes/moneda.pipe';
+import { SafeImageUrlPipe } from '@/app/shared/pipes/safe-image-url.pipe';
 
 @Component({
   standalone: true,
   selector: 'app-checkout',
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    ButtonModule,
-    SelectModule,
-    MessageModule,
-    TextareaModule
-  ],
+  imports: [ CommonModule, ReactiveFormsModule, ButtonModule, SelectModule, MessageModule, TextareaModule, SolesPipe, SafeImageUrlPipe ],
   templateUrl: './checkout.html',
   styleUrl: './checkout.css'
 })
@@ -79,14 +74,11 @@ export class CheckoutComponent implements OnInit {
   }
 
   confirmarPedido(): void {
-
     this.formSubmitted = true;
-
     if (this.checkoutForm.invalid) {
       this.notify.showWarn('Complete los datos requeridos');
       return;
     }
-
     if (this.carrito.items().length === 0) {
       this.notify.showWarn('El carrito está vacío');
       return;
@@ -104,13 +96,8 @@ export class CheckoutComponent implements OnInit {
 
     this.ventaService.crearVenta(request).subscribe({
       next: (resp) => {
-
         this.carrito.vaciarCarrito();
-
-        this.notify.showSuccess(
-          'Pedido registrado correctamente'
-        );
-
+        this.notify.showSuccess('Pedido registrado correctamente');
         this.router.navigate(['/']);
       },
       error: (err) => this.notify.showHttpError(err)

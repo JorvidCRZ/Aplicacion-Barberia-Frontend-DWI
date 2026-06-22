@@ -1,0 +1,134 @@
+/* =============================================
+   reconocimiento-facial.css — FadEx theme
+   ============================================= */
+
+:host {
+  --gold: #c9a227;
+  --gold-dim: rgba(201, 162, 39, 0.18);
+  --surface: #1a1a1a;
+  --deep: #0d0d0d;
+  --text: #f0ece0;
+  --text-muted: rgba(240, 236, 224, 0.45);
+  --sep: rgba(201, 162, 39, 0.1);
+}
+
+/* ── Contenedor principal ── */
+.contenedor-ia {
+  width: 100%;
+  max-width: 900px;
+  margin: 2rem auto 0 auto; /* separa del top + centra */
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ── Estado cámara: centrado y acotado ── */
+.estado-camara {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* app-camara ocupa el ancho completo dentro de su columna */
+.estado-camara app-camara {
+  width: 100%;
+}
+
+/* ── Botón analizar ── */
+.btn-analizar {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 13px 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--gold);
+  border: 1.5px solid var(--gold);
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.15s;
+}
+
+.btn-analizar:hover:not(:disabled) {
+  background: rgba(201, 162, 39, 0.08);
+}
+
+.btn-analizar:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ── Error ── */
+.error-mensaje {
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(162, 45, 45, 0.12);
+  border: 1px solid rgba(162, 45, 45, 0.3);
+  border-radius: 3px;
+  font-size: 12px;
+  color: rgba(240, 150, 150, 0.85);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Estado resultado ── */
+.estado-resultado {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+/* app-resultado ocupa todo el ancho */
+.estado-resultado app-resultado {
+  width: 100%;
+}
+
+/* ── Botón reiniciar ── */
+.btn-reiniciar {
+  width: 100%;
+  padding: 11px 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid rgba(240, 236, 224, 0.12);
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.btn-reiniciar:hover {
+  border-color: rgba(201, 162, 39, 0.3);
+  color: var(--gold);
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .contenedor-ia {
+    padding: 1rem;
+  }
+}
+
+

@@ -1,0 +1,177 @@
+<p-toast position="top-right" [baseZIndex]="9999"></p-toast>
+
+<div class="min-h-screen bg-[#0c0c0c] p-6">
+
+  <!-- Header -->
+  <div class="max-w-7xl mx-auto mb-6">
+    <div class="flex items-center justify-between flex-wrap gap-4">
+      <div class="flex items-center gap-3">
+        <i class="pi pi-calendar text-2xl text-[#C9A84C]"></i>
+        <div>
+          <h2 class="text-2xl font-bold text-white m-0">Calendario de Reservas</h2>
+          <p class="text-[#888888] text-sm m-0">Vista diaria por barbero</p>
+        </div>
+      </div>
+
+      <!-- Navegación de fecha -->
+      <div class="flex items-center gap-2">
+        <button
+          (click)="cambiarDia(-1)"
+          class="w-9 h-9 flex items-center justify-center rounded-lg border border-[#333333] text-[#888888] hover:border-[#C9A84C] hover:text-[#C9A84C] transition-colors cursor-pointer bg-transparent">
+          <i class="pi pi-chevron-left text-xs"></i>
+        </button>
+
+        <button
+          (click)="irAHoy()"
+          class="px-4 h-9 rounded-lg border text-sm font-semibold transition-colors cursor-pointer"
+          [ngClass]="esHoy ? 'border-[#C9A84C] text-[#C9A84C] bg-[#C9A84C]/10' : 'border-[#333333] text-[#888888] hover:border-[#C9A84C] hover:text-[#C9A84C] bg-transparent'">
+          Hoy
+        </button>
+
+        <div class="px-4 h-9 flex items-center rounded-lg bg-[#121212] border border-[#333333] text-white text-sm font-semibold min-w-[180px] justify-center">
+          {{ fechaActual | date:'EEEE, d \'de\' MMMM yyyy' : '' : 'es' }}
+        </div>
+
+        <button
+          (click)="cambiarDia(1)"
+          class="w-9 h-9 flex items-center justify-center rounded-lg border border-[#333333] text-[#888888] hover:border-[#C9A84C] hover:text-[#C9A84C] transition-colors cursor-pointer bg-transparent">
+          <i class="pi pi-chevron-right text-xs"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="max-w-7xl mx-auto flex items-center justify-center py-20">
+    <i class="pi pi-spin pi-spinner text-[#C9A84C] text-3xl"></i>
+  </div>
+
+  <!-- Sin reservas -->
+  <div *ngIf="!isLoading && reservasDelDia.length === 0"
+    class="max-w-7xl mx-auto flex flex-col items-center justify-center py-20 text-center">
+    <i class="pi pi-calendar-times text-5xl text-[#333333] mb-4"></i>
+    <p class="text-[#888888] text-lg font-semibold">Sin reservas para este día</p>
+    <p class="text-[#555555] text-sm">No hay reservas programadas para {{ fechaActual | date:'d \'de\' MMMM' : '' : 'es' }}</p>
+  </div>
+
+  <!-- Grilla calendario -->
+  <div *ngIf="!isLoading && reservasDelDia.length > 0"
+    class="max-w-7xl mx-auto bg-[#121212] border border-[#333333] rounded-xl overflow-hidden">
+
+    <!-- Tabla con scroll horizontal -->
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse" style="min-width: 700px">
+
+        <!-- Cabecera barberos -->
+        <thead>
+          <tr class="border-b border-[#333333]">
+            <th class="w-20 px-4 py-3 text-left text-[#555555] text-xs font-semibold uppercase tracking-wider border-r border-[#333333] bg-[#0c0c0c]">
+              Hora
+            </th>
+            <th *ngFor="let barbero of barberos"
+              class="px-4 py-3 text-center text-white text-sm font-semibold border-r border-[#333333] last:border-r-0 bg-[#0c0c0c]">
+              {{ barbero }}
+            </th>
+          </tr>
+        </thead>
+
+        <!-- Filas de horas -->
+        <tbody>
+          <tr *ngFor="let hora of horasGrilla"
+            class="border-b border-[#222222] hover:bg-white/[0.02] transition-colors">
+
+            <!-- Columna hora -->
+            <td class="px-4 py-0 h-14 text-[#555555] text-xs font-mono border-r border-[#333333] align-middle whitespace-nowrap">
+              {{ hora }}
+            </td>
+
+            <!-- Celda por barbero -->
+            <td *ngFor="let barbero of barberos"
+              class="px-2 py-1 h-14 border-r border-[#222222] last:border-r-0 align-middle">
+
+              <ng-container *ngIf="getReserva(barbero, hora) as reserva">
+                <div
+                  class="rounded-md px-2 py-1.5 h-11 flex flex-col justify-center cursor-pointer transition-all hover:brightness-110"
+                  [ngClass]="getColorEstado(reserva.estadoReserva)"
+                  (click)="verDetalle(reserva)">
+                  <span class="text-white text-xs font-semibold truncate leading-tight">
+                    {{ reserva.servicio }}
+                  </span>
+                  <span class="text-white/70 text-[10px] truncate leading-tight">
+                    {{ reserva.clienteNombre }}
+                  </span>
+                </div>
+              </ng-container>
+
+            </td>
+          </tr>
+        </tbody>
+
+      </table>
+    </div>
+
+    <!-- Leyenda estados -->
+    <div class="flex items-center gap-4 px-4 py-3 border-t border-[#333333] flex-wrap">
+      <span class="text-[#555555] text-xs font-semibold uppercase tracking-wider mr-2">Estado:</span>
+      <div class="flex items-center gap-1.5">
+        <div class="w-3 h-3 rounded-sm bg-[#2a2a2a] border border-[#444]"></div>
+        <span class="text-[#888888] text-xs">Sin estado</span>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <div class="w-3 h-3 rounded-sm bg-[#1a3a2a] border border-[#2d6a4a]"></div>
+        <span class="text-[#888888] text-xs">Confirmada</span>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <div class="w-3 h-3 rounded-sm bg-[#3a2a1a] border border-[#C9A84C]/50]"></div>
+        <span class="text-[#888888] text-xs">Pendiente</span>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <div class="w-3 h-3 rounded-sm bg-[#3a1a1a] border border-[#c0392b]/50"></div>
+        <span class="text-[#888888] text-xs">Cancelada</span>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Dialog detalle -->
+<p-dialog
+  [(visible)]="showDetalle"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  header="Detalle de Reserva"
+  styleClass="w-full max-w-sm">
+
+  <div *ngIf="reservaSeleccionada" class="flex flex-col gap-3 py-2 text-sm text-white">
+    <div class="flex justify-between border-b border-[#333333] pb-2">
+      <span class="text-[#888888]">Cliente</span>
+      <span class="font-semibold">{{ reservaSeleccionada.clienteNombre }}</span>
+    </div>
+    <div class="flex justify-between border-b border-[#333333] pb-2">
+      <span class="text-[#888888]">Barbero</span>
+      <span class="font-semibold">{{ reservaSeleccionada.barberoNombre }}</span>
+    </div>
+    <div class="flex justify-between border-b border-[#333333] pb-2">
+      <span class="text-[#888888]">Servicio</span>
+      <span class="font-semibold">{{ reservaSeleccionada.servicio }}</span>
+    </div>
+    <div class="flex justify-between border-b border-[#333333] pb-2">
+      <span class="text-[#888888]">Hora</span>
+      <span class="font-semibold">{{ reservaSeleccionada.horaInicio }} - {{ reservaSeleccionada.horaFin }}</span>
+    </div>
+    <div class="flex justify-between border-b border-[#333333] pb-2">
+      <span class="text-[#888888]">Total</span>
+      <span class="font-semibold text-[#C9A84C]">S/. {{ reservaSeleccionada.total }}</span>
+    </div>
+    <div class="flex justify-between">
+      <span class="text-[#888888]">Estado</span>
+      <span class="font-semibold px-2 py-0.5 rounded text-xs"
+        [ngClass]="getColorEstado(reservaSeleccionada.estadoReserva)">
+        {{ reservaSeleccionada.estadoReserva || 'Sin estado' }}
+      </span>
+    </div>
+  </div>
+
+</p-dialog>

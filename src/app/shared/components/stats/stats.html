@@ -1,0 +1,25 @@
+<div class="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-3">
+    @for (item of items; track item.title) {
+    <div class="relative overflow-hidden rounded-xl border px-4 py-4 shadow-sm" [style.background]="'#121212'"
+        [style.border-color]="'rgba(212,175,55,0.18)'">
+
+        <div class="absolute top-0 left-0 right-0 h-[2px]" [ngClass]="item.accentClass ?? 'bg-brand-gold'"></div>
+
+        @if (item.icon) {
+        <div class="flex justify-end mb-2">
+            <div class="rounded-lg p-2" [ngClass]="item.iconBgClass ?? 'bg-brand-gold/10'">
+                <i [class]="item.icon + ' text-base'" [ngClass]="item.accentTextClass ?? 'text-brand-gold'"></i>
+            </div>
+        </div>
+        }
+
+        <div class="flex flex-col gap-1">
+            <span class="text-[11px] uppercase tracking-widest text-[#858585]">{{ item.title }}</span>
+            <h2 class="text-2xl font-bold leading-none text-white">{{ item.value }}</h2>
+            @if (item.description) {
+            <p class="text-[11px] text-[#525252] mt-1 line-clamp-1">{{ item.description }}</p>
+            }
+        </div>
+    </div>
+    }
+</div>

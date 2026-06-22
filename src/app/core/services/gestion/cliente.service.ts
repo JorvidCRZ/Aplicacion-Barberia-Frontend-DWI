@@ -136,4 +136,8 @@ reactivar(id: number): Observable<ApiResponse<string>> {
         {}
     );
 }
+// Obtener perfil propio del cliente autenticado
+obtenerPerfilPropio(): Observable<ApiResponse<any>> {
+  return this.http.get<ApiResponse<any>>(`${this.apiUrl}/perfil-propio`);
+}
 }

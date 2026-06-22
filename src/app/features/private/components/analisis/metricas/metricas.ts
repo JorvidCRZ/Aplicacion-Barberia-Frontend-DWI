@@ -1,11 +1,14 @@
-import { Component, OnInit, OnDestroy,  ViewChild, ElementRef, inject, ChangeDetectorRef  } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TabsModule } from 'primeng/tabs';
 import { forkJoin } from 'rxjs';
 import { Chart, registerables } from 'chart.js';
 import { MetricaService } from '@/app/core/services/analisis/metrica.service';
-import { ResumenMetricas, IngresoDiario, ReservasDia, RendimientoBarbero, ServicioSolicitado } from '@/app/core/models/analisis/metrica.model';
-
+import { FILTROS_METRICAS } from '@/app/core/config/filtros.config';
+import { ResumenMetricas, IngresoDiario, ReservasDia, RendimientoBarbero, ServicioSolicitado, MetricasFiltro } from '@/app/core/models/analisis/metrica.model'
+import { FiltrosComponent } from '@/app/shared/components/filtros/filtros.component';
+import { FilterField } from '@/app/core/models/common/filtro.model';
 Chart.register(...registerables);
 
 interface Kpi {
@@ -20,7 +23,7 @@ interface Kpi {
 @Component({
   selector: 'app-metricas',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TabsModule,FiltrosComponent],
   templateUrl: './metricas.html',
   // ✅ Sin styleUrl — todo el estilo va en Tailwind dentro del HTML
 })
@@ -33,54 +36,150 @@ export class MetricasComponent implements OnInit, OnDestroy {
   @ViewChild('barberosChart')  barberosRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('serviciosChart') serviciosRef!: ElementRef<HTMLCanvasElement>;
 
-  private charts: Chart[] = [];
+ private charts: Chart[] = [];
 
-  fechaFin    = new Date().toISOString().split('T')[0];
-  fechaInicio = new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0];
+// Filtro
+filtro: MetricasFiltro = {
+  fechaInicio: '',
+  fechaFin: ''
+};
 
-  cargando = false;
-  error    = '';
-  kpis: Kpi[] = [];
+// Configuración del componente de filtros
+filtrosFields: FilterField<MetricasFiltro>[] = [...FILTROS_METRICAS];
+texto = 'Métricas';
 
-  private gold      = '#c9a84c';
-  private goldSoft  = 'rgba(201,168,76,0.18)';
-  private red       = '#e05252';
-  private gridColor = 'rgba(255,255,255,0.06)';
-  private textColor = 'rgba(255,255,255,0.55)';
+// Fechas usadas por el servicio
+fechaInicio = '';
+fechaFin = '';
 
-  ngOnInit(): void { this.cargar(); }
+// Estado
+cargando = false;
+error = '';
 
-  ngOnDestroy(): void { this.charts.forEach(c => c.destroy()); }
+// KPIs
+kpis: Kpi[] = [];
 
-  aplicarFiltros(): void { this.cargar(); }
+// Colores
+private gold      = '#c9a84c';
+private goldSoft  = 'rgba(201,168,76,0.18)';
+private red       = '#e05252';
+private gridColor = 'rgba(255,255,255,0.06)';
+private textColor = 'rgba(255,255,255,0.55)';
+
+
+ngOnInit(): void {
+  const hoy = new Date();
+  const hace30 = new Date();
+
+  hace30.setDate(hoy.getDate() - 30);
+
+  this.filtro = {
+    fechaInicio: hace30.toISOString().split('T')[0],
+    fechaFin: hoy.toISOString().split('T')[0]
+  };
+
+  this.fechaInicio = this.filtro.fechaInicio;
+  this.fechaFin = this.filtro.fechaFin;
+
+  this.cargar();
+}
+
+  ngOnDestroy(): void { this.charts.forEach(c => c.destroy());
+
+   }
+
+ onBuscar(filtros: Partial<MetricasFiltro>): void {
+  this.filtro = {
+    ...this.filtro,
+    ...filtros
+  };
+
+  this.fechaInicio = this.filtro.fechaInicio;
+  this.fechaFin = this.filtro.fechaFin;
+
+  this.cargar();
+}
+
+
+onLimpiar(): void {
+
+  const hoy = new Date();
+  const hace30 = new Date();
+
+  hace30.setDate(hoy.getDate() - 30);
+
+  this.filtro = {
+    fechaInicio: hace30.toISOString().split('T')[0],
+    fechaFin: hoy.toISOString().split('T')[0]
+  };
+
+  this.fechaInicio = this.filtro.fechaInicio;
+  this.fechaFin = this.filtro.fechaFin;
+
+  this.cargar();
+}
+
+
 
 private cargar(): void {
+
   this.cargando = true;
-  this.error    = '';
+  this.error = '';
+
   this.charts.forEach(c => c.destroy());
-  this.charts   = [];
+  this.charts = [];
 
   forkJoin({
-    resumen:   this.metricaService.getResumen(this.fechaInicio, this.fechaFin),
-    ingresos:  this.metricaService.getIngresosDiarios(this.fechaInicio, this.fechaFin),
-    reservas:  this.metricaService.getReservasPorDia(this.fechaInicio, this.fechaFin),
-    barberos:  this.metricaService.getRendimientoBarberos(this.fechaInicio, this.fechaFin),
-    servicios: this.metricaService.getServiciosSolicitados(this.fechaInicio, this.fechaFin),
+    resumen: this.metricaService.getResumen(
+      this.filtro.fechaInicio,
+      this.filtro.fechaFin
+    ),
+
+    ingresos: this.metricaService.getIngresosDiarios(
+      this.filtro.fechaInicio,
+      this.filtro.fechaFin
+    ),
+
+    reservas: this.metricaService.getReservasPorDia(
+      this.filtro.fechaInicio,
+      this.filtro.fechaFin
+    ),
+
+    barberos: this.metricaService.getRendimientoBarberos(
+      this.filtro.fechaInicio,
+      this.filtro.fechaFin
+    ),
+
+    servicios: this.metricaService.getServiciosSolicitados(
+      this.filtro.fechaInicio,
+      this.filtro.fechaFin
+    )
+
   }).subscribe({
     next: ({ resumen, ingresos, reservas, barberos, servicios }) => {
+
       this.cargando = false;
+
       this.buildKpis(resumen);
-      this.cdr.detectChanges(); 
+
+      this.cdr.detectChanges();
+
       this.buildVentasChart(ingresos);
       this.buildReservasChart(reservas);
       this.buildBarberosChart(barberos);
       this.buildServiciosChart(servicios);
     },
+
     error: (err) => {
+
       this.cargando = false;
-      this.error = err?.error?.message ?? 'Error al cargar métricas';
+
+      this.error =
+        err?.error?.message ??
+        'Error al cargar métricas';
     }
   });
+
 }
 
   private buildKpis(r: ResumenMetricas): void {

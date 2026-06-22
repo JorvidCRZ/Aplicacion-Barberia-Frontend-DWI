@@ -25,7 +25,7 @@
                         </div>
                         <span class="font-medium transition-colors duration-200">{{ categoria.nombre}}</span>
                     </td>
-                    <td class="texto whitespace-nowrap text-center">{{ categoria.descripcion }}</td>
+                    <td class="texto whitespace-nowrap text-center"><span class="block max-w-xs truncate mx-auto cursor-help"[pTooltip]="categoria.descripcion" tooltipPosition="top">{{ categoria.descripcion }}</span></td>
                     <td class="whitespace-nowrap text-center"><app-status-badge type="text" [value]="categoria.tipo" /></td>
                     <td class="whitespace-nowrap text-center">
                         <div class="flex items-center justify-center gap-2">

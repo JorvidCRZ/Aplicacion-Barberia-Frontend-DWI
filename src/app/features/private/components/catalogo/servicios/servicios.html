@@ -4,7 +4,8 @@
         <app-search-bar placeholder="Buscar servicio" (search)="buscarServicios($event)" />
         <button pButton label="Crear Servicio" icon="pi pi-plus" class="p-button-sm boton-primary" (click)="abrirCrear()"></button>
     </aside>
-    <app-servicio-table [servicios]="servicios" [cargado]="cargado" [totalRecords]="totalRecords" [rows]="rows" (lazyLoad)="onLazyLoad($event)" (editar)="abrirEditar($event)" (eliminar)="eliminarServicio($event)" />
+    <app-filtros [fields]="filtrosFields" [titulo]="texto" [text]="texto" [acordeon]="true" (buscar)="onBuscar($event)" (limpiar)="onLimpiar()"/>
+    <app-servicio-table [servicios]="servicios" [cargado]="cargado" [totalRecords]="totalRecords" [rows]="rows" (lazyLoad)="onLazyLoad($event)" (editar)="abrirEditar($event)" (eliminar)="eliminarServicio($event)" (estado)="onCambiarEstado($any($event))" (publicado)="onCambiarPublicado($any($event))"/>
 </div>
 <p-dialog [(visible)]="mostrarFormulario" [modal]="true" [dismissableMask]="true" [closable]="true" [style]="{ width: '90vw', maxWidth: '80rem' }" (onHide)="onDialogHide()">
     <ng-template pTemplate="header">

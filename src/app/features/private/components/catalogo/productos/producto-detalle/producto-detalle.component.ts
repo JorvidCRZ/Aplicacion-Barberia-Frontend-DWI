@@ -9,6 +9,7 @@ import { environment } from '@/environments/environment.development';
 import { Producto } from '@/app/core/models/catalogos/productos.model';
 import { SafeImageUrlPipe } from '@/app/shared/pipes/safe-image-url.pipe';
 import { INVENTARIO_CONFIG } from '@/app/core/config/valores.config';
+import { NotificationService } from '@/app/core/services/common/notification.service';
 
 @Component({
   selector: 'app-producto-detalle',
@@ -21,6 +22,7 @@ export class ProductoDetalleComponent implements OnInit {
   private router = inject(Router);
   private cd = inject(ChangeDetectorRef);
   private route = inject(ActivatedRoute);
+  private notify = inject(NotificationService);
   private productoService = inject(ProductoService);
 
   environment = environment.apiUrl;
@@ -46,9 +48,10 @@ export class ProductoDetalleComponent implements OnInit {
         this.cargando = false;
         this.cd.detectChanges();
       },
-      error: () => {
+      error: (err) => {
         this.cargando = false;
         this.cd.detectChanges();
+        this.notify.showHttpError(err.message);
       }
     });
   }

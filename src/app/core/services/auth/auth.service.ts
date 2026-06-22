@@ -72,4 +72,10 @@ export class AuthService {
     })
   );
 }
+cambiarPassword(passwordActual: string, passwordNueva: string): Observable<ApiResponse<void>> {
+  return this.http.patch<ApiResponse<void>>(`${this.API}/change-password`, {
+    passwordActual,
+    passwordNueva,
+  });
+}
 }

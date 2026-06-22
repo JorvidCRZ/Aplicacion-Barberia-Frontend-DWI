@@ -1,0 +1,74 @@
+<div class="camara-card">
+
+    <div class="step-header">
+
+        <div class="step-number">
+            F
+        </div>
+
+        <h3>
+            Tómate una foto
+        </h3>
+
+    </div>
+
+    <div class="camara-container">
+
+        <video
+            #video
+            autoplay
+            playsinline>
+        </video>
+
+        @if(!camaraActiva){
+
+        <div class="camara-overlay">
+
+            <div class="overlay-content">
+
+                <div class="camera-icon">
+                    <i class="pi pi-camera"></i>
+                </div>
+
+                <span>
+                    ACTIVA LA CÁMARA
+                </span>
+
+            </div>
+
+        </div>
+
+        }
+
+    </div>
+
+    <canvas
+        #canvas
+        hidden>
+    </canvas>
+
+    @if(fotoCapturada){
+
+  <div class="mensaje-exito">
+    ✓ Foto tomada exitosamente
+  </div>
+
+}
+
+    <div class="acciones">
+
+  @if(!camaraActiva){
+    <button class="btn-principal activar" (click)="activarCamara()">
+      Activar cámara
+    </button>
+  }
+
+  @if(camaraActiva){
+    <button class="btn-principal tomar" (click)="tomarFoto()">
+      Tomar foto
+    </button>
+  }
+
+</div>
+
+</div>

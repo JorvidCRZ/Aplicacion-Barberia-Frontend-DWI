@@ -1,0 +1,104 @@
+<div class="tabla-wrap">
+
+  <div class="tabla-header">
+    <div class="tabla-titulo-wrap">
+      <p class="tabla-titulo">Ventas del período</p>
+      <span class="tabla-badge">{{ totalElements }} registros</span>
+    </div>
+    <div class="filtros">
+      <select class="tabla-filter" [(ngModel)]="mesFiltro">
+        @for (m of meses; track m.id) {
+          <option [ngValue]="m.id">{{ m.nombre }}</option>
+        }
+      </select>
+      <select class="tabla-filter" [(ngModel)]="anioFiltro">
+        @for (a of aniosDisponibles; track a) {
+          <option [ngValue]="a">{{ a }}</option>
+        }
+      </select>
+      <button class="btn-aplicar" (click)="aplicarFiltro()">
+        <i class="ti ti-filter"></i>
+        Aplicar
+      </button>
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Fecha</th>
+          <th>Cliente</th>
+          <th class="text-right">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (venta of ventas; track venta.ventaId) {
+          <tr>
+            <td class="venta-id">#{{ venta.ventaId }}</td>
+            <td>{{ venta.fecha | date:'dd/MM/yyyy' }}</td>
+            <td>
+              <div class="cliente-cell">
+                <span class="avatar-sm">
+                  {{ venta.nombreCliente | slice:0:2 | uppercase }}
+                </span>
+                {{ venta.nombreCliente }}
+              </div>
+            </td>
+            <td class="text-right monto">S/ {{ venta.total | number:'1.2-2' }}</td>
+          </tr>
+        }
+        @if (ventas.length === 0) {
+          <tr>
+            <td colspan="4" class="empty-state">
+              <i class="ti ti-inbox-off"></i>
+              <span>Sin ventas en este período</span>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (resumen) {
+    <div class="tabla-footer">
+      <div class="acumulados">
+        <div class="acum-item">
+          <span class="acum-label">Total vendido</span>
+          <span class="acum-value">S/ {{ resumen.totalVentas | number:'1.2-2' }}</span>
+        </div>
+        <div class="acum-sep"></div>
+        <div class="acum-item">
+          <span class="acum-label">Comisión ganada</span>
+          <span class="acum-value">S/ {{ resumen.montoComision | number:'1.2-2' }}</span>
+        </div>
+        <div class="acum-sep"></div>
+        <div class="acum-item">
+          <span class="acum-label">Sueldo base</span>
+          <span class="acum-value">S/ {{ resumen.sueldoBase | number:'1.2-2' }}</span>
+        </div>
+        <div class="acum-sep"></div>
+        <div class="acum-item acum-final">
+          <span class="acum-label">Sueldo final</span>
+          <span class="acum-value gold">S/ {{ resumen.sueldoFinal | number:'1.2-2' }}</span>
+        </div>
+      </div>
+      <div class="paginacion">
+        <span class="pag-info">{{ desde }} – {{ hasta }} de {{ totalElements }}</span>
+        <div class="pag-btns">
+          <button class="pag-btn" [disabled]="page === 0"
+            (click)="paginaCambiada.emit(page - 1)">
+            <i class="ti ti-chevron-left"></i>
+          </button>
+          <span class="pag-current">{{ paginaActual }} / {{ totalPages }}</span>
+          <button class="pag-btn" [disabled]="page + 1 >= totalPages"
+            (click)="paginaCambiada.emit(page + 1)">
+            <i class="ti ti-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>

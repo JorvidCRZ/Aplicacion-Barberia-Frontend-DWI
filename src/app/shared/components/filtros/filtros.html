@@ -1,0 +1,69 @@
+    @if (acordeon) {
+        <p-accordion [value]="abierto ? ['0'] : []" class="mb-4 filtros-acordeon">
+            <p-accordion-panel value="0">
+                <p-accordion-header>
+                    <div class="flex items-center gap-2">
+                        <i [class]="icono" class="text-brand-gold"></i>
+                        <span class="font-semibold text-brand-gold">{{ titulo }}</span>
+                        <span class="filtros-badge  text-brand-gold">{{ fields.length }} filtro(s)</span>
+                    </div>
+                </p-accordion-header>
+                <p-accordion-content>
+                    <ng-container [ngTemplateOutlet]="contenidoFiltros"></ng-container>
+                </p-accordion-content>
+            </p-accordion-panel>
+        </p-accordion>
+    } @else {
+        <ng-container [ngTemplateOutlet]="contenidoFiltros"></ng-container>
+    }
+
+    <ng-template #contenidoFiltros>
+        <div class="bg-brand-dark border border-brand-gold rounded-2xl p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-white font-bold text-lg uppercase tracking-wide">Filtrar {{ titulo }} <i class="{{ icono }}"></i></h2>
+                <span class="filtros-badge text-brand-gold">{{ fields.length }} filtro(s)</span>
+            </div>
+
+            <form [formGroup]="filtrosForm" class="filtros-panel">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    @for (field of fields; track field.key) {
+                        <div class="flex flex-col gap-1">
+                            <label class="text-xs font-semibold uppercase tracking-widest text-gray-500">{{ field.label}}</label>
+                            @switch (field.type) {
+                                @case ('text') {
+                                    <input pInputText [formControlName]="$any(field.key)" [placeholder]="field.placeholder ?? ''"/>
+                                }
+                                @case ('number') {
+                                    <p-inputnumber [formControlName]="$any(field.key)" [placeholder]="field.placeholder ?? ''" [mode]="field.currency ? 'currency' : 'decimal'"  mode="currency" currency="PEN" locale="es-PE" />
+                                }
+                                @case ('select') { 
+                                    <p-select [formControlName]="$any(field.key)" [options]="field.options" [placeholder]="field.placeholder ?? 'Seleccione'" [showClear]="true" optionLabel="label" optionValue="value" appendTo="body"/> 
+                                }
+                                @case ('boolean') {
+                                    <p-select [formControlName]="$any(field.key)" [options]="booleanOptions" [placeholder]="field.placeholder ?? 'Seleccione'" [showClear]="true" optionLabel="label" optionValue="value" />
+                                }
+                                @case ('date') {
+                                    <p-datepicker [formControlName]="$any(field.key)" [placeholder]="field.placeholder ?? 'Seleccione fecha'" [showIcon]="true" [iconDisplay]="'input'" [showTime]="field.includeTime ?? false" hourFormat="24" [minDate]="obtenerMinDate(field)" [maxDate]="obtenerMaxDate(field)"/>
+                                }
+                                @case ('multiselect') {
+                                    <p-multiselect [formControlName]="$any(field.key)" [options]="field.options" [placeholder]="field.placeholder ?? 'Seleccione'" [showClear]="true" optionLabel="label" optionValue="value" />
+                                }
+                                @case ('treeselect') {
+                                    <p-treeSelect [formControlName]="$any(field.key)" [options]="field.treeOptions ?? []" [placeholder]="field.placeholder ?? 'Seleccione'" [selectionMode]="field.treeSelectionMode ?? 'single'" [display]="field.treeSelectionMode === 'checkbox' ? 'chip' : 'comma'" [showClear]="true" [filter]="true" appendTo="body" />
+                                }
+                            }
+                        </div>
+                    }
+                </div>
+
+                <div class="mt-6 flex justify-end gap-3">
+                    @if (mostrarExportar) {
+                        <button pButton type="button" class="boton-excel" (click)="onExportar('excel')"> <i class="pi pi-file-excel text-sm"></i> Excel</button>
+                        <button pButton type="button" class="boton-pdf" (click)="onExportar('pdf')"><i class="pi pi-file-pdf text-sm"></i> PDF</button>
+                    }
+                    <button pButton type="button" (click)="onLimpiar()" class="boton-secondary"><i class="pi pi-eraser text-sm"></i> Limpiar filtros</button>
+                    <button pButton type="button" (click)="onBuscar()" class="boton-primary"><i class="pi pi-search text-sm"></i>Buscar {{ text }}</button>
+                </div>
+            </form>
+        </div>
+    </ng-template>

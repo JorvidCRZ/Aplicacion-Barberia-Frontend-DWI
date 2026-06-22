@@ -1,86 +1,28 @@
-<div class="p-6 flex flex-col gap-5 min-h-screen bg-ui-surface text-(--color-text-primary)">
+<div class="flex flex-col gap-4">
 
-  <div class="flex flex-col gap-4 bg-ui-card border border-ui-borderSoft rounded-2xl px-6 py-5">
-  <div>
-    <h1 class="text-[1.4rem] font-bold text-(--color-brand-gold) m-0 leading-tight">Reportes</h1>
-    <p class="text-[0.8rem] text-text-secondary mt-0.5 mb-0">Genera y descarga reportes detallados por período</p>
-  </div>
+<app-filtros
+  [fields]="filtrosFields"
+  [titulo]="'Reportes'"
+  [text]="'Reportes'"
+  [acordeon]="true"
+  (buscar)="onBuscar($event)"
+  (limpiar)="onLimpiar()">
+</app-filtros>
 
-<!-- Fila 1 -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-      <div class="flex flex-col gap-1">
-        <label class="text-[0.7rem] font-semibold tracking-widest uppercase text-text-muted">Desde</label>
-        <input type="date" [(ngModel)]="filtro.desde" [max]="filtro.hasta"
-               class="bg-ui-elevated border border-ui-border text-(--color-text-primary) px-3 py-[0.45rem] rounded-xl text-[0.85rem] outline-none focus:border-brand-gold-soft
-                      [&::-webkit-calendar-picker-indicator]:opacity-60 [&::-webkit-calendar-picker-indicator]:cursor-pointer"/>
-      </div>
-      <div class="flex flex-col gap-1">
-        <label class="text-[0.7rem] font-semibold tracking-widest uppercase text-text-muted">Hasta</label>
-        <input type="date" [(ngModel)]="filtro.hasta" [min]="filtro.desde"
-               class="bg-ui-elevated border border-ui-border text-(--color-text-primary) px-3 py-[0.45rem] rounded-xl text-[0.85rem] outline-none focus:border-brand-gold-soft
-                      [&::-webkit-calendar-picker-indicator]:opacity-60 [&::-webkit-calendar-picker-indicator]:cursor-pointer"/>
-      </div>
-      <div class="flex flex-col gap-1">
-        <label class="text-[0.7rem] font-semibold tracking-widest uppercase text-text-muted">Barbero</label>
-        <div class="relative">
-          <select [(ngModel)]="filtro.barberoId"
-                  class="appearance-none bg-ui-elevated border border-ui-border text-(--color-text-primary) px-3 py-[0.45rem] rounded-xl text-[0.85rem] outline-none focus:border-brand-gold-soft w-full cursor-pointer">
-            <option [value]="undefined">Todos</option>
-            <option *ngFor="let b of barberos" [value]="b.id">{{ b.nombre }}</option>
-          </select>
-          <i class="pi pi-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-text-muted text-[0.75rem] pointer-events-none"></i>
-        </div>
-      </div>
-      <div class="flex flex-col gap-1">
-        <label class="text-[0.7rem] font-semibold tracking-widest uppercase text-text-muted">Servicio</label>
-        <div class="relative">
-          <select [(ngModel)]="filtro.servicioId"
-                  class="appearance-none bg-ui-elevated border border-ui-border text-(--color-text-primary) px-3 py-[0.45rem] rounded-xl text-[0.85rem] outline-none focus:border-brand-gold-soft w-full cursor-pointer">
-            <option [value]="undefined">Todos</option>
-            <option *ngFor="let s of servicios" [value]="s.id">{{ s.nombre }}</option>
-          </select>
-          <i class="pi pi-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-text-muted text-[0.75rem] pointer-events-none"></i>
-        </div>
-      </div>
+  <div class="bg-ui-card border border-ui-borderSoft rounded-2xl px-6 py-5 flex flex-col gap-4">
+    <div>
+      <h1 class="text-[1.4rem] font-bold text-(--color-brand-gold) m-0 leading-tight">Reportes</h1>
+      <p class="text-[0.8rem] text-text-secondary mt-0.5 mb-0">Genera y descarga reportes detallados por período</p>
     </div>
 
-    <!-- Fila 2 -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 items-end">
-      <div class="flex flex-col gap-1">
-        <label class="text-[0.7rem] font-semibold tracking-widest uppercase text-text-muted">Estado</label>
-        <div class="relative">
-          <select [(ngModel)]="filtro.estado"
-                  class="appearance-none bg-ui-elevated border border-ui-border text-(--color-text-primary) px-3 py-[0.45rem] rounded-xl text-[0.85rem] outline-none focus:border-brand-gold-soft w-full cursor-pointer">
-            <option [value]="undefined">Todos</option>
-            <option *ngFor="let e of estados" [value]="e">{{ e }}</option>
-          </select>
-          <i class="pi pi-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-text-muted text-[0.75rem] pointer-events-none"></i>
-        </div>
-      </div>
-      <div class="flex flex-col gap-1">
-        <label class="text-[0.7rem] font-semibold tracking-widest uppercase text-text-muted">Método de pago</label>
-        <div class="relative">
-          <select [(ngModel)]="filtro.metodoPago"
-                  class="appearance-none bg-ui-elevated border border-ui-border text-(--color-text-primary) px-3 py-[0.45rem] rounded-xl text-[0.85rem] outline-none focus:border-brand-gold-soft w-full cursor-pointer">
-            <option [value]="undefined">Todos</option>
-            <option *ngFor="let m of metodosPago" [value]="m">{{ m }}</option>
-          </select>
-          <i class="pi pi-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-text-muted text-[0.75rem] pointer-events-none"></i>
-        </div>
-      </div>
-      <div></div>
-      <div class="flex gap-2 justify-end">
-        <button (click)="limpiarFiltros()"
-                class="px-4 py-[0.45rem] rounded-xl border border-ui-border text-[0.85rem] text-text-secondary bg-ui-elevated hover:border-brand-gold-soft cursor-pointer transition-all">
-          <i class="pi pi-refresh mr-1"></i> Limpiar
-        </button>
-        <button (click)="aplicarFiltros()" [disabled]="cargando"
-                class="bg-(--color-brand-gold) text-black font-bold px-4 py-[0.45rem] rounded-xl text-[0.85rem] flex items-center gap-1 hover:enabled:opacity-85 disabled:opacity-45 cursor-pointer transition-opacity">
-          <i class="pi pi-filter"></i> Aplicar
-        </button>
-      </div>
+    <div *ngIf="error" class="bg-red-950/40 border border-red-600/30 text-brand-red px-4 py-3 rounded-xl text-[0.85rem]">
+      <i class="pi pi-exclamation-triangle mr-2"></i>{{ error }}
     </div>
+
+    <!-- REPORTES DISPONIBLES, RESUMEN SEMANAL, etc. -->
   </div>
+
+
 
   <!-- ══════════════════════════════════════════════════════════════════
        ERROR

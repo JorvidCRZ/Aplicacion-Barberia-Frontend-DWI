@@ -1,0 +1,36 @@
+@if(corte){
+
+<div class="modal-backdrop" (click)="cerrarModal()">
+
+  <div
+    class="modal-panel"
+    (click)="$event.stopPropagation()">
+
+    <button
+      class="btn-cerrar"
+      (click)="cerrarModal()">
+      ✕
+    </button>
+
+    <h2>
+      {{ corte.nombre }}
+    </h2>
+
+    <img
+      [src]="corte.imagen_url"
+      [alt]="corte.nombre">
+
+    <p>
+      {{ corte.descripcion }}
+    </p>
+
+    <small>
+      Dificultad:
+      {{ corte.dificultad }}
+    </small>
+
+  </div>
+
+</div>
+
+}

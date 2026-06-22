@@ -12,12 +12,15 @@ import { VentaResumenComponent } from './venta-resumen/venta-resumen.component';
 
 import { SearchBarComponent } from '@/app/shared/components/search-bar/search-bar.component';
 import { DialogHeaderComponent } from '@/app/shared/components/dialog-header/dialog-header.component';
+import { FiltrosComponent } from '@/app/shared/components/filtros/filtros.component'; 
 
 import { NotificationService } from '@/app/core/services/common/notification.service';
 import { VentaService } from '@/app/core/services/venta/venta.service';
 
 import { Venta } from '@/app/core/models/ventas/venta.model';
 import { VentaDetalle } from '@/app/core/models/ventas/detalle.model';
+import { VentaFiltro } from '@/app/core/models/ventas/venta.model'; 
+import { FILTROS_VENTA } from '@/app/core/config/filtros.config';
 
 @Component({
   selector: 'app-ventas',
@@ -31,7 +34,8 @@ import { VentaDetalle } from '@/app/core/models/ventas/detalle.model';
     VentaFormComponent,
     VentaResumenComponent,
     SearchBarComponent,
-    DialogHeaderComponent
+    DialogHeaderComponent,
+    FiltrosComponent 
   ],
   templateUrl: './ventas.html'
 })
@@ -52,7 +56,8 @@ export class VentasComponent implements OnInit {
   ingresos = 0;
   promedio = 0;
 
-  filtro = '';
+  filtro: VentaFiltro = {};
+  filtrosFields = FILTROS_VENTA; 
 
   ngOnInit(): void {
     this.cargarVentas(0, this.rows);
@@ -60,7 +65,11 @@ export class VentasComponent implements OnInit {
 
   cargarVentas(page: number, size: number): void {
     this.cargado = false;
-    this.ventaService.obtenerVentas().subscribe({
+    
+    this.filtro.page = page;
+    this.filtro.size = size;
+
+    this.ventaService.obtenerVentas(this.filtro).subscribe({
       next: (resp) => {
         this.ventas = resp.data.map((venta: Venta) => {
 
@@ -94,10 +103,11 @@ export class VentasComponent implements OnInit {
       },
       error: () => {
         console.warn('Backend no conectado, simulando creación en UI...');
-
+        const idGenerado = Math.floor(Math.random() * 10000);
         const ventaSimulada: Venta = {
           ...data,
-          ventaId: Math.floor(Math.random() * 10000),
+          ventaId: idGenerado,
+          numeroCorrelativo: `VEN-SIM-${idGenerado}`, 
           fecha: new Date(),
           clienteNombre: data.clienteNombre ?? '',
           barberoNombre: 'Sin asignar',
@@ -123,6 +133,7 @@ export class VentasComponent implements OnInit {
           ...v,
           ...data,
           ventaId: v.ventaId,
+          numeroCorrelativo: v.numeroCorrelativo, 
           clienteNombre: v.clienteNombre,
           total: (data.detalles ?? []).reduce(
             (acc: number, det: any) => acc + (det.precioUnitario * det.cantidad), 0
@@ -145,7 +156,6 @@ export class VentasComponent implements OnInit {
       error: () => {
         this.ventas = this.ventas.filter(v => v.ventaId !== venta.ventaId);
         this.calcularResumen();
-        this.notify.showSuccess('Venta eliminada (Modo Simulación)');
       }
     });
   }
@@ -158,8 +168,18 @@ export class VentasComponent implements OnInit {
     }
   }
 
-  buscarVentas(valor: string): void {
-    this.filtro = valor;
+  buscarVentas(filtrosAplicados: VentaFiltro): void {
+    this.filtro = filtrosAplicados;
+    this.cargarVentas(0, this.rows);
+  }
+
+  buscarPorTexto(valor: string): void {
+    this.filtro = { cliente: valor }; 
+    this.cargarVentas(0, this.rows);
+  }
+
+  limpiarFiltros(): void {
+    this.filtro = {};
     this.cargarVentas(0, this.rows);
   }
 

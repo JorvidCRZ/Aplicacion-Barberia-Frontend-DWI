@@ -1,79 +1,33 @@
 <div class="container-main py-8 text-text-primary">
-
     <div class="grid grid-cols-1 lg:grid-cols-[1fr_500px] gap-6">
-
-        <!-- FORM -->
         <section class="rounded-3xl border border-ui-border bg-ui-card p-6 shadow-sm">
-
             <form [formGroup]="checkoutForm" class="space-y-6">
+                <h2 class="title-form">Confirmar pedido</h2>
 
-                <h2 class="title-form">
-                    Confirmar pedido
-                </h2>
-
-                <!-- MÉTODO ENTREGA -->
                 <div class="part-form">
-
-                    <label class="label-form">
-                        Método de entrega
-                    </label>
-
-                    <p-select formControlName="metodoEntrega" [options]="metodoEntregaOpciones" optionLabel="label"
-                        optionValue="value">
-                    </p-select>
-
+                    <label class="label-form">Método de entrega</label>
+                    <p-select formControlName="metodoEntrega" [options]="metodoEntregaOpciones" optionLabel="label"optionValue="value"></p-select>
                 </div>
 
-                <!-- MÉTODO PAGO -->
                 <div class="part-form">
-
-                    <label class="label-form">
-                        Método de pago
-                    </label>
-
-                    <p-select formControlName="metodoPago" [options]="metodoPagoOpciones" optionLabel="label"
-                        optionValue="value">
-                    </p-select>
-
+                    <label class="label-form">Método de pago</label>
+                    <p-select formControlName="metodoPago" [options]="metodoPagoOpciones" optionLabel="label"optionValue="value"></p-select>
+                </div>
+                
+                <div class="part-form">
+                    <label class="label-form">Observaciones</label>
+                    <textarea rows="4" class="inputs-text" formControlName="observaciones"placeholder="Instrucciones adicionales..."></textarea>
                 </div>
 
-                <!-- OBSERVACIONES -->
                 <div class="part-form">
-
-                    <label class="label-form">
-                        Observaciones
-                    </label>
-
-                    <textarea rows="4" class="inputs-text" formControlName="observaciones"
-                        placeholder="Instrucciones adicionales...">
-                    </textarea>
-
+                    <label class="label-form">Notas del cliente</label>
+                    <textarea rows="4" class="inputs-text" formControlName="notasCliente"placeholder="Notas adicionales..."></textarea>
                 </div>
-
-                <!-- NOTAS -->
-                <div class="part-form">
-
-                    <label class="label-form">
-                        Notas del cliente
-                    </label>
-
-                    <textarea rows="4" class="inputs-text" formControlName="notasCliente"
-                        placeholder="Notas adicionales...">
-                    </textarea>
-
-                </div>
-
             </form>
-
         </section>
 
-        <!-- RESUMEN -->
         <aside class="rounded-3xl border border-ui-border bg-ui-card p-6 shadow-sm h-fit sticky top-4">
-
-            <h3 class="text-xl font-semibold text-text-primary">
-                Resumen del pedido
-            </h3>
-
+            <h3 class="text-xl font-semibold text-text-primary">Resumen del pedido</h3>
             <div class="mt-6 space-y-4 text-text-secondary">
 
                 <div class="flex justify-between">
@@ -83,15 +37,13 @@
 
                 <div class="flex justify-between">
                     <span>Subtotal</span>
-                    <span class="text-text-primary font-semibold">
-                        {{ subtotal }}
-                    </span>
+                    <span class="text-text-primary font-semibold">{{ subtotal | soles }}</span>
                 </div>
 
                 <div class="flex justify-between">
                     <span>Envío</span>
                     <span class="text-brand-gold font-semibold">
-                        {{ costoEnvio }}
+                        {{ costoEnvio | soles  }}
                     </span>
                 </div>
 
@@ -102,38 +54,25 @@
                     </span>
 
                     <span class="text-xl font-bold text-brand-gold">
-                        {{ total }}
+                        {{ total | soles }}
                     </span>
 
                 </div>
 
             </div>
 
-            <p-button label="Confirmar compra" icon="pi pi-check" styleClass="boton-primary w-full mt-6"
-                (onClick)="confirmarPedido()">
-            </p-button>
-
+            <p-button label="Confirmar compra" icon="pi pi-check" styleClass="boton-primary w-full mt-6"(onClick)="confirmarPedido()"></p-button>
         </aside>
-
     </div>
 
-    <!-- PRODUCTOS -->
     <section class="mt-6 rounded-3xl border border-ui-border bg-ui-card p-6 shadow-sm">
 
-        <h2 class="text-lg font-semibold text-text-primary mb-4">
-            Productos del pedido
-        </h2>
+        <h2 class="text-lg font-semibold text-text-primary mb-4">Productos del pedido</h2>
 
         @if (carrito.items().length === 0) {
-
         <div class="text-center py-12">
-
             <i class="pi pi-shopping-cart text-4xl text-text-muted"></i>
-
-            <p class="mt-4 text-text-secondary">
-                No hay productos en el carrito
-            </p>
-
+            <p class="mt-4 text-text-secondary">No hay productos en el carrito</p>
         </div>
 
         } @else {
@@ -145,45 +84,25 @@
                 <div class="flex items-center gap-3">
 
                     @if (item.producto.urlsMultimedia.length) {
-
-                    <img [src]="item.producto.urlsMultimedia[0]"
-                        class="w-14 h-14 object-cover rounded-lg border border-ui-border">
-
+                        <img [src]="item.producto.urlsMultimedia[0] | safeImageUrl" class="w-14 h-14 object-cover rounded-lg border border-ui-border transform transition-transform hover:scale-110" />
                     } @else {
 
-                    <div
-                        class="w-14 h-14 flex items-center justify-center rounded-lg border border-ui-border bg-ui-black text-text-muted">
+                    <div class="w-14 h-14 flex items-center justify-center rounded-lg border border-ui-border bg-ui-black text-text-muted">
                         <i class="pi pi-image"></i>
                     </div>
-
                     }
 
                     <div>
-
-                        <p class="font-semibold text-text-primary">
-                            {{ item.producto.nombre }}
-                        </p>
-
-                        <p class="text-xs text-text-secondary">
-                            Cantidad: {{ item.cantidad }}
-                        </p>
-
+                        <p class="font-semibold text-text-primary hover:underline hover:text-brand-gold">{{ item.producto.nombre }}</p>
+                        <p class="text-sm text-text-secondary  hover:underline hover:text-brand-gold">{{ item.producto.nombreCategoria }}</p>
                     </div>
 
                 </div>
-
-                <div class="font-bold text-brand-gold">
-                    {{ item.subtotal }}
-                </div>
-
+                <p class="text-xs text-text-secondary">Cantidad: {{ item.cantidad }}</p>
+                <div class="font-bold text-brand-gold">{{ item.subtotal | soles }}</div>
             </div>
-
             }
-
         </div>
-
         }
-
     </section>
-
 </div>

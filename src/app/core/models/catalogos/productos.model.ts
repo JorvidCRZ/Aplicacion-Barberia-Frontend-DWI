@@ -13,7 +13,7 @@ export interface Producto {
     urlsMultimedia: string[];
 }
 
-export interface ProductoFilter {
+export interface ProductoFiltro {
     id?: number;
     nombre?: string;
     idCategoria?: number;

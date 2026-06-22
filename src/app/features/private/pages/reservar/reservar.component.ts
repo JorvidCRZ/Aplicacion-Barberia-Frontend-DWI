@@ -28,7 +28,7 @@ import { Servicio } from '@/app/core/models/catalogos/servicios.model';
 import { ServicioService } from '@/app/core/services/catalogos/servicio.service';
 import { ServicioFiltro } from '@/app/core/models/catalogos/servicios.model';
 import { Router } from '@angular/router';
-import { ReservaService } from '@/app/core/services/operaciones/reserva-service';
+import { ReservaService } from '@/app/core/services/operaciones/reserva.service';
 import { ReservaRequest } from '@/app/core/models/reserva/reservaRequest';
 import { TokenService } from '@/app/core/services/auth/token.service';
 import { IftaLabelModule } from 'primeng/iftalabel';
@@ -46,13 +46,13 @@ import { DatePickerModule } from 'primeng/datepicker';
     ReactiveFormsModule,
     SelectModule,
     IftaLabelModule,
-    
+
     ButtonModule,
     ToastModule,
     CardModule,
     DividerModule,
     DatePickerModule,
-  
+
     BadgeModule,
     ChipModule
   ],
@@ -85,7 +85,7 @@ export class ReservarComponent implements OnInit, OnDestroy {
   serviciosCache: Servicio[] = [];
   servicioFiltro: ServicioFiltro = { page: 0, size: 1000 };
 
-  
+
   clienteActual: any = {
     id: null,
     nombre: '',
@@ -93,80 +93,108 @@ export class ReservarComponent implements OnInit, OnDestroy {
     email: '',
     telefono: ''
   };
- 
 
-  horarios = [
-    { label: '09:00 AM', value: '09:00', disabled: false },
-    { label: '09:30 AM', value: '09:30', disabled: false },
-    { label: '10:00 AM', value: '10:00', disabled: false },
-    { label: '10:30 AM', value: '10:30', disabled: false },
-    { label: '11:00 AM', value: '11:00', disabled: false },
-    { label: '11:30 AM', value: '11:30', disabled: false },
-    { label: '12:00 PM', value: '12:00', disabled: false },
-    { label: '12:30 PM', value: '12:30', disabled: false },
-    { label: '01:00 PM', value: '13:00', disabled: false },
-    { label: '01:30 PM', value: '13:30', disabled: false },
-    { label: '02:00 PM', value: '14:00', disabled: false },
-    { label: '02:30 PM', value: '14:30', disabled: false },
-    { label: '03:00 PM', value: '15:00', disabled: false },
-    { label: '03:30 PM', value: '15:30', disabled: false },
-    { label: '04:00 PM', value: '16:00', disabled: false },
-    { label: '04:30 PM', value: '16:30', disabled: false },
-    { label: '05:00 PM', value: '17:00', disabled: false },
-    { label: '05:30 PM', value: '17:30', disabled: false },
-    { label: '06:00 PM', value: '18:00', disabled: false },
-    { label: '06:30 PM', value: '18:30', disabled: false }
-  ];
- 
+  get horarios() {
+    const todosLosHorarios = [
+      { label: '09:00 AM', value: '09:00' },
+      { label: '09:30 AM', value: '09:30' },
+      { label: '10:00 AM', value: '10:00' },
+      { label: '10:30 AM', value: '10:30' },
+      { label: '11:00 AM', value: '11:00' },
+      { label: '11:30 AM', value: '11:30' },
+      { label: '12:00 PM', value: '12:00' },
+      { label: '12:30 PM', value: '12:30' },
+      { label: '01:00 PM', value: '13:00' },
+      { label: '01:30 PM', value: '13:30' },
+      { label: '02:00 PM', value: '14:00' },
+      { label: '02:30 PM', value: '14:30' },
+      { label: '03:00 PM', value: '15:00' },
+      { label: '03:30 PM', value: '15:30' },
+      { label: '04:00 PM', value: '16:00' },
+      { label: '04:30 PM', value: '16:30' },
+      { label: '05:00 PM', value: '17:00' },
+      { label: '05:30 PM', value: '17:30' },
+      { label: '06:00 PM', value: '18:00' },
+      { label: '06:30 PM', value: '18:30' },
+    ];
 
-getFechaMinimaInput(): string {
+    const fechaSeleccionada = this.citaForm?.get('fecha')?.value;
+    if (!fechaSeleccionada) return todosLosHorarios;
+
+    const hoy = new Date();
+    const fechaForm = new Date((fechaSeleccionada as string) + 'T00:00:00'); // ← único cambio
+
+    const esHoy =
+      fechaForm.getFullYear() === hoy.getFullYear() &&
+      fechaForm.getMonth() === hoy.getMonth() &&
+      fechaForm.getDate() === hoy.getDate();
+
+    if (!esHoy) return todosLosHorarios;
+
+    const horaActual = hoy.getHours();
+    const minActual = hoy.getMinutes();
+
+    return todosLosHorarios.filter(h => {
+      const [hh, mm] = h.value.split(':').map(Number);
+      if (hh < horaActual) return false;
+      if (hh === horaActual && mm <= minActual) return false;
+      return true;
+    });
+  }
+
+
+  getFechaMinimaInput(): string {
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
     return hoy.toISOString().split('T')[0];
-}
+  }
 
-getFechaMaximaInput(): string {
+  getFechaMaximaInput(): string {
     const max = new Date();
     max.setMonth(max.getMonth() + 3);
     return max.toISOString().split('T')[0];
-}
+  }
 
-getFechaFormateada(): string {
+  onFechaChange(): void {
+    this.citaForm.get('hora')?.reset();
+  }
+
+  getFechaFormateada(): string {
     const fecha = this.citaForm.get('fecha')?.value;
     if (!fecha) return '';
-    
+
     const fechaObj = new Date(fecha);
     const options: Intl.DateTimeFormatOptions = {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     };
-    
+
     return fechaObj.toLocaleDateString('es-ES', options);
-}
+  }
 
 
-fechaValida(control: AbstractControl): ValidationErrors | null {
+  fechaValida(control: AbstractControl): ValidationErrors | null {
     const fecha = control.value;
     if (!fecha) return null;
-    
+
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
-    
+
     if (fecha < hoy) {
-        return { fechaInvalida: true };
+      return { fechaInvalida: true };
     }
-    
-    
+
+
     const fechaObj = new Date(fecha);
     if (fechaObj.getDay() === 0) {
-        return { domingo: true };
+      return { domingo: true };
     }
-    
+
     return null;
-}
-  
+  }
+
   citaForm = this.fb.group({
     barberoId: [null, [Validators.required]],
     servicioId: [null, [Validators.required]],
@@ -179,7 +207,7 @@ fechaValida(control: AbstractControl): ValidationErrors | null {
   ngOnInit(): void {
     this.cargarClienteDesdeToken();
     this.cargarDatos();
-   
+
   }
 
   ngOnDestroy(): void {
@@ -191,7 +219,7 @@ fechaValida(control: AbstractControl): ValidationErrors | null {
     const decodedToken = this.tokenService.getDecodedToken();
     const userId = this.tokenService.getUserId();
     const userDisplayName = this.tokenService.getUserDisplayName();
-    
+
     if (!userId || !this.tokenService.isLogged()) {
       this.messageService.add({
         severity: 'error',
@@ -201,10 +229,10 @@ fechaValida(control: AbstractControl): ValidationErrors | null {
       this.router.navigate(['/login']);
       return;
     }
-    
+
     const nombreCompleto = userDisplayName || decodedToken?.nombreCompleto || decodedToken?.fullName || '';
     const nombreParts = nombreCompleto.split(' ');
-    
+
     this.clienteActual = {
       id: userId,
       nombre: nombreParts[0] || decodedToken?.nombre || decodedToken?.given_name || 'Cliente',
@@ -216,7 +244,7 @@ fechaValida(control: AbstractControl): ValidationErrors | null {
   }
 
   private cargarDatos(): void {
-    
+
     this.barberos$ = this.barberoService.listar(0, 1000).pipe(
       map(response => {
         if (response?.data?.content) {
@@ -231,7 +259,7 @@ fechaValida(control: AbstractControl): ValidationErrors | null {
       })
     );
 
-     this.servicios$ = this.servicioService.obtenerServicioPublicos({ size: 1000, page: 0 }).pipe(
+    this.servicios$ = this.servicioService.obtenerServicioPublicos({ size: 1000, page: 0 }).pipe(
       map(response => {
         if (response?.data?.content) {
           this.serviciosCache = response.data.content;
@@ -251,7 +279,7 @@ fechaValida(control: AbstractControl): ValidationErrors | null {
     );
   }
 
- 
+
 
 
   getFechaMinima(): Date {
@@ -380,7 +408,7 @@ fechaValida(control: AbstractControl): ValidationErrors | null {
     this.router.navigate(['/dashboard/cliente/inicio']);
   }
 
-  
+
   get barberoInvalido(): boolean {
     const control = this.citaForm.get('barberoId');
     return !!control?.invalid && control.touched;
