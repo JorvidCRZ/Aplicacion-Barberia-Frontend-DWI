@@ -6,6 +6,10 @@ import { Reserva } from '../../models/operaciones/Reserva.model';
 import { ApiResponse, Page } from '../../models/common/index.model';
 import { ReservaRequest } from '../../models/reserva/reservaRequest';
 
+
+import { HistorialClienteModel } from '../../models/operaciones/historial.cliente.model';
+import { EstadoReserva } from '../../models/operaciones/EstadoReserva';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -29,7 +33,8 @@ export class ReservaService {
   guardarReserva(reserva: ReservaRequest): Observable<ApiResponse<Reserva>> {
     return this.http.post<ApiResponse<Reserva>>(this.API2, reserva);
   }
- getMisReservas(
+
+  getMisReservas(
     page: number = 0,
     size: number = 10
   ): Observable<ApiResponse<Page<Reserva>>> {
@@ -40,12 +45,10 @@ export class ReservaService {
     return this.http.get<ApiResponse<Page<Reserva>>>(`${this.API2}/mis-reservas`, { params });
   }
 
-  // Obtener todas las reservas del cliente (sin paginación)
+ 
   getAllMisReservas(): Observable<ApiResponse<Reserva[]>> {
     return this.http.get<ApiResponse<Reserva[]>>(`${this.API2}/mis-reservas/todas`);
   }
-
-  
 
   cancelarReserva(id: number): Observable<ApiResponse<string>> {
     return this.http.patch<ApiResponse<string>>(`${this.API2}/${id}/cancelar`, {});
@@ -55,5 +58,33 @@ export class ReservaService {
     return this.http.get<ApiResponse<Reserva>>(`${this.API2}/${id}`);
   }
 
+  getHistorialCliente(
+    page: number = 0,
+    size: number = 10,
+    estado?: EstadoReserva,
+    desde?: Date,
+    hasta?: Date
+  ): Observable<ApiResponse<Page<HistorialClienteModel>>> {
+    
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    if (estado) {
+      params = params.set('estado', estado);
+    }
+    if (desde) {
+      params = params.set('desde', desde.toISOString().split('T')[0]);
+    }
+    if (hasta) {
+      params = params.set('hasta', hasta.toISOString().split('T')[0]);
+    }
+
+    
+    return this.http.get<ApiResponse<Page<HistorialClienteModel>>>(
+      `${this.API2}/historial`, 
+      { params }
+    );
+  }
 
 }

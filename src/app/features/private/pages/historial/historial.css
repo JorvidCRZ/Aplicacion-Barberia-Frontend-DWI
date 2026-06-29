@@ -1,0 +1,108 @@
+
+:host ::ng-deep .p-datatable-custom .p-datatable-wrapper {
+    background-color: transparent !important;
+}
+
+
+:host ::ng-deep .p-datatable-custom .p-datatable-thead > tr > th {
+    background-color: transparent !important;
+    color: #C9A84C !important;
+    font-size: 0.75rem; /* text-xs */
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border: none;
+    border-top: 1px solid rgba(201, 168, 76, 0.5); /* Borde dorado superior */
+    border-bottom: 1px solid rgba(201, 168, 76, 0.5); /* Borde dorado inferior */
+    padding: 1.25rem 1rem;
+    font-weight: 600;
+}
+
+
+:host ::ng-deep .p-datatable-custom .p-datatable-tbody > tr {
+    background-color: transparent !important;
+    color: #e5e7eb;
+    transition: background-color 0.2s ease;
+}
+
+
+:host ::ng-deep .p-datatable-custom .p-datatable-tbody > tr:hover {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+
+:host ::ng-deep .p-datatable-custom .p-datatable-tbody > tr > td {
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* Separador sutil */
+    padding: 1rem;
+    font-size: 0.875rem; /* text-sm */
+}
+
+/* Paginador (Borde superior dorado) */
+:host ::ng-deep .p-datatable-custom .p-paginator {
+    background-color: transparent !important;
+    border: none;
+    border-top: 1px solid rgba(201, 168, 76, 0.5) !important;
+    padding: 1rem;
+}
+
+:host ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page,
+:host ::ng-deep .p-paginator .p-paginator-first, 
+:host ::ng-deep .p-paginator .p-paginator-prev, 
+:host ::ng-deep .p-paginator .p-paginator-next, 
+:host ::ng-deep .p-paginator .p-paginator-last {
+    color: #888;
+    background-color: transparent;
+    border-radius: 4px;
+}
+
+:host ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+    background-color: rgba(201, 168, 76, 0.15);
+    color: #C9A84C;
+    border: 1px solid rgba(201, 168, 76, 0.3);
+}
+
+:host ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page:not(.p-highlight):hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: white;
+}
+
+
+:host ::ng-deep .p-select,
+:host ::ng-deep .p-datepicker {
+    background-color: #121212 !important;
+    border-color: rgba(255,255,255,0.1) !important;
+}
+
+:host ::ng-deep .p-select:hover,
+:host ::ng-deep .p-datepicker:hover {
+    border-color: rgba(201, 168, 76, 0.5) !important;
+}
+
+
+:host ::ng-deep .p-select-panel,
+:host ::ng-deep .p-datepicker-panel {
+    background: #121212 !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+}
+
+:host ::ng-deep .p-select-item,
+:host ::ng-deep .p-datepicker table td > span {
+    color: #e5e7eb !important;
+}
+
+:host ::ng-deep .p-select-item:hover,
+:host ::ng-deep .p-datepicker table td > span:hover {
+    background-color: rgba(201, 168, 76, 0.15) !important;
+    color: #C9A84C !important;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-header {
+    background-color: #0a0a0a;
+    color: #C9A84C;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+:host ::ng-deep .p-dialog .p-dialog-content,
+:host ::ng-deep .p-dialog .p-dialog-footer {
+    background-color: #0a0a0a;
+}

@@ -1,1 +1,184 @@
-<p>historial works!</p>
+<div class="w-full min-h-screen text-white flex flex-col p-2 md:p-6">
+  
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+    <div class="flex items-center gap-3">
+      <i class="pi pi-history text-2xl text-[#C9A84C]"></i>
+      <h1 class="text-2xl font-bold m-0 tracking-wide">Historial de Atenciones</h1>
+    </div>
+    
+    <div class="flex gap-3 w-full md:w-auto">
+      <button (click)="cargarHistorial()" 
+              class="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-transparent border border-white/20 rounded-md text-sm hover:bg-white/10 transition-colors">
+        <i class="pi pi-refresh"></i> Recargar
+      </button>
+    </div>
+  </div>
+
+  <div class="border border-[#C9A84C]/30 rounded-lg p-5 mb-8 bg-[#0a0a0a]">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+      
+      <div class="flex flex-col">
+        <label class="text-[10px] text-gray-400 tracking-[0.1em] uppercase mb-2 font-semibold">Estado</label>
+        <p-select [options]="estadosOpciones" [(ngModel)]="estadoSeleccionado" optionLabel="label" optionValue="value" 
+                  styleClass="w-full bg-[#121212] border-white/10 hover:border-[#C9A84C]/50 text-white transition-colors" placeholder="Filtrar por estado"></p-select>
+      </div>
+      
+      <div class="flex flex-col">
+        <label class="text-[10px] text-gray-400 tracking-[0.1em] uppercase mb-2 font-semibold">Desde</label>
+        <p-datepicker [(ngModel)]="fechaDesde" dateFormat="dd/mm/yy" [showIcon]="true" 
+                    styleClass="w-full" inputStyleClass="bg-[#121212] border-white/10 hover:border-[#C9A84C]/50 text-white transition-colors" appendTo="body"></p-datepicker>
+      </div>
+
+      <div class="flex flex-col">
+        <label class="text-[10px] text-gray-400 tracking-[0.1em] uppercase mb-2 font-semibold">Hasta</label>
+        <p-datepicker [(ngModel)]="fechaHasta" dateFormat="dd/mm/yy" [showIcon]="true" 
+                    styleClass="w-full" inputStyleClass="bg-[#121212] border-white/10 hover:border-[#C9A84C]/50 text-white transition-colors" appendTo="body"></p-datepicker>
+      </div>
+
+      <div class="flex gap-3">
+        <button (click)="aplicarFiltros()" 
+                class="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-[#C9A84C] text-black font-semibold rounded-md text-sm hover:bg-[#e0bc55] transition-all duration-300">
+          <i class="pi pi-search"></i> Filtrar
+        </button>
+        <button (click)="limpiarFiltros()" pTooltip="Limpiar filtros" tooltipPosition="top"
+                class="px-4 py-2.5 bg-transparent border border-white/10 text-gray-400 rounded-md hover:bg-white/5 hover:text-white transition-all duration-300">
+          <i class="pi pi-filter-slash"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="border border-[#C9A84C]/30 rounded-lg bg-[#0a0a0a]">
+    <p-table [value]="historial" [lazy]="true" (onLazyLoad)="onLazyLoad($event)" 
+             [paginator]="true" [rows]="pageSize" [totalRecords]="totalRecords" 
+             [loading]="loading" [rowsPerPageOptions]="[10, 20, 50]"
+             styleClass="p-datatable-custom" responsiveLayout="stack" breakpoint="960px">
+      
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Fecha</th>
+          <th>Barbero</th>
+          <th>Servicio</th>
+          <th class="text-center">Estado</th>
+          <th class="text-right">Total</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-reserva>
+        <tr class="group">
+          <td>
+            <span class="p-column-title font-bold text-[#C9A84C] block md:hidden">Fecha:</span>
+            {{ reserva.fecha | date:'dd/MM/yyyy' }}
+          </td>
+          <td>
+            <span class="p-column-title font-bold text-[#C9A84C] block md:hidden">Barbero:</span>
+            {{ reserva.nombreBarbero }}
+          </td>
+          <td>
+            <span class="p-column-title font-bold text-[#C9A84C] block md:hidden">Servicio:</span>
+            <span class="truncate max-w-[200px] block" [title]="reserva.nombreServicio">
+              {{ reserva.nombreServicio }}
+            </span>
+          </td>
+          <td class="text-center">
+            <span class="p-column-title font-bold text-[#C9A84C] block md:hidden">Estado:</span>
+            <app-status-badge type="text" [value]="reserva.estadoReserva"></app-status-badge>
+          </td>
+          <td class="text-right font-medium">
+            <span class="p-column-title font-bold text-[#C9A84C] block md:hidden text-left">Total:</span>
+            S/ {{ reserva.total | number:'1.2-2' }}
+          </td>
+          <td class="text-center">
+             <button (click)="verDetalle(reserva)" pTooltip="Ver Detalle" tooltipPosition="top"
+                     class="w-8 h-8 rounded-full text-gray-400 hover:text-[#C9A84C] hover:bg-[#C9A84C]/10 transition-colors flex items-center justify-center mx-auto">
+                <i class="pi pi-eye"></i>
+             </button>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" class="text-center py-16">
+            <div class="flex flex-col items-center justify-center text-gray-400">
+              <i class="pi pi-calendar-times text-3xl mb-4 opacity-50"></i>
+              <p class="text-sm m-0">No se encontraron registros de atenciones para los filtros aplicados.</p>
+              <button *ngIf="estadoSeleccionado || fechaDesde || fechaHasta" (click)="limpiarFiltros()" 
+                      class="mt-4 px-4 py-2 bg-[#C9A84C] text-black font-semibold rounded-md text-sm hover:bg-[#e0bc55] transition-colors">
+                Limpiar Filtros
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      
+      <ng-template pTemplate="loadingicon">
+         <i class="pi pi-spin pi-spinner text-3xl text-[#C9A84C]"></i>
+      </ng-template>
+    </p-table>
+  </div>
+
+</div>
+
+<p-dialog [(visible)]="displayModal" [modal]="true" [draggable]="false" [resizable]="false" 
+          styleClass="w-11/12 md:w-5/12 bg-[#0a0a0a] text-white border border-[#C9A84C]/30 rounded-lg shadow-2xl" 
+          header="Detalle de Atención" [baseZIndex]="10000">
+  
+  <ng-template pTemplate="content">
+    <div *ngIf="reservaSeleccionada" class="p-4 space-y-5">
+      <div class="flex justify-between items-center border-b border-white/10 pb-4">
+        <div>
+          <p class="text-[10px] text-gray-400 tracking-[0.1em] uppercase mb-1">Fecha de Reserva</p>
+          <p class="text-lg font-bold text-[#C9A84C]">{{ reservaSeleccionada.fecha | date:'dd/MM/yyyy' }}</p>
+        </div>
+        <div class="text-right">
+          <app-status-badge type="text" [value]="reservaSeleccionada.estadoReserva"></app-status-badge>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-[#121212] p-4 rounded-md border border-white/5">
+          <p class="text-[10px] text-gray-400 tracking-[0.1em] uppercase mb-1">Barbero</p>
+          <p class="font-medium text-white">{{ reservaSeleccionada.nombreBarbero }}</p>
+        </div>
+        <div class="bg-[#121212] p-4 rounded-md border border-white/5">
+          <p class="text-[10px] text-gray-400 tracking-[0.1em] uppercase mb-1">Tipo</p>
+          <p class="font-medium text-white">{{ reservaSeleccionada.tipoReserva }}</p>
+        </div>
+      </div>
+
+      <div>
+        <p class="text-[10px] text-gray-400 tracking-[0.1em] uppercase mb-2">Servicio Realizado</p>
+        <div class="bg-[#121212] border border-white/5 rounded-md p-3 flex items-center">
+          <i class="pi pi-check-circle text-[#C9A84C] mr-3"></i>
+          <span class="text-gray-200">{{ reservaSeleccionada.nombreServicio }}</span>
+        </div>
+      </div>
+
+      <div class="flex justify-between items-center bg-[#121212] p-4 rounded-md border border-[#C9A84C]/20 mt-4">
+        <div>
+          <p class="text-[10px] text-gray-400 tracking-[0.1em] uppercase mb-1">Horario</p>
+          <p class="text-white font-mono">{{ reservaSeleccionada.horaInicio }} - {{ reservaSeleccionada.horaFin }}</p>
+        </div>
+        <div class="text-right">
+          <p class="text-[10px] text-gray-400 tracking-[0.1em] uppercase mb-1">Total Pagado</p>
+          <p class="text-2xl font-bold text-[#C9A84C]">S/ {{ reservaSeleccionada.total | number:'1.2-2' }}</p>
+        </div>
+      </div>
+
+      <div *ngIf="reservaSeleccionada.observacion" class="mt-4">
+        <p class="text-[10px] text-gray-400 tracking-[0.1em] uppercase mb-2">Observaciones</p>
+        <p class="text-sm text-gray-400 italic bg-[#121212] p-4 rounded-md border border-white/5 m-0">{{ reservaSeleccionada.observacion }}</p>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button (click)="displayModal=false" 
+            class="px-6 py-2 bg-transparent border border-[#C9A84C] text-[#C9A84C] rounded-md hover:bg-[#C9A84C] hover:text-black transition-colors font-semibold text-sm">
+      Cerrar
+    </button>
+  </ng-template>
+</p-dialog>
